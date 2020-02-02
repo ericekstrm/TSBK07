@@ -50,6 +50,16 @@ public class SimpleModel
         GL20.glVertexAttribPointer(1, 4, GL_FLOAT, false, 0, 0);
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
     }
+    
+    public void loadTextureVBO(float[] colors)
+    {
+        colorVBO = GL15.glGenBuffers();
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, colorVBO);
+        FloatBuffer colorBuffer = createFloatBuffer(colors);
+        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, colorBuffer, GL15.GL_STATIC_DRAW);
+        GL20.glVertexAttribPointer(1, 4, GL_FLOAT, false, 0, 0);
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+    }
 
     private FloatBuffer createFloatBuffer(float[] data)
     {
@@ -65,15 +75,6 @@ public class SimpleModel
         buffer.put(data);
         buffer.flip();
         return buffer;
-    }
-
-    public static SimpleModel loadModel(String filename)
-    {
-        SimpleModel model = new SimpleModel();
-
-        //ladda in modellen från .Obj
-        
-        return model;
     }
     
     public void destroy()

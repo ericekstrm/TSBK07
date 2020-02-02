@@ -1,6 +1,7 @@
 package main;
 
 import java.nio.*;
+import model.SimpleModel;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.*;
 import static org.lwjgl.glfw.GLFW.*;
@@ -19,8 +20,9 @@ public class main
 
     long window;
 
-    int vboID;
-    int vaoID;
+    //int vboID;
+    //int vaoID;
+    SimpleModel model;
 
     Shader shader;
 
@@ -55,15 +57,13 @@ public class main
     {
         // Disable the VBO index from the VAO attributes list
         glDisableVertexAttribArray(0);
-
-        // Delete the VBO
+        
         glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glDeleteBuffers(vboID);
-
-        // Delete the VAO
         glBindVertexArray(0);
-        glDeleteVertexArrays(vaoID);
-
+        
+        // Delete the VAO and VBOs
+        model.destroy();
+ 
         glfwDestroyWindow(window);
         glfwTerminate();
     }
@@ -72,8 +72,8 @@ public class main
 
     public void initTriangle()
     {
-        shader = new Shader("C:\\Users\\Eric\\Documents\\NetBeansProjects\\3D-spel\\src\\pkg3d\\spel\\test.vert",
-                "C:\\Users\\Eric\\Documents\\NetBeansProjects\\3D-spel\\src\\pkg3d\\spel\\test.frag");
+        shader = new Shader("C:\\Users\\Eric\\Documents\\NetBeansProjects\\\\ComputerGraphics-3Dgame\\src\\main\\test.vert",
+                "C:\\Users\\Eric\\Documents\\NetBeansProjects\\\\ComputerGraphics-3Dgame\\src\\main\\test.frag");
 
         //VBO
         float[] vertices =
@@ -84,9 +84,6 @@ public class main
             -0.5f, 0.5f, 0.0f,
             0.0f, 0.0f, 0.5f
         };
-        FloatBuffer vertexBuffer = BufferUtils.createFloatBuffer(vertices.length);
-        vertexBuffer.put(vertices);
-        vertexBuffer.flip();
 
         int[] indices =
         {
@@ -97,9 +94,6 @@ public class main
             0, 3, 4,
             1, 0, 4
         };
-        IntBuffer indicesBuffer = BufferUtils.createIntBuffer(indices.length);
-        indicesBuffer.put(indices);
-        indicesBuffer.flip();
 
         float[] colors =
         {
@@ -109,6 +103,22 @@ public class main
             0.0f, 1.0f, 1.0f, 1.0f,
             1.0f, 1.0f, 0.0f, 1.0f
         };
+        
+        model = new SimpleModel();
+        
+        model.loadVertexVBO(vertices);
+        model.loadIndicesVBO(indices);
+        model.loadColorVBO(colors);
+        
+        /*
+        FloatBuffer vertexBuffer = BufferUtils.createFloatBuffer(vertices.length);
+        vertexBuffer.put(vertices);
+        vertexBuffer.flip();
+        
+        IntBuffer indicesBuffer = BufferUtils.createIntBuffer(indices.length);
+        indicesBuffer.put(indices);
+        indicesBuffer.flip();
+        
         FloatBuffer colorBuffer = BufferUtils.createFloatBuffer(colors.length);
         colorBuffer.put(colors);
         colorBuffer.flip();
@@ -131,7 +141,7 @@ public class main
         int x = GL15.glGenBuffers();
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, x);
         GL15.glBufferData(GL15.GL_ARRAY_BUFFER, colorBuffer, GL15.GL_STATIC_DRAW);
-        glVertexAttribPointer(1, 4, GL_FLOAT, false, 0, 0);
+        glVertexAttribPointer(1, 4, GL_FLOAT, false, 0, 0);*/
 
         //GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
         //glBindVertexArray(0);
@@ -162,7 +172,7 @@ public class main
             glUniformMatrix4fv(glGetUniformLocation(shader.getProgramID(), "rotation"), false, matrix);
 
             //render
-            glBindVertexArray(vaoID);
+            glBindVertexArray(model.getVaoID());
             glEnableVertexAttribArray(0);
             glEnableVertexAttribArray(1);
 

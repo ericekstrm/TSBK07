@@ -437,6 +437,23 @@ public class Matrix4f
 
         return rotation;
     }
+    
+    /**
+     * Creates a rotation matrix that rotates the specified angles around the
+     * three base axis.
+     * 
+     * @param xAngle
+     * @param yAngle
+     * @param zAngle
+     * @return
+     */
+    public static Matrix4f rotate(float xAngle, float yAngle, float zAngle)
+    {
+        Matrix4f rx = rotate(xAngle, 1, 0, 0);
+        Matrix4f ry = rotate(yAngle, 0, 1, 0);
+        Matrix4f rz = rotate(zAngle, 0, 0, 1);
+        return rx.multiply(ry).multiply(rz);
+    }
 
     /**
      * Creates a scaling matrix. Similar to <code>glScale(x, y, z)</code>.

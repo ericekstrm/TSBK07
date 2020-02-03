@@ -12,6 +12,7 @@ import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.system.MemoryUtil.*;
 import shader.Shader;
 import util.Matrix4f;
+import util.Vector3f;
 
 public class main
 {
@@ -25,8 +26,10 @@ public class main
     int vaoID;
     //SimpleColorModel model;
     TexturedModel model;
-    
+
     Shader shader;
+
+    Camera camera = new Camera(new Vector3f(5, 3, 5), new Vector3f(0, 0, 0));
 
     void initOpenGL()
     {
@@ -64,7 +67,7 @@ public class main
         glBindVertexArray(0);
 
         // Delete the VAO and VBOs
-        //model.destroy();
+        model.destroy();
         glfwDestroyWindow(window);
         glfwTerminate();
     }
@@ -73,44 +76,10 @@ public class main
     Matrix4f projectionMatrix;
     Matrix4f translationMatrix;
 
-    public void initTriangle()
+    public void initModel()
     {
         shader = new Shader("C:\\Users\\Eric\\Documents\\NetBeansProjects\\\\ComputerGraphics-3Dgame\\src\\main\\test.vert",
                 "C:\\Users\\Eric\\Documents\\NetBeansProjects\\\\ComputerGraphics-3Dgame\\src\\main\\test.frag");
-
-        //VBO
-        float[] vertices =
-        {
-            -0.5f, -0.5f, 0.0f,
-            0.5f, -0.5f, 0.0f,
-            0.5f, 0.5f, 0.0f,
-            -0.5f, 0.5f, 0.0f,
-            0.0f, 0.0f, 0.5f
-        };
-
-        int[] indices =
-        {
-            2, 0, 1,
-            0, 2, 3,
-            1, 4, 2,
-            3, 2, 4,
-            0, 3, 4,
-            1, 0, 4
-        };
-
-        float[] colors =
-        {
-            1.0f, 0.0f, 0.0f, 1.0f,
-            0.0f, 1.0f, 0.0f, 1.0f,
-            0.0f, 0.0f, 1.0f, 1.0f,
-            0.0f, 1.0f, 1.0f, 1.0f,
-            1.0f, 1.0f, 0.0f, 1.0f
-        };
-        
-        float[] textureCoords = 
-        {
-            
-        };
 
         //model = new SimpleColorModel(vertices, indices, colors);
         model = Loader.loadObjModel("C:\\Users\\Eric\\Documents\\NetBeansProjects\\ComputerGraphics-3Dgame\\src\\resources\\bunnyplus.obj");
@@ -123,8 +92,8 @@ public class main
     {
         time = System.currentTimeMillis() % (1080 * 10);
         rotationMatrix = Matrix4f.rotate(time / 10, 0, 1, 0);
-        projectionMatrix = Matrix4f.frustum(-0.5f, 0.5f, -0.5f, 0.5f, 30.0f, 1.0f);
-        translationMatrix = Matrix4f.translate(0, 0, -28);
+        projectionMatrix = Matrix4f.frustum(-1f, 1f, -1f, 1f, 30.0f, 1.0f);
+        translationMatrix = Matrix4f.translate(0, 0, 0);
     }
 
     void loop()
@@ -137,27 +106,31 @@ public class main
             glClear(GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
             shader.start();
-            
+
             //add transformation matrices.
             FloatBuffer rotation = BufferUtils.createFloatBuffer(16);
             rotationMatrix.toBuffer(rotation);
             glUniformMatrix4fv(glGetUniformLocation(shader.getProgramID(), "rotation"), false, rotation);
-            
+
             FloatBuffer projection = BufferUtils.createFloatBuffer(16);
             projectionMatrix.toBuffer(projection);
             glUniformMatrix4fv(glGetUniformLocation(shader.getProgramID(), "projection"), false, projection);
-            
+
             FloatBuffer translation = BufferUtils.createFloatBuffer(16);
             translationMatrix.toBuffer(translation);
             glUniformMatrix4fv(glGetUniformLocation(shader.getProgramID(), "translation"), false, translation);
-            
+
+            FloatBuffer worldToView = BufferUtils.createFloatBuffer(16);
+            camera.getWorldtoViewMatrix().toBuffer(worldToView);
+            glUniformMatrix4fv(glGetUniformLocation(shader.getProgramID(), "worldToView"), false, worldToView);
+
             //render
             model.activate();
 
             GL11.glDrawElements(GL11.GL_TRIANGLES, model.getNrIndices(), GL11.GL_UNSIGNED_INT, 0);
 
             model.deactivate();
-            
+
             shader.stop();
 
             glfwSwapBuffers(window);
@@ -168,19 +141,32 @@ public class main
 
         glfwTerminate();
     }
-    
+
+    DoubleBuffer prevXpos = null;
+    DoubleBuffer prevYpos = null;
+
     public void checkInput()
     {
-        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        {
-        }
+        camera.checkInput(window);
+
+//        DoubleBuffer xpos = null;
+//        DoubleBuffer ypos = null;
+//        glfwGetCursorPos(window, xpos, ypos);
+//        
+//        if  (prevXpos != null && prevYpos != null)
+//        {
+//            int diffX = xpos.compareTo(prevXpos);
+//            int diffY = ypos.compareTo(prevYpos);
+//            Matrix4f rotation = Matrix4f.rota
+//            camera.lookAt = camera.lookAt.;
+//        }
     }
 
     public static void main(String[] args)
     {
         main m = new main();
         m.initOpenGL();
-        m.initTriangle();
+        m.initModel();
         m.loop();
         m.destroyOpenGL();
     }

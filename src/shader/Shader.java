@@ -46,6 +46,7 @@ public class Shader
     {
         bindAttribute(0, "in_Position");
         bindAttribute(1, "in_Color");
+        bindAttribute(2, "in_Texture");
     }
     
     protected void bindAttribute(int attribute, String variableName)

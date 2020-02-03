@@ -1,10 +1,10 @@
 package model;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import util.Vector2f;
 import util.Vector3f;
@@ -12,7 +12,7 @@ import util.Vector3f;
 public class Loader
 {
 
-    public static SimpleModel loadObjModel(String filename)
+    public static TexturedModel loadObjModel(String filename)
     {
         BufferedReader br = null;
         try
@@ -29,7 +29,9 @@ public class Loader
         List<Integer> indices = new ArrayList<>();
 
         float[] verticesArray;
-        float[] textureArray = {};
+        float[] textureArray =
+        {
+        };
         float[] normalsArray;
         int[] indicesArray;
 
@@ -38,8 +40,11 @@ public class Loader
             String line;
             while (true)
             {
-                line = br.readLine();
+                line = br.readLine().replaceAll("\\s+", " ");
+                
+                //System.out.println(line);
                 String[] currentLine = line.split(" ");
+                //System.out.println(currentLine.length);
                 if (line.startsWith("v "))
                 {
                     Vector3f vertex = new Vector3f(
@@ -90,10 +95,11 @@ public class Loader
 
         } catch (Exception e)
         {
+            e.printStackTrace();
         }
 
         verticesArray = new float[vertices.size() * 3];
-        indicesArray = new int[vertices.size()];
+        indicesArray = new int[indices.size()];
 
         int vertexPointer = 0;
         for (Vector3f vertex : vertices)
@@ -108,14 +114,13 @@ public class Loader
             indicesArray[i] = indices.get(i);
         }
 
-        SimpleModel model = new SimpleModel();
-        model.loadVertexVBO(verticesArray);
-        model.loadTextureVBO(textureArray);
-        model.loadIndicesVBO(indicesArray);
+        //does not work
+        TexturedModel model = new TexturedModel(verticesArray, indicesArray, textureArray);
         //model.loadNormalVBO(normalsArray);
 
-        return model;
+        System.out.println(Arrays.toString(indicesArray));
 
+        return model;
     }
 
     private static void processVertex(String[] vertexData, List<Integer> indices, List<Vector2f> textures, List<Vector3f> normals, float[] textureArray, float[] normalsArray)
@@ -131,6 +136,5 @@ public class Loader
         normalsArray[currentvertexPointer * 3] = currentNorm.x;
         normalsArray[currentvertexPointer * 3 + 1] = currentNorm.y;
         normalsArray[currentvertexPointer * 3 + 2] = currentNorm.z;
-
     }
 }

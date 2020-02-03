@@ -1,7 +1,7 @@
 package main;
 
 import java.nio.*;
-import model.SimpleModel;
+import model.*;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.*;
 import static org.lwjgl.glfw.GLFW.*;
@@ -15,15 +15,17 @@ import util.Matrix4f;
 
 public class main
 {
+
     public static final int WIDTH = 600;
     public static final int HEIGHT = 600;
 
     long window;
 
-    //int vboID;
-    //int vaoID;
-    SimpleModel model;
-
+    int vboID;
+    int vaoID;
+    //SimpleColorModel model;
+    TexturedModel model;
+    
     Shader shader;
 
     void initOpenGL()
@@ -57,18 +59,19 @@ public class main
     {
         // Disable the VBO index from the VAO attributes list
         glDisableVertexAttribArray(0);
-        
+
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
-        
+
         // Delete the VAO and VBOs
-        model.destroy();
- 
+        //model.destroy();
         glfwDestroyWindow(window);
         glfwTerminate();
     }
 
-    Matrix4f rotation;
+    Matrix4f rotationMatrix;
+    Matrix4f projectionMatrix;
+    Matrix4f translationMatrix;
 
     public void initTriangle()
     {
@@ -104,47 +107,14 @@ public class main
             1.0f, 1.0f, 0.0f, 1.0f
         };
         
-        model = new SimpleModel();
-        
-        model.loadVertexVBO(vertices);
-        model.loadIndicesVBO(indices);
-        model.loadColorVBO(colors);
-        
-        /*
-        FloatBuffer vertexBuffer = BufferUtils.createFloatBuffer(vertices.length);
-        vertexBuffer.put(vertices);
-        vertexBuffer.flip();
-        
-        IntBuffer indicesBuffer = BufferUtils.createIntBuffer(indices.length);
-        indicesBuffer.put(indices);
-        indicesBuffer.flip();
-        
-        FloatBuffer colorBuffer = BufferUtils.createFloatBuffer(colors.length);
-        colorBuffer.put(colors);
-        colorBuffer.flip();
+        float[] textureCoords = 
+        {
+            
+        };
 
-        vaoID = GL30.glGenVertexArrays();
-        GL30.glBindVertexArray(vaoID);
-
-        //vertex
-        vboID = GL15.glGenBuffers();
-        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboID);
-        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, vertexBuffer, GL15.GL_STATIC_DRAW);
-        glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
-
-        //index
-        int y = GL15.glGenBuffers();
-        GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, y);
-        GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL15.GL_STATIC_DRAW);
-        
-        //color
-        int x = GL15.glGenBuffers();
-        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, x);
-        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, colorBuffer, GL15.GL_STATIC_DRAW);
-        glVertexAttribPointer(1, 4, GL_FLOAT, false, 0, 0);*/
-
-        //GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
-        //glBindVertexArray(0);
+        //model = new SimpleColorModel(vertices, indices, colors);
+        model = Loader.loadObjModel("C:\\Users\\Eric\\Documents\\NetBeansProjects\\ComputerGraphics-3Dgame\\src\\resources\\bunnyplus.obj");
+        //model = new TexturedModel(vertices, indices, textureCoords);
     }
 
     long time = 0;
@@ -152,7 +122,9 @@ public class main
     public void update()
     {
         time = System.currentTimeMillis() % (1080 * 10);
-        rotation = Matrix4f.rotate(time/10, 1, 1, 1);
+        rotationMatrix = Matrix4f.rotate(time / 10, 0, 1, 0);
+        projectionMatrix = Matrix4f.frustum(-0.5f, 0.5f, -0.5f, 0.5f, 30.0f, 1.0f);
+        translationMatrix = Matrix4f.translate(0, 0, -28);
     }
 
     void loop()
@@ -162,35 +134,46 @@ public class main
             update();
 
             //prepare
-            
             glClear(GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
             shader.start();
-
-            FloatBuffer matrix = BufferUtils.createFloatBuffer(16);
-            rotation.toBuffer(matrix);
-            glUniformMatrix4fv(glGetUniformLocation(shader.getProgramID(), "rotation"), false, matrix);
-
+            
+            //add transformation matrices.
+            FloatBuffer rotation = BufferUtils.createFloatBuffer(16);
+            rotationMatrix.toBuffer(rotation);
+            glUniformMatrix4fv(glGetUniformLocation(shader.getProgramID(), "rotation"), false, rotation);
+            
+            FloatBuffer projection = BufferUtils.createFloatBuffer(16);
+            projectionMatrix.toBuffer(projection);
+            glUniformMatrix4fv(glGetUniformLocation(shader.getProgramID(), "projection"), false, projection);
+            
+            FloatBuffer translation = BufferUtils.createFloatBuffer(16);
+            translationMatrix.toBuffer(translation);
+            glUniformMatrix4fv(glGetUniformLocation(shader.getProgramID(), "translation"), false, translation);
+            
             //render
-            glBindVertexArray(model.getVaoID());
-            glEnableVertexAttribArray(0);
-            glEnableVertexAttribArray(1);
+            model.activate();
 
-            GL11.glDrawElements(GL11.GL_TRIANGLES, 18, GL11.GL_UNSIGNED_INT, 0);
+            GL11.glDrawElements(GL11.GL_TRIANGLES, model.getNrIndices(), GL11.GL_UNSIGNED_INT, 0);
 
+            model.deactivate();
+            
             shader.stop();
-
-            glDisableVertexAttribArray(0);
-            //glBindVertexArray(0);
-            //glDisableClientState(GL_COLOR_ARRAY);
 
             glfwSwapBuffers(window);
 
             glfwPollEvents();
-
+            checkInput();
         }
 
         glfwTerminate();
+    }
+    
+    public void checkInput()
+    {
+        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        {
+        }
     }
 
     public static void main(String[] args)

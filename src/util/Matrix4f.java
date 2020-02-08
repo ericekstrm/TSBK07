@@ -474,5 +474,4 @@ public class Matrix4f
 
         return scaling;
     }
-
 }

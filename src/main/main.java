@@ -22,14 +22,14 @@ public class main
 
     long window;
 
-    int vboID;
-    int vaoID;
-    //SimpleColorModel model;
-    TexturedModel model;
+    TexturedModel model1;
+    TexturedModel model2;
+    
+    int tex;
 
     Shader shader;
 
-    Camera camera = new Camera(new Vector3f(5, 3, 5), new Vector3f(0, 0, 0));
+    Camera camera = new Camera(new Vector3f(5, -3, 5), new Vector3f(0, 0, 0));
 
     void initOpenGL()
     {
@@ -67,7 +67,7 @@ public class main
         glBindVertexArray(0);
 
         // Delete the VAO and VBOs
-        model.destroy();
+        model1.destroy();
         glfwDestroyWindow(window);
         glfwTerminate();
     }
@@ -78,12 +78,13 @@ public class main
 
     public void initModel()
     {
-        shader = new Shader("C:\\Users\\Eric\\Documents\\NetBeansProjects\\\\ComputerGraphics-3Dgame\\src\\main\\test.vert",
-                "C:\\Users\\Eric\\Documents\\NetBeansProjects\\\\ComputerGraphics-3Dgame\\src\\main\\test.frag");
+        shader = new Shader("src\\main\\test.vert", "src\\main\\test.frag");
 
-        //model = new SimpleColorModel(vertices, indices, colors);
-        model = Loader.loadObjModel("C:\\Users\\Eric\\Documents\\NetBeansProjects\\ComputerGraphics-3Dgame\\src\\resources\\bunnyplus.obj");
-        //model = new TexturedModel(vertices, indices, textureCoords);
+        model1 = Loader.loadObjModel("res\\bunnyplus.obj");
+        model1.setTexture("tex.jpg", shader);
+        model2 = Loader.loadObjModel("res\\bunnyplus.obj");
+        model2.setTexture("tex2.jpg", shader);
+        model2.setPosition(1, 0, 1);
     }
 
     long time = 0;
@@ -91,9 +92,8 @@ public class main
     public void update()
     {
         time = System.currentTimeMillis() % (1080 * 10);
-        rotationMatrix = Matrix4f.rotate(time / 10, 0, 1, 0);
         projectionMatrix = Matrix4f.frustum(-1f, 1f, -1f, 1f, 30.0f, 1.0f);
-        translationMatrix = Matrix4f.translate(0, 0, 0);
+        translationMatrix = Matrix4f.translate(0, 0, 0).multiply(Matrix4f.scale(0.2f, 0.2f, 0.2f));
     }
 
     void loop()
@@ -106,30 +106,25 @@ public class main
             glClear(GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
             shader.start();
+            
 
-            //add transformation matrices.
-            FloatBuffer rotation = BufferUtils.createFloatBuffer(16);
-            rotationMatrix.toBuffer(rotation);
-            glUniformMatrix4fv(glGetUniformLocation(shader.getProgramID(), "rotation"), false, rotation);
-
+            
+            //projection matrix
             FloatBuffer projection = BufferUtils.createFloatBuffer(16);
             projectionMatrix.toBuffer(projection);
             glUniformMatrix4fv(glGetUniformLocation(shader.getProgramID(), "projection"), false, projection);
 
-            FloatBuffer translation = BufferUtils.createFloatBuffer(16);
-            translationMatrix.toBuffer(translation);
-            glUniformMatrix4fv(glGetUniformLocation(shader.getProgramID(), "translation"), false, translation);
-
+            //world-to-view matrix
             FloatBuffer worldToView = BufferUtils.createFloatBuffer(16);
             camera.getWorldtoViewMatrix().toBuffer(worldToView);
             glUniformMatrix4fv(glGetUniformLocation(shader.getProgramID(), "worldToView"), false, worldToView);
 
             //render
-            model.activate();
+            
+            //glBindTexture(GL_TEXTURE_2D, tex);
 
-            GL11.glDrawElements(GL11.GL_TRIANGLES, model.getNrIndices(), GL11.GL_UNSIGNED_INT, 0);
-
-            model.deactivate();
+            model1.render(shader);
+            model2.render(shader);
 
             shader.stop();
 
@@ -160,6 +155,11 @@ public class main
 //            Matrix4f rotation = Matrix4f.rota
 //            camera.lookAt = camera.lookAt.;
 //        }
+
+        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        {
+            glfwSetWindowShouldClose(window, true);
+        }
     }
 
     public static void main(String[] args)

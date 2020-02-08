@@ -11,7 +11,6 @@ import util.Vector3f;
 
 public class Camera
 {
-
     Vector3f position;
     Vector3f lookAt;
     Vector3f upVector = new Vector3f(0, 1, 0);
@@ -24,7 +23,7 @@ public class Camera
     
     public void checkInput(long window)
     {
-        float speed = 0.01f;
+        float speed = 0.02f;
         if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
         {
             //forward
@@ -39,12 +38,12 @@ public class Camera
         } else if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
         {
             Vector3f direction = lookAt.subtract(position).cross(upVector);
-            Vector3f movement = direction.scale(-speed);
+            Vector3f movement = direction.scale(speed);
             move(movement);
         } else if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
         {
             Vector3f direction = lookAt.subtract(position).cross(upVector);
-            Vector3f movement = direction.scale(speed);
+            Vector3f movement = direction.scale(-speed);
             move(movement);
         }
     }

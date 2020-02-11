@@ -351,6 +351,35 @@ public class Matrix4f
 
     /**
      * Creates a perspective projection matrix. Similar to
+     * <code>glFrustum(left, right, bottom, top, near, far)</code>.
+     *
+     * @return Perspective matrix
+     */
+    public static Matrix4f frustum_new()
+    {
+        float near = 1f;
+        float far = 30.0f;
+        float right = 0.5f;
+        float left = -0.5f;
+        float top = 0.5f;
+        float bottom = -0.5f;
+
+        Matrix4f frustum = new Matrix4f();
+
+        frustum.m00 = (2.0f * near) / (right - left);
+        frustum.m02 = (right + left) / (right - left);
+        frustum.m11 = (2.0f * near) / (top - bottom);
+        frustum.m12 = (top + bottom) / (top - bottom);
+        frustum.m22 = -(far + near) / (far - near);
+        frustum.m23 = -(2.0f * far * near) / (far - near);
+        frustum.m32 = -1f;
+        frustum.m33 = 0f;
+
+        return frustum;
+    }
+
+    /**
+     * Creates a perspective projection matrix. Similar to
      * <code>gluPerspective(fovy, aspec, zNear, zFar)</code>.
      *
      * @param fovy Field of view angle in degrees
@@ -437,11 +466,11 @@ public class Matrix4f
 
         return rotation;
     }
-    
+
     /**
      * Creates a rotation matrix that rotates the specified angles around the
      * three base axis.
-     * 
+     *
      * @param xAngle
      * @param yAngle
      * @param zAngle
@@ -473,5 +502,22 @@ public class Matrix4f
         scaling.m22 = z;
 
         return scaling;
+    }
+
+    public static Matrix4f remove_translation(Matrix4f inMatrix)
+    {
+        inMatrix.m03 = 0;
+        inMatrix.m13 = 0;
+        inMatrix.m23 = 0;
+        return inMatrix;
+    }
+
+    public static void print(Matrix4f m)
+    {
+        System.out.println("----------------------------");
+        System.out.println(m.m00 + " " + m.m01 + " " + m.m02 + " " + m.m03);
+        System.out.println(m.m10 + " " + m.m11 + " " + m.m12 + " " + m.m13);
+        System.out.println(m.m20 + " " + m.m21 + " " + m.m22 + " " + m.m23);
+        System.out.println(m.m30 + " " + m.m31 + " " + m.m32 + " " + m.m33);
     }
 }

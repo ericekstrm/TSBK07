@@ -1,5 +1,6 @@
 package main;
 
+import util.Loader;
 import java.nio.*;
 import model.*;
 import org.lwjgl.BufferUtils;
@@ -11,7 +12,6 @@ import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.system.MemoryUtil.*;
 import shader.Shader;
-import util.Matrix4f;
 import util.Vector3f;
 
 public class main
@@ -24,12 +24,14 @@ public class main
 
     TexturedModel model1;
     TexturedModel model2;
-    
+    TexturedModel floor;
+    Skybox skybox;
+
     int tex;
 
     Shader shader;
 
-    Camera camera = new Camera(new Vector3f(5, -3, 5), new Vector3f(0, 0, 0));
+    Camera camera = new Camera(new Vector3f(2, 1, 2), new Vector3f(0, 0, 0));
 
     void initOpenGL()
     {
@@ -54,7 +56,7 @@ public class main
         glfwShowWindow(window);
 
         GL.createCapabilities();
-        glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glEnable(GL_DEPTH_TEST);
     }
 
@@ -66,34 +68,46 @@ public class main
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
 
-        // Delete the VAO and VBOs
         model1.destroy();
+        model2.destroy();
         glfwDestroyWindow(window);
         glfwTerminate();
     }
 
-    Matrix4f rotationMatrix;
-    Matrix4f projectionMatrix;
-    Matrix4f translationMatrix;
-
     public void initModel()
     {
-        shader = new Shader("src\\main\\test.vert", "src\\main\\test.frag");
+        shader = new Shader("test.vert", "test.frag");
 
         model1 = Loader.loadObjModel("res\\bunnyplus.obj");
         model1.setTexture("tex.jpg", shader);
+
         model2 = Loader.loadObjModel("res\\bunnyplus.obj");
         model2.setTexture("tex2.jpg", shader);
         model2.setPosition(1, 0, 1);
+
+        floor = Loader.loadObjModel("res\\flat.obj");
+        floor.setTexture("grass.jpg", shader);
+        floor.setPosition(0, -0.1f, 0);
+        floor.setScale(3, 1, 3);
+
+        String[] skyboxTextures
+                =
+                {
+                    "tex2.jpg",
+                    "tex2.jpg",
+                    "tex2.jpg",
+                    "tex2.jpg",
+                    "tex2.jpg",
+                    "tex2.jpg",
+                };
+        skybox = new Skybox(skyboxTextures);
     }
 
     long time = 0;
 
     public void update()
     {
-        time = System.currentTimeMillis() % (1080 * 10);
-        projectionMatrix = Matrix4f.frustum(-1f, 1f, -1f, 1f, 30.0f, 1.0f);
-        translationMatrix = Matrix4f.translate(0, 0, 0).multiply(Matrix4f.scale(0.2f, 0.2f, 0.2f));
+
     }
 
     void loop()
@@ -105,14 +119,11 @@ public class main
             //prepare
             glClear(GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
+            //draw skybox
+            skybox.prepareForRender(camera);
+            skybox.render(shader);
+            
             shader.start();
-            
-
-            
-            //projection matrix
-            FloatBuffer projection = BufferUtils.createFloatBuffer(16);
-            projectionMatrix.toBuffer(projection);
-            glUniformMatrix4fv(glGetUniformLocation(shader.getProgramID(), "projection"), false, projection);
 
             //world-to-view matrix
             FloatBuffer worldToView = BufferUtils.createFloatBuffer(16);
@@ -120,11 +131,9 @@ public class main
             glUniformMatrix4fv(glGetUniformLocation(shader.getProgramID(), "worldToView"), false, worldToView);
 
             //render
-            
-            //glBindTexture(GL_TEXTURE_2D, tex);
-
             model1.render(shader);
             model2.render(shader);
+            floor.render(shader);
 
             shader.stop();
 
@@ -143,18 +152,6 @@ public class main
     public void checkInput()
     {
         camera.checkInput(window);
-
-//        DoubleBuffer xpos = null;
-//        DoubleBuffer ypos = null;
-//        glfwGetCursorPos(window, xpos, ypos);
-//        
-//        if  (prevXpos != null && prevYpos != null)
-//        {
-//            int diffX = xpos.compareTo(prevXpos);
-//            int diffY = ypos.compareTo(prevYpos);
-//            Matrix4f rotation = Matrix4f.rota
-//            camera.lookAt = camera.lookAt.;
-//        }
 
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         {

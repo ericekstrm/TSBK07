@@ -11,6 +11,7 @@ import util.Vector3f;
 
 public class Camera
 {
+
     Vector3f position;
     Vector3f lookAt;
     Vector3f upVector = new Vector3f(0, 1, 0);
@@ -20,7 +21,7 @@ public class Camera
         this.position = position;
         this.lookAt = lookAt;
     }
-    
+
     public void checkInput(long window)
     {
         float speed = 0.02f;
@@ -30,20 +31,23 @@ public class Camera
             Vector3f direction = lookAt.subtract(position);
             Vector3f movement = direction.scale(speed);
             move(movement);
-        } else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+        }
+        if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
         {
             Vector3f direction = lookAt.subtract(position);
             Vector3f movement = direction.scale(-speed);
             move(movement);
-        } else if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
-        {
-            Vector3f direction = lookAt.subtract(position).cross(upVector);
-            Vector3f movement = direction.scale(speed);
-            move(movement);
-        } else if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+        }
+        if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
         {
             Vector3f direction = lookAt.subtract(position).cross(upVector);
             Vector3f movement = direction.scale(-speed);
+            move(movement);
+        }
+        if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+        {
+            Vector3f direction = lookAt.subtract(position).cross(upVector);
+            Vector3f movement = direction.scale(speed);
             move(movement);
         }
     }
@@ -54,9 +58,9 @@ public class Camera
     }
 
     /**
-     * Calculates the World-to-View matrix according to the 
-     * steps on page 53 in "Polygons feel no Pain".
-     * 
+     * Calculates the World-to-View matrix according to the steps on page 53 in
+     * "Polygons feel no Pain".
+     *
      * @return
      */
     public Matrix4f getWorldtoViewMatrix()
@@ -71,7 +75,7 @@ public class Camera
                 n.x, n.y, n.z, 0,
                 0, 0, 0, 1);
         Matrix4f translation = Matrix4f.translate(-position.x, -position.y, -position.z);
-        
+
         return rotation.multiply(translation);
     }
 }

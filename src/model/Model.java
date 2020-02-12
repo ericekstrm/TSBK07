@@ -1,39 +1,74 @@
 package model;
 
+import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.glBindTexture;
 import org.lwjgl.opengl.GL20;
+import static org.lwjgl.opengl.GL20.glGetUniformLocation;
+import static org.lwjgl.opengl.GL20.glUniform1i;
+import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
 import org.lwjgl.opengl.GL30;
 import shader.Shader;
+import util.Matrix4f;
 
-public class Model
+public class Model extends Movable
 {
-    int vaoID;
+
+    List<Integer> textureIDs = new ArrayList<>();
+    List<Integer> activeVAOs = new ArrayList<>();
     List<Integer> activeVBOs = new ArrayList<>();
-    List<Integer> activeAttribs = new ArrayList<>();
     int nrIndices = 0;
 
-    public Model()
+    public Model(Shader shader, RawData... datas)
     {
-        vaoID = GL30.glGenVertexArrays();
-        GL30.glBindVertexArray(vaoID);
+        for (RawData data : datas)
+        {
+            int vaoID = GL30.glGenVertexArrays();
+            GL30.glBindVertexArray(vaoID);
+            activeVAOs.add(vaoID);
+
+            setVBOs(data);
+
+            //texture binding
+            glBindTexture(GL_TEXTURE_2D, data.textureID);
+            glUniform1i(glGetUniformLocation(shader.getProgramID(), "texUnit"), 0);
+            textureIDs.add(data.textureID);
+        }
+    }
+
+    private void setVBOs(RawData data)
+    {
+        activeVBOs.add(ModelLoader.loadVertexVBO(Shader.POS_ATTRIB, data.vertices));
+
+        activeVBOs.add(ModelLoader.loadIndicesVBO(data.indices));
+        nrIndices = data.indices.length;
+
+        activeVBOs.add(ModelLoader.loadTextureVBO(Shader.TEX_ATTRIB, data.textureCoords));
+
+        GL30.glBindVertexArray(0);
     }
 
     public void render(Shader shader)
     {
-        activate();
-        GL11.glDrawElements(GL11.GL_TRIANGLES, nrIndices, GL11.GL_UNSIGNED_INT, 0);
-        deactivate();
-    }
-
-    public void activate()
-    {
-        GL30.glBindVertexArray(vaoID);
-
-        for (int attrib : activeAttribs)
+        for (int i = 0; i < activeVAOs.size(); i++)
         {
-            GL20.glEnableVertexAttribArray(attrib);
+            GL30.glBindVertexArray(activeVAOs.get(i));
+            GL20.glEnableVertexAttribArray(Shader.POS_ATTRIB);
+            GL20.glEnableVertexAttribArray(Shader.TEX_ATTRIB);
+
+            //bind current model-to-world transformation
+            FloatBuffer translation = BufferUtils.createFloatBuffer(16);
+            getModelToViewMatrix().toBuffer(translation);
+            glUniformMatrix4fv(glGetUniformLocation(shader.getProgramID(), "modelToWorld"), false, translation);
+
+            //draw!
+            glBindTexture(GL_TEXTURE_2D, textureIDs.get(i));
+            GL11.glDrawElements(GL11.GL_TRIANGLES, nrIndices, GL11.GL_UNSIGNED_INT, 0);
+            deactivate();
         }
     }
 
@@ -41,10 +76,8 @@ public class Model
     {
         GL30.glBindVertexArray(0);
 
-        for (int attrib : activeAttribs)
-        {
-            GL20.glDisableVertexAttribArray(attrib);
-        }
+        GL20.glDisableVertexAttribArray(Shader.POS_ATTRIB);
+        GL20.glDisableVertexAttribArray(Shader.TEX_ATTRIB);
     }
 
     public void destroy()
@@ -54,17 +87,12 @@ public class Model
         {
             GL20.glDeleteBuffers(vbo);
         }
+        for (int vao : activeVAOs)
+        {
 
-        GL30.glDeleteVertexArrays(vaoID);
-    }
+            GL30.glDeleteVertexArrays(vao);
+        }
 
-    public int getVaoID()
-    {
-        return vaoID;
-    }
-
-    public int getNrIndices()
-    {
-        return nrIndices;
+        //TODO: remove textures
     }
 }

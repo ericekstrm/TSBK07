@@ -9,7 +9,7 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import model.TexturedModel;
+import model.*;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.stb.STBImage;
@@ -17,9 +17,10 @@ import org.lwjgl.system.MemoryStack;
 
 public class Loader
 {
+
     private static HashMap<String, Integer> textureIdMap = new HashMap<>();
 
-    public static TexturedModel loadObjModel(String filename)
+    public static RawData loadRawData(String filename, String textureFileName)
     {
         BufferedReader br = null;
         try
@@ -78,7 +79,7 @@ public class Loader
 
             textureArray = new float[vertices.size() * 2];
             normalsArray = new float[normals.size() * 3];
-
+ 
             while (line != null)
             {
                 if (!line.startsWith("f "))
@@ -119,15 +120,18 @@ public class Loader
             indicesArray[i] = indices.get(i);
         }
 
-        TexturedModel model = new TexturedModel(verticesArray, indicesArray, textureArray);
-        //model.loadNormalVBO(normalsArray);
+        RawData data = new RawData(verticesArray, textureArray, indicesArray, loadTexture(textureFileName));
 
-        return model;
+        return data;
     }
 
     private static void processVertex(String[] vertexData, List<Integer> indices, List<Vector2f> textures, List<Vector3f> normals, float[] textureArray, float[] normalsArray)
     {
         int currentvertexPointer = Integer.parseInt(vertexData[0]) - 1;
+
+        System.out.println(currentvertexPointer);
+        System.out.println(normalsArray.length);
+
         indices.add(currentvertexPointer);
 
         Vector2f currentTex = textures.get(Integer.parseInt(vertexData[1]) - 1);
@@ -171,7 +175,7 @@ public class Loader
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, id);
 
             GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, width, height, 0,
-                    GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer);
+                              GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer);
 
             GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
             STBImage.stbi_image_free(buffer);

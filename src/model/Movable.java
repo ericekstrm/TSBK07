@@ -2,7 +2,7 @@ package model;
 
 import util.Matrix4f;
 
-public class MovableModel extends Model
+public class Movable
 {
 
     float x = 0, y = 0, z;
@@ -36,6 +36,6 @@ public class MovableModel extends Model
         Matrix4f scale = Matrix4f.scale(scaleX, scaleY, scaleZ);
         Matrix4f translate = Matrix4f.translate(x, y, z);
 
-        return scale.multiply(rotate).multiply(translate);
+        return translate.multiply(rotate).multiply(scale);
     }
 }

@@ -19,15 +19,19 @@ import util.Matrix4f;
 
 public class Skybox extends Model
 {
-
     int texID;
     Shader shader;
+
+    public Skybox(Shader shader, RawData... datas)
+    {
+        super(shader, datas);
+    }
 
     /**
      *
      * @param texture
      */
-    public Skybox(String[] texture)
+    /*public Skybox(String[] texture)
     {
         activeVBOs.add(ModelLoader.loadVertexVBO(Shader.POS_ATTRIB, skyboxVertices));
         activeAttribs.add(Shader.POS_ATTRIB);
@@ -36,12 +40,12 @@ public class Skybox extends Model
 
         shader = new Shader("skybox.vert", "skybox.frag");
         loadTexture(texture);
-    }
+    }*/
 
     @Override
     public void render(Shader shader)
     {
-        activate();
+        //activate();
         GL11.glDisable(GL11.GL_DEPTH_TEST);
 
         GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, texID);

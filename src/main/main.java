@@ -22,9 +22,10 @@ public class main
 
     long window;
 
-    TexturedModel model1;
-    TexturedModel model2;
-    TexturedModel floor;
+    Model model1;
+    Model model2;
+    Model floor;
+    Model tree;
     Skybox skybox;
 
     int tex;
@@ -70,6 +71,7 @@ public class main
 
         model1.destroy();
         model2.destroy();
+        tree.destroy();
         glfwDestroyWindow(window);
         glfwTerminate();
     }
@@ -78,15 +80,16 @@ public class main
     {
         shader = new Shader("test.vert", "test.frag");
 
-        model1 = Loader.loadObjModel("res\\bunnyplus.obj");
-        model1.setTexture("tex.jpg", shader);
+        model1 = new Model(shader, Loader.loadRawData("res\\bunnyplus.obj", "grass.jpg"));
 
-        model2 = Loader.loadObjModel("res\\bunnyplus.obj");
-        model2.setTexture("tex2.jpg", shader);
+        model2 = new Model(shader, Loader.loadRawData("res\\bunnyplus.obj", "tex2.jpg"));
         model2.setPosition(1, 0, 1);
 
-        floor = Loader.loadObjModel("res\\flat.obj");
-        floor.setTexture("grass.jpg", shader);
+        tree = new Model(shader, Loader.loadRawData("res\\tree.obj", "green.jpg"));
+        tree.setPosition(2, 0, 2);
+        tree.setScale(0.1f, 0.1f, 0.1f);
+
+        floor = new Model(shader, Loader.loadRawData("res\\flat.obj", "grass.jpg"));
         floor.setPosition(0, -0.1f, 0);
         floor.setScale(3, 1, 3);
 
@@ -100,14 +103,15 @@ public class main
                     "tex2.jpg",
                     "tex2.jpg",
                 };
-        skybox = new Skybox(skyboxTextures);
+        //skybox = new Skybox(skyboxTextures);
     }
 
     long time = 0;
 
     public void update()
     {
-
+        time = System.currentTimeMillis() % 36000;
+        model1.setRotation(0, time/10, 0);
     }
 
     void loop()
@@ -120,9 +124,9 @@ public class main
             glClear(GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
             //draw skybox
-            skybox.prepareForRender(camera);
-            skybox.render(shader);
-            
+            //skybox.prepareForRender(camera);
+            //skybox.render(shader);
+
             shader.start();
 
             //world-to-view matrix
@@ -133,6 +137,7 @@ public class main
             //render
             model1.render(shader);
             model2.render(shader);
+            tree.render(shader);
             floor.render(shader);
 
             shader.stop();

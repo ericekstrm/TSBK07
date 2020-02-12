@@ -169,5 +169,4 @@ public class Vector3f {
         buffer.put(x).put(y).put(z);
         buffer.flip();
     }
-
 }

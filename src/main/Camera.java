@@ -13,13 +13,13 @@ public class Camera
 {
 
     Vector3f position;
-    Vector3f lookAt;
+    Vector3f direction;
     Vector3f upVector = new Vector3f(0, 1, 0);
 
     public Camera(Vector3f position, Vector3f lookAt)
     {
         this.position = position;
-        this.lookAt = lookAt;
+        this.direction = lookAt.subtract(position).normalize();
     }
 
     public void checkInput(long window)
@@ -28,25 +28,23 @@ public class Camera
         if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
         {
             //forward
-            Vector3f direction = lookAt.subtract(position);
             Vector3f movement = direction.scale(speed);
             move(movement);
         }
         if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
         {
-            Vector3f direction = lookAt.subtract(position);
             Vector3f movement = direction.scale(-speed);
             move(movement);
         }
         if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
         {
-            Vector3f direction = lookAt.subtract(position).cross(upVector);
+            Vector3f direction = this.direction.cross(upVector);
             Vector3f movement = direction.scale(-speed);
             move(movement);
         }
         if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
         {
-            Vector3f direction = lookAt.subtract(position).cross(upVector);
+            Vector3f direction = this.direction.cross(upVector);
             Vector3f movement = direction.scale(speed);
             move(movement);
         }
@@ -65,7 +63,7 @@ public class Camera
      */
     public Matrix4f getWorldtoViewMatrix()
     {
-        Vector3f n = position.subtract(lookAt).normalize();
+        Vector3f n = direction.scale(-1);
         Vector3f u = upVector.cross(n);
         Vector3f v = n.cross(u);
 

@@ -17,8 +17,8 @@ import util.Vector3f;
 public class main
 {
 
-    public static final int WIDTH = 600;
-    public static final int HEIGHT = 600;
+    public static final int WIDTH = 800;
+    public static final int HEIGHT = 800;
 
     long window;
 
@@ -130,7 +130,7 @@ public class main
 
     Vector3f[] lightSourcesDirectionsPositions =
     {
-        new Vector3f(10.0f, 5.0f, 0.0f), // Red light, positional
+        new Vector3f(5.0f, 5.0f, 0.0f), // Red light, positional
         new Vector3f(0.0f, 5.0f, 10.0f), // Green light, positional
         new Vector3f(-1.0f, 0.0f, 0.0f), // Blue light along X
         new Vector3f(0.0f, 0.0f, -1.0f)  // White light along Z

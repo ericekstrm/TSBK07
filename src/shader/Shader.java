@@ -18,6 +18,7 @@ public class Shader
 
     public static final int POS_ATTRIB = 0;
     public static final int TEX_ATTRIB = 1;
+    public static final int NORMAL_ATTRIB = 2;
 
     Matrix4f projectionMatrix = Matrix4f.frustum_new();
 
@@ -61,6 +62,7 @@ public class Shader
     {
         bindAttribute(POS_ATTRIB, "in_Position");
         bindAttribute(TEX_ATTRIB, "in_Texture");
+        bindAttribute(NORMAL_ATTRIB, "in_Normal");
     }
 
     protected void bindAttribute(int attribute, String variableName)

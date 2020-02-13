@@ -48,7 +48,7 @@ public class Model extends Movable
 
         activeVBOs.add(ModelLoader.loadTextureVBO(Shader.TEX_ATTRIB, data.textureCoords));
         
-        //activeVBOs.add(ModelLoader.loadNormalsVBO(Shader.NORMAL_ATTRIB, data.))
+        activeVBOs.add(ModelLoader.loadNormalsVBO(Shader.NORMAL_ATTRIB, data.normals));
 
         GL30.glBindVertexArray(0);
     }
@@ -60,6 +60,7 @@ public class Model extends Movable
             GL30.glBindVertexArray(activeVAOs.get(i));
             GL20.glEnableVertexAttribArray(Shader.POS_ATTRIB);
             GL20.glEnableVertexAttribArray(Shader.TEX_ATTRIB);
+            GL20.glEnableVertexAttribArray(Shader.NORMAL_ATTRIB);
 
             //bind current model-to-world transformation
             FloatBuffer translation = BufferUtils.createFloatBuffer(16);
@@ -79,6 +80,7 @@ public class Model extends Movable
 
         GL20.glDisableVertexAttribArray(Shader.POS_ATTRIB);
         GL20.glDisableVertexAttribArray(Shader.TEX_ATTRIB);
+        GL20.glDisableVertexAttribArray(Shader.NORMAL_ATTRIB);
     }
 
     public void destroy()

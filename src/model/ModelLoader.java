@@ -8,8 +8,8 @@ import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 
 public class ModelLoader {
-    static int loadVertexVBO(int attribIndex, float[] vertices)
-    {
+
+    static int loadVertexVBO(int attribIndex, float[] vertices) {
         int vertexVBO = GL15.glGenBuffers();
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vertexVBO);
         FloatBuffer vertexBuffer = createFloatBuffer(vertices);
@@ -19,8 +19,7 @@ public class ModelLoader {
         return vertexVBO;
     }
 
-    static int loadIndicesVBO(int[] indices)
-    {
+    static int loadIndicesVBO(int[] indices) {
         int indexVBO = GL15.glGenBuffers();
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, indexVBO);
         IntBuffer indexBuffer = createIntBuffer(indices);
@@ -28,8 +27,7 @@ public class ModelLoader {
         return indexVBO;
     }
 
-    static int loadColorVBO(int attribIndex, float[] colors)
-    {
+    static int loadColorVBO(int attribIndex, float[] colors) {
         int colorVBO = GL15.glGenBuffers();
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, colorVBO);
         FloatBuffer colorBuffer = createFloatBuffer(colors);
@@ -39,8 +37,7 @@ public class ModelLoader {
         return colorVBO;
     }
 
-    static int loadTextureVBO(int attribIndex, float[] colors) 
-    {
+    static int loadTextureVBO(int attribIndex, float[] colors) {
         int textureVBO = GL15.glGenBuffers();
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, textureVBO);
         FloatBuffer colorBuffer = createFloatBuffer(colors);
@@ -50,16 +47,24 @@ public class ModelLoader {
         return textureVBO;
     }
 
-    static FloatBuffer createFloatBuffer(float[] data)
-    {
+    static int loadNormalsVBO(int attribIndex, float[] normals) {
+        int normalsVBO = GL15.glGenBuffers();
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, normalsVBO);
+        FloatBuffer normalBuffer = createFloatBuffer(normals);
+        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, normalBuffer, GL15.GL_STATIC_DRAW);
+        GL20.glVertexAttribPointer(attribIndex, 3, GL_FLOAT, false, 0, 0);
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+        return normalsVBO;
+    }
+
+    static FloatBuffer createFloatBuffer(float[] data) {
         FloatBuffer buffer = BufferUtils.createFloatBuffer(data.length);
         buffer.put(data);
         buffer.flip();
         return buffer;
     }
 
-    static IntBuffer createIntBuffer(int[] data)
-    {
+    static IntBuffer createIntBuffer(int[] data) {
         IntBuffer buffer = BufferUtils.createIntBuffer(data.length);
         buffer.put(data);
         buffer.flip();

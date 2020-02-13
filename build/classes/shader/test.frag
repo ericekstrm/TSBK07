@@ -2,6 +2,7 @@
 
 //in vec4 color;
 in vec2 texCoord;
+in vec3 normal;
 
 uniform sampler2D texUnit;
 
@@ -20,7 +21,8 @@ void main()
     vec3 ambientLight = 0.1 * lightSourcesColorArr[0];
 
     //diffuse lighting
-    
+    vec3 lightdir = vec3(0.58, 0.58, 0.58); //temporary
+    vec3 diffuseLight = lightdir * normal;
 
-    outColor = 0.1 * texture(texUnit, texCoord) + vec4(ambientLight,1);
+    outColor = 0.1 * texture(texUnit, texCoord) + vec4(ambientLight,1) + vec4(diffuseLight, 1) * 0.5;
 }

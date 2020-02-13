@@ -15,5 +15,12 @@ out vec4 outColor;
 
 void main()
 {
-    outColor = texture(texUnit, texCoord) + 0.5*vec4(lightSourcesColorArr[0], 1);
+    //set the ambient light as the sum of the light from all lightsources (for now just one)
+    //with RGB components
+    vec3 ambientLight = 0.1 * lightSourcesColorArr[0];
+
+    //diffuse lighting
+    
+
+    outColor = 0.1 * texture(texUnit, texCoord) + vec4(ambientLight,1);
 }

@@ -3,14 +3,9 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Eric/Documents/NetBeansProjects/ComputerGraphics-3Dgame/src/model/Skybox.java</file>
-            <file>file:/C:/Users/Eric/Documents/NetBeansProjects/ComputerGraphics-3Dgame/src/model/Model.java</file>
-            <file>file:/C:/Users/Eric/Documents/NetBeansProjects/ComputerGraphics-3Dgame/src/main/main.java</file>
-            <file>file:/C:/Users/Eric/Documents/NetBeansProjects/ComputerGraphics-3Dgame/src/shader/test.frag</file>
-            <file>file:/C:/Users/Eric/Documents/NetBeansProjects/ComputerGraphics-3Dgame/src/model/Movable.java</file>
-            <file>file:/C:/Users/Eric/Documents/NetBeansProjects/ComputerGraphics-3Dgame/src/util/Loader.java</file>
-            <file>file:/C:/Users/Eric/Documents/NetBeansProjects/ComputerGraphics-3Dgame/src/shader/test.vert</file>
-            <file>file:/C:/Users/Eric/Documents/NetBeansProjects/ComputerGraphics-3Dgame/src/util/Matrix4f.java</file>
+            <file>file:/C:/Users/Eric/Documents/Programming/ComputerGraphics-3Dgame/src/shader/test.frag</file>
+            <file>file:/C:/Users/Eric/Documents/Programming/ComputerGraphics-3Dgame/src/shader/test.vert</file>
+            <file>file:/C:/Users/Eric/Documents/Programming/ComputerGraphics-3Dgame/src/model/Model.java</file>
         </group>
     </open-files>
 </project-private>

@@ -13,7 +13,6 @@ import static org.lwjgl.opengl.GL20.glUniform1i;
 import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
 import org.lwjgl.opengl.GL30;
 import shader.Shader;
-import util.Matrix4f;
 
 public class Model extends Movable
 {
@@ -48,6 +47,8 @@ public class Model extends Movable
         nrIndices = data.indices.length;
 
         activeVBOs.add(ModelLoader.loadTextureVBO(Shader.TEX_ATTRIB, data.textureCoords));
+        
+        //activeVBOs.add(ModelLoader.loadNormalsVBO(Shader.NORMAL_ATTRIB, data.))
 
         GL30.glBindVertexArray(0);
     }

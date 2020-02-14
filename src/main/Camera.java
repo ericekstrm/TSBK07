@@ -24,7 +24,7 @@ public class Camera
 
     public void checkInput(long window)
     {
-        float speed = 0.1f;
+        float speed = 0.02f;
         if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
         {
             //forward

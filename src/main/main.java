@@ -86,7 +86,7 @@ public class main
         model2.setPosition(3, 3, 0);
 
         tree = new Model(shader, Loader.loadRawData("res\\tree.obj", "green.jpg"));
-        tree.setPosition(2, 0, 2);
+        tree.setPosition(-2, 0, -2);
         tree.setScale(0.1f, 0.1f, 0.1f);
 
         floor = new Model(shader, Loader.loadRawData("res\\flat.obj", "grass.jpg"));

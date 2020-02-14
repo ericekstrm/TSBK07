@@ -1,9 +1,8 @@
 #version 400 core
 
-//in vec4 color;
 in vec2 texCoord;
 in vec3 normal;
-in vec3 lightDirection;
+in vec3 fragPos;
 
 uniform sampler2D texUnit;
 
@@ -17,14 +16,31 @@ out vec4 outColor;
 
 void main()
 {
-    //set the ambient light as the sum of the light from all lightsources (just one for now)
-    //with RGB components times a constant.
-    vec3 ambientLight = 0.1 * lightSourcesColorArr[3];
-    //vec3 ambientLight = vec3(0,0,0);
+    float ambientStrength = 0.1;
+    vec3 ambientLight = ambientStrength * lightSourcesColorArr[3];
+    
+    vec3 diffuseLight;
+    for(int i = 0; i < 4; i++)
+    {
+        vec3 lightDir;
+        if (isDirectional[i])
+        {
+            lightDir = lightSourcesDirPosArr[i];
+        } else 
+        {
+           lightDir = normalize(lightSourcesDirPosArr[i] - fragPos);
+        }
+        float diff = max(0.0, dot(normalize(normal), lightDir));
+        diffuseLight += diff * lightSourcesColorArr[i];
+    }
 
-    //diffuse lighting
-    vec3 diffuseLight = lightSourcesColorArr[0] * dot(normalize(lightDirection), normalize(normal));
-    //vec3 diffuseLight = vec3(0,0,0);
+    vec3 result = (ambientLight + diffuseLight) * texture(texUnit, texCoord);
+    outColor = vec4(result, 0.1);
 
-    outColor = texture(texUnit, texCoord) * (vec4(diffuseLight, 1) + vec4(ambientLight,1));
+    //vec3 diffuseLight = lightSourcesColorArr[0] * dot(normalize(lightDirection), normalize(normal));
+    //outColor = texture(texUnit, texCoord) * (vec4(diffuseLight, 1) + vec4(ambientLight,1));
 }
+
+
+
+

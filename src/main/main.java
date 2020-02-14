@@ -80,10 +80,10 @@ public class main
     {
         shader = new Shader("test.vert", "test.frag");
 
-        model1 = new Model(shader, Loader.loadRawData("res\\bunnyplus.obj", "grass.jpg"));
+        model1 = new Model(shader, Loader.loadRawData("res\\bunnyplus.obj", "tex2.jpg"));
 
-        model2 = new Model(shader, Loader.loadRawData("res\\bunnyplus.obj", "tex2.jpg"));
-        model2.setPosition(1, 0, 1);
+        model2 = new Model(shader, Loader.loadRawData("res\\bunnyplus.obj", "tex.jpg"));
+        model2.setPosition(3, 3, 0);
 
         tree = new Model(shader, Loader.loadRawData("res\\tree.obj", "green.jpg"));
         tree.setPosition(2, 0, 2);
@@ -130,7 +130,7 @@ public class main
 
     Vector3f[] lightSourcesDirectionsPositions =
     {
-        new Vector3f(5.0f, 5.0f, 0.0f), // Red light, positional
+        new Vector3f(3.0f, 3.0f, 0.0f), // Red light, positional
         new Vector3f(0.0f, 5.0f, 10.0f), // Green light, positional
         new Vector3f(-1.0f, 0.0f, 0.0f), // Blue light along X
         new Vector3f(0.0f, 0.0f, -1.0f)  // White light along Z

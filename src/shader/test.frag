@@ -19,11 +19,12 @@ void main()
 {
     //set the ambient light as the sum of the light from all lightsources (just one for now)
     //with RGB components times a constant.
-    vec3 ambientLight = 0.1 * lightSourcesColorArr[0];
+    vec3 ambientLight = 0.1 * lightSourcesColorArr[3];
+    //vec3 ambientLight = vec3(0,0,0);
 
     //diffuse lighting
-    vec3 lightdir =  normalize(lightDirection);
-    vec3 diffuseLight = lightdir * normalize(normal);
+    vec3 diffuseLight = lightSourcesColorArr[0] * dot(normalize(lightDirection), normalize(normal));
+    //vec3 diffuseLight = vec3(0,0,0);
 
-    outColor = 0.1 * texture(texUnit, texCoord) + vec4(ambientLight,1) + vec4(diffuseLight, 1) * 0.5;
+    outColor = texture(texUnit, texCoord) * (vec4(diffuseLight, 1) + vec4(ambientLight,1));
 }

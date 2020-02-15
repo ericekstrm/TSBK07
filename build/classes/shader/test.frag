@@ -34,13 +34,9 @@ void main()
         diffuseLight += diff * lightSourcesColorArr[i];
     }
 
-    vec3 result = (ambientLight + diffuseLight) * texture(texUnit, texCoord);
+    vec3 result = (ambientLight + diffuseLight) * vec3(texture(texUnit, texCoord));
     outColor = vec4(result, 0.1);
 
     //vec3 diffuseLight = lightSourcesColorArr[0] * dot(normalize(lightDirection), normalize(normal));
     //outColor = texture(texUnit, texCoord) * (vec4(diffuseLight, 1) + vec4(ambientLight,1));
 }
-
-
-
-

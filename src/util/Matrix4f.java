@@ -203,6 +203,21 @@ public class Matrix4f
         float w = this.m30 * vector.x + this.m31 * vector.y + this.m32 * vector.z + this.m33 * vector.w;
         return new Vector4f(x, y, z, w);
     }
+    
+    /**
+     * Multiplies this matrix to a vector.
+     *
+     * @param vector The vector
+     *
+     * @return Vector product of this * other
+     */
+    public Vector3f multiply(Vector3f vector)
+    {
+        float x = this.m00 * vector.x + this.m01 * vector.y + this.m02 * vector.z;
+        float y = this.m10 * vector.x + this.m11 * vector.y + this.m12 * vector.z;
+        float z = this.m20 * vector.x + this.m21 * vector.y + this.m22 * vector.z;
+        return new Vector3f(x, y, z);
+    }
 
     /**
      * Multiplies this matrix to another matrix.

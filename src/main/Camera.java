@@ -1,11 +1,10 @@
 package main;
 
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_DOWN;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_LEFT;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_RIGHT;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_UP;
-import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
-import static org.lwjgl.glfw.GLFW.glfwGetKey;
+import java.nio.DoubleBuffer;
+import org.lwjgl.BufferUtils;
+import static org.lwjgl.glfw.GLFW.*;
+import org.lwjgl.system.MemoryStack;
+import static org.lwjgl.system.MemoryStack.stackPush;
 import util.Matrix4f;
 import util.Vector3f;
 
@@ -22,9 +21,26 @@ public class Camera
         this.direction = lookAt.subtract(position).normalize();
     }
 
+    double prevX = 200;
+    double prevY = 200;
+
     public void checkInput(long window)
     {
-        float speed = 0.02f;
+
+        DoubleBuffer xBuffer = BufferUtils.createDoubleBuffer(1);
+        DoubleBuffer yBuffer = BufferUtils.createDoubleBuffer(1);
+        glfwGetCursorPos(window, xBuffer, yBuffer);
+        double x = (float) xBuffer.get(0);
+        double y = yBuffer.get(0);
+
+        direction = Matrix4f.rotate(0, (float) (prevX - x)/10, 0).multiply(direction);
+
+        //prevX = x;
+        //prevY = y;
+        System.out.println("Mouse Pos: " + x + ", " + y);
+        glfwSetCursorPos(window, 200, 200);
+
+        float speed = 0.1f;
         if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
         {
             //forward

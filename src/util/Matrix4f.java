@@ -481,6 +481,11 @@ public class Matrix4f
 
         return rotation;
     }
+    
+    public static Matrix4f rotate(float angle, Vector3f direction)
+    {
+        return rotate(angle, direction.x, direction.y, direction.z);
+    }
 
     /**
      * Creates a rotation matrix that rotates the specified angles around the

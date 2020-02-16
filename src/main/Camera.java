@@ -3,8 +3,6 @@ package main;
 import java.nio.DoubleBuffer;
 import org.lwjgl.BufferUtils;
 import static org.lwjgl.glfw.GLFW.*;
-import org.lwjgl.system.MemoryStack;
-import static org.lwjgl.system.MemoryStack.stackPush;
 import util.Matrix4f;
 import util.Vector3f;
 
@@ -33,7 +31,15 @@ public class Camera
         double x = (float) xBuffer.get(0);
         double y = yBuffer.get(0);
 
-        direction = Matrix4f.rotate(0, (float) (prevX - x)/10, 0).multiply(direction);
+        direction = Matrix4f.rotate(0, (float) (prevX - x) / 10, 0).multiply(direction);
+        Vector3f dir = direction.cross(upVector);
+        direction = Matrix4f.rotate((float) (prevY - y) / 10, dir).multiply(direction);
+        System.out.println(upVector.dot(direction));
+        
+        if (Math.abs(upVector.dot(direction)) > 0.7f)
+        {
+            direction = Matrix4f.rotate((float) (y - prevY) / 10, dir).multiply(direction);
+        }
 
         //prevX = x;
         //prevY = y;

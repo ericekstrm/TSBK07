@@ -31,7 +31,7 @@ public class main
     Model tree;
     Skybox skybox;
     List<Light> pointLights = new ArrayList<>();
-    
+
     int tex;
 
     Shader shader;
@@ -130,7 +130,7 @@ public class main
         windmill.update();
         time = System.currentTimeMillis() % 36000;
         model1.setRotation(0, time / 10, 0);
-        
+
         pointLights.get(0).setPosition(Matrix4f.rotate(0, 2, 0).multiply(pointLights.get(0).getPosition()));
     }
 
@@ -163,12 +163,12 @@ public class main
 
             //draw skybox
             skyboxShader.start();
-            
+
             skybox.prepareForRender(camera, skyboxShader);
             skybox.render(shader);
-            
+
             skyboxShader.stop();
-            
+
             //draw lights
             lightShader.start();
 
@@ -176,7 +176,7 @@ public class main
             FloatBuffer worldToView = BufferUtils.createFloatBuffer(16);
             camera.getWorldtoViewMatrix().toBuffer(worldToView);
             glUniformMatrix4fv(glGetUniformLocation(lightShader.getProgramID(), "worldToView"), false, worldToView);
-            
+
             for (Light light : pointLights)
             {
                 light.render(lightShader);
@@ -185,10 +185,10 @@ public class main
 
             shader.start();
             loadLights();
-            
+
             FloatBuffer viewPos = BufferUtils.createFloatBuffer(3);
             camera.getPosition().toBuffer(viewPos);
-            glUniformMatrix3fv(glGetUniformLocation(shader.getProgramID(), "viewPos"), false, viewPos);
+            glUniform3fv(glGetUniformLocation(shader.getProgramID(), "viewPos"), viewPos);
 
             //world-to-view matrix
             glUniformMatrix4fv(glGetUniformLocation(shader.getProgramID(), "worldToView"), false, worldToView);
@@ -268,9 +268,9 @@ public class main
 
     public static void main(String[] args)
     {
-    	System.out.println("Working Directory = " +
-                System.getProperty("user.dir"));
-    	
+        System.out.println("Working Directory = "
+                + System.getProperty("user.dir"));
+
         main m = new main();
         m.initOpenGL();
         m.initModel();

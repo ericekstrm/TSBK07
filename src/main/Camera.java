@@ -24,7 +24,6 @@ public class Camera
 
     public void checkInput(long window)
     {
-
         DoubleBuffer xBuffer = BufferUtils.createDoubleBuffer(1);
         DoubleBuffer yBuffer = BufferUtils.createDoubleBuffer(1);
         glfwGetCursorPos(window, xBuffer, yBuffer);
@@ -34,17 +33,12 @@ public class Camera
         direction = Matrix4f.rotate(0, (float) (prevX - x) / 10, 0).multiply(direction);
         Vector3f dir = direction.cross(upVector);
         direction = Matrix4f.rotate((float) (prevY - y) / 10, dir).multiply(direction);
-        System.out.println(upVector.dot(direction));
-        
+
         if (Math.abs(upVector.dot(direction)) > 0.7f)
         {
             direction = Matrix4f.rotate((float) (y - prevY) / 10, dir).multiply(direction);
         }
-
-        //prevX = x;
-        //prevY = y;
-        System.out.println("Mouse Pos: " + x + ", " + y);
-        glfwSetCursorPos(window, 200, 200);
+        glfwSetCursorPos(window, prevX, prevY);
 
         float speed = 0.1f;
         if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)

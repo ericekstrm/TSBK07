@@ -13,6 +13,7 @@ import static org.lwjgl.opengl.GL20.glUniform1i;
 import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
 import org.lwjgl.opengl.GL30;
 import shader.Shader;
+import util.Matrix4f;
 
 public class Model extends Movable
 {
@@ -20,12 +21,15 @@ public class Model extends Movable
     List<Integer> textureIDs = new ArrayList<>();
     List<Integer> activeVAOs = new ArrayList<>();
     List<Integer> activeVBOs = new ArrayList<>();
-    int nrIndices = 0;
+    List<Integer> nrOfIndices = new ArrayList<>();
+    
+    List<Matrix4f> internalTransform = new ArrayList<>();
 
     public Model(Shader shader, RawData... datas)
     {
         for (RawData data : datas)
         {
+            internalTransform.add(new Matrix4f());
             int vaoID = GL30.glGenVertexArrays();
             GL30.glBindVertexArray(vaoID);
             activeVAOs.add(vaoID);
@@ -41,14 +45,14 @@ public class Model extends Movable
 
     private void setVBOs(RawData data)
     {
-        activeVBOs.add(ModelLoader.loadVertexVBO(Shader.POS_ATTRIB, data.vertices));
+        activeVBOs.add(ModelLoader.loadVertexVBO(data.vertices));
 
         activeVBOs.add(ModelLoader.loadIndicesVBO(data.indices));
-        nrIndices = data.indices.length;
+        nrOfIndices.add(data.indices.length);
 
-        activeVBOs.add(ModelLoader.loadTextureVBO(Shader.TEX_ATTRIB, data.textureCoords));
-        
-        activeVBOs.add(ModelLoader.loadNormalsVBO(Shader.NORMAL_ATTRIB, data.normals));
+        activeVBOs.add(ModelLoader.loadTextureVBO(data.textureCoords));
+
+        activeVBOs.add(ModelLoader.loadNormalsVBO(data.normals));
 
         GL30.glBindVertexArray(0);
     }
@@ -64,12 +68,12 @@ public class Model extends Movable
 
             //bind current model-to-world transformation
             FloatBuffer translation = BufferUtils.createFloatBuffer(16);
-            getModelToViewMatrix().toBuffer(translation);
+            getModelToViewMatrix().multiply(internalTransform.get(i)).toBuffer(translation);
             glUniformMatrix4fv(glGetUniformLocation(shader.getProgramID(), "modelToWorld"), false, translation);
 
             //draw!
             glBindTexture(GL_TEXTURE_2D, textureIDs.get(i));
-            GL11.glDrawElements(GL11.GL_TRIANGLES, nrIndices, GL11.GL_UNSIGNED_INT, 0);
+            GL11.glDrawElements(GL11.GL_TRIANGLES, nrOfIndices.get(i), GL11.GL_UNSIGNED_INT, 0);
             deactivate();
         }
     }
@@ -97,5 +101,18 @@ public class Model extends Movable
         }
 
         //TODO: remove textures
+    }
+    
+    public void setInternalTransform(int VAOindex, Matrix4f transform)
+    {
+        internalTransform.set(VAOindex, transform);
+    }
+    
+    public void update()
+    {
+        internalTransform.set(3, internalTransform.get(3).multiply(Matrix4f.rotate(-0.5f, 0, 0)));
+        internalTransform.set(4, internalTransform.get(4).multiply(Matrix4f.rotate(-0.5f, 0, 0)));
+        internalTransform.set(5, internalTransform.get(5).multiply(Matrix4f.rotate(-0.5f, 0, 0)));
+        internalTransform.set(6, internalTransform.get(6).multiply(Matrix4f.rotate(-0.5f, 0, 0)));
     }
 }

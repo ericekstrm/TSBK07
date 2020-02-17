@@ -203,7 +203,7 @@ public class Matrix4f
         float w = this.m30 * vector.x + this.m31 * vector.y + this.m32 * vector.z + this.m33 * vector.w;
         return new Vector4f(x, y, z, w);
     }
-    
+
     /**
      * Multiplies this matrix to a vector.
      *
@@ -481,7 +481,7 @@ public class Matrix4f
 
         return rotation;
     }
-    
+
     public static Matrix4f rotate(float angle, Vector3f direction)
     {
         return rotate(angle, direction.x, direction.y, direction.z);

@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
@@ -15,16 +16,20 @@ import org.lwjgl.opengl.GL30;
 import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryStack;
 
-public class Loader {
+public class Loader
+{
 
     private static HashMap<String, Integer> textureIdMap = new HashMap<>();
 
-    public static RawData loadRawData(String filename, String textureFileName) {
+    public static RawData loadRawData(String filename, String textureFileName)
+    {
         BufferedReader br = null;
-        try {
+        try
+        {
             br = new BufferedReader(new FileReader(filename));
-        } catch (FileNotFoundException ex) {
-            System.out.println("file not found");
+        } catch (FileNotFoundException ex)
+        {
+            System.out.println("file not found: " + filename);
         }
 
         List<Vector3f> vertices = new ArrayList<>();
@@ -34,44 +39,57 @@ public class Loader {
 
         float[] verticesArray;
         float[] textureArray
-                = {};
+                =
+                {
+                };
         float[] normalsArray
-                = {};
+                =
+                {
+                };
         int[] indicesArray;
 
-        try {
+        try
+        {
             String line;
-            while (true) {
+            while (true)
+            {
                 line = br.readLine().replaceAll("\\s+", " ");
 
                 String[] currentLine = line.split(" ");
-                if (line.startsWith("v ")) {
+                if (line.startsWith("v "))
+                {
                     Vector3f vertex = new Vector3f(
                             Float.parseFloat(currentLine[1]),
                             Float.parseFloat(currentLine[2]),
                             Float.parseFloat(currentLine[3]));
                     vertices.add(vertex);
-                } else if (line.startsWith("vt ")) {
+                } else if (line.startsWith("vt "))
+                {
                     Vector2f texture = new Vector2f(
                             Float.parseFloat(currentLine[1]),
                             Float.parseFloat(currentLine[2]));
                     textures.add(texture);
-                } else if (line.startsWith("vn ")) {
+                } else if (line.startsWith("vn "))
+                {
                     Vector3f normal = new Vector3f(
                             Float.parseFloat(currentLine[1]),
                             Float.parseFloat(currentLine[2]),
                             Float.parseFloat(currentLine[3]));
                     normals.add(normal);
-                } else if (line.startsWith("f ")) {
+                } else if (line.startsWith("f "))
+                {
                     break;
                 }
             }
 
-            textureArray = new float[vertices.size() * 2];
-            normalsArray = new float[normals.size() * 3];
+            //fel längd på dessa!!
+            textureArray = new float[vertices.size() * 2 * 7];
+            normalsArray = new float[normals.size() * 3 * 7];
 
-            while (line != null) {
-                if (!line.startsWith("f ")) {
+            while (line != null)
+            {
+                if (!line.startsWith("f "))
+                {
                     line = br.readLine();
                     continue;
                 }
@@ -87,7 +105,8 @@ public class Loader {
             }
             br.close();
 
-        } catch (Exception e) {
+        } catch (IOException | NumberFormatException e)
+        {
             e.printStackTrace();
         }
 
@@ -95,13 +114,15 @@ public class Loader {
         indicesArray = new int[indices.size()];
 
         int vertexPointer = 0;
-        for (Vector3f vertex : vertices) {
+        for (Vector3f vertex : vertices)
+        {
             verticesArray[vertexPointer++] = vertex.x;
             verticesArray[vertexPointer++] = vertex.y;
             verticesArray[vertexPointer++] = vertex.z;
         }
 
-        for (int i = 0; i < indices.size(); i++) {
+        for (int i = 0; i < indices.size(); i++)
+        {
             indicesArray[i] = indices.get(i);
         }
 
@@ -110,15 +131,17 @@ public class Loader {
         return data;
     }
 
-    private static void processVertex(String[] vertexData, List<Integer> indices, List<Vector2f> textures, List<Vector3f> normals, float[] textureArray, float[] normalsArray) {
+    private static void processVertex(String[] vertexData, List<Integer> indices, List<Vector2f> textures, List<Vector3f> normals, float[] textureArray, float[] normalsArray)
+    {
         int currentvertexPointer = Integer.parseInt(vertexData[0]) - 1;
-
-        System.out.println(currentvertexPointer);
-        System.out.println(normalsArray.length);
-
         indices.add(currentvertexPointer);
 
-        Vector2f currentTex = textures.get(Integer.parseInt(vertexData[1]) - 1);
+        Vector2f currentTex = new Vector2f(0, 0);
+        if (!vertexData[1].equals(""))
+        {
+            //a check for if the texture coord is missing in the .obj file.
+            currentTex = textures.get(Integer.parseInt(vertexData[1]) - 1);
+        }
         textureArray[currentvertexPointer * 2] = currentTex.x;
         textureArray[currentvertexPointer * 2 + 1] = 1 - currentTex.y;
 
@@ -128,15 +151,22 @@ public class Loader {
         normalsArray[currentvertexPointer * 3 + 2] = currentNorm.z;
     }
 
-    public static int loadTexture(String texture) {
-        if (textureIdMap.containsKey(texture)) {
+    public static int loadTexture(String texture)
+    {
+        if (texture.equals(""))
+        {
+            return 0;
+        }
+        if (textureIdMap.containsKey(texture))
+        {
             return textureIdMap.get(texture);
         }
 
         int width;
         int height;
         ByteBuffer buffer;
-        try (MemoryStack stack = MemoryStack.stackPush()) {
+        try (MemoryStack stack = MemoryStack.stackPush())
+        {
             IntBuffer w = stack.mallocInt(1);
             IntBuffer h = stack.mallocInt(1);
             IntBuffer channels = stack.mallocInt(1);
@@ -144,7 +174,8 @@ public class Loader {
             File file = new File("res\\" + texture);
             String filePath = file.getAbsolutePath();
             buffer = STBImage.stbi_load(filePath, w, h, channels, 4);
-            if (buffer == null) {
+            if (buffer == null)
+            {
                 throw new Exception("Can't load file " + texture + " " + STBImage.stbi_failure_reason());
             }
             width = w.get();
@@ -155,12 +186,13 @@ public class Loader {
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, id);
 
             GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, width, height, 0,
-                    GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer);
+                              GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer);
 
             GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
             STBImage.stbi_image_free(buffer);
             return id;
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             e.printStackTrace();
         }
         return 0;

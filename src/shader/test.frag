@@ -16,7 +16,7 @@ out vec4 outColor;
 
 void main()
 {
-    float ambientStrength = 0.1;
+    float ambientStrength = 0.4;
     vec3 ambientLight = ambientStrength * lightSourcesColorArr[3];
     
     vec3 diffuseLight;

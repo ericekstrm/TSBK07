@@ -7,7 +7,8 @@ import java.nio.FloatBuffer;
  *
  * @author Heiko Brumme
  */
-public class Vector3f {
+public class Vector3f
+{
 
     public float x;
     public float y;
@@ -16,7 +17,8 @@ public class Vector3f {
     /**
      * Creates a default 3-tuple vector with all values set to 0.
      */
-    public Vector3f() {
+    public Vector3f()
+    {
         this.x = 0f;
         this.y = 0f;
         this.z = 0f;
@@ -29,7 +31,8 @@ public class Vector3f {
      * @param y y value
      * @param z z value
      */
-    public Vector3f(float x, float y, float z) {
+    public Vector3f(float x, float y, float z)
+    {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -40,7 +43,8 @@ public class Vector3f {
      *
      * @return Squared length of this vector
      */
-    public float lengthSquared() {
+    public float lengthSquared()
+    {
         return x * x + y * y + z * z;
     }
 
@@ -49,7 +53,8 @@ public class Vector3f {
      *
      * @return Length of this vector
      */
-    public float length() {
+    public float length()
+    {
         return (float) Math.sqrt(lengthSquared());
     }
 
@@ -58,7 +63,8 @@ public class Vector3f {
      *
      * @return Normalized vector
      */
-    public Vector3f normalize() {
+    public Vector3f normalize()
+    {
         float length = length();
         return divide(length);
     }
@@ -70,7 +76,8 @@ public class Vector3f {
      *
      * @return Sum of this + other
      */
-    public Vector3f add(Vector3f other) {
+    public Vector3f add(Vector3f other)
+    {
         float x = this.x + other.x;
         float y = this.y + other.y;
         float z = this.z + other.z;
@@ -82,7 +89,8 @@ public class Vector3f {
      *
      * @return Negated vector
      */
-    public Vector3f negate() {
+    public Vector3f negate()
+    {
         return scale(-1f);
     }
 
@@ -93,7 +101,8 @@ public class Vector3f {
      *
      * @return Difference of this - other
      */
-    public Vector3f subtract(Vector3f other) {
+    public Vector3f subtract(Vector3f other)
+    {
         return this.add(other.negate());
     }
 
@@ -104,7 +113,8 @@ public class Vector3f {
      *
      * @return Scalar product of this * scalar
      */
-    public Vector3f scale(float scalar) {
+    public Vector3f scale(float scalar)
+    {
         float x = this.x * scalar;
         float y = this.y * scalar;
         float z = this.z * scalar;
@@ -118,7 +128,8 @@ public class Vector3f {
      *
      * @return Scalar quotient of this / scalar
      */
-    public Vector3f divide(float scalar) {
+    public Vector3f divide(float scalar)
+    {
         return scale(1f / scalar);
     }
 
@@ -129,7 +140,8 @@ public class Vector3f {
      *
      * @return Dot product of this * other
      */
-    public float dot(Vector3f other) {
+    public float dot(Vector3f other)
+    {
         return this.x * other.x + this.y * other.y + this.z * other.z;
     }
 
@@ -140,7 +152,8 @@ public class Vector3f {
      *
      * @return Cross product of this x other
      */
-    public Vector3f cross(Vector3f other) {
+    public Vector3f cross(Vector3f other)
+    {
         float x = this.y * other.z - this.z * other.y;
         float y = this.z * other.x - this.x * other.z;
         float z = this.x * other.y - this.y * other.x;
@@ -156,7 +169,8 @@ public class Vector3f {
      *
      * @return Linear interpolated vector
      */
-    public Vector3f lerp(Vector3f other, float alpha) {
+    public Vector3f lerp(Vector3f other, float alpha)
+    {
         return this.scale(1f - alpha).add(other.scale(alpha));
     }
 
@@ -165,7 +179,8 @@ public class Vector3f {
      *
      * @param buffer The buffer to store the vector data
      */
-    public void toBuffer(FloatBuffer buffer) {
+    public void toBuffer(FloatBuffer buffer)
+    {
         buffer.put(x).put(y).put(z);
         buffer.flip();
     }

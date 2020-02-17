@@ -6,15 +6,16 @@ import org.lwjgl.BufferUtils;
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
+import shader.Shader;
 
 public class ModelLoader {
 
-    static int loadVertexVBO(int attribIndex, float[] vertices) {
+    static int loadVertexVBO(float[] vertices) {
         int vertexVBO = GL15.glGenBuffers();
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vertexVBO);
         FloatBuffer vertexBuffer = createFloatBuffer(vertices);
         GL15.glBufferData(GL15.GL_ARRAY_BUFFER, vertexBuffer, GL15.GL_STATIC_DRAW);
-        GL20.glVertexAttribPointer(attribIndex, 3, GL_FLOAT, false, 0, 0);
+        GL20.glVertexAttribPointer(Shader.POS_ATTRIB, 3, GL_FLOAT, false, 0, 0);
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
         return vertexVBO;
     }
@@ -27,32 +28,32 @@ public class ModelLoader {
         return indexVBO;
     }
 
-    static int loadColorVBO(int attribIndex, float[] colors) {
+    static int loadColorVBO(float[] colors) {
         int colorVBO = GL15.glGenBuffers();
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, colorVBO);
         FloatBuffer colorBuffer = createFloatBuffer(colors);
         GL15.glBufferData(GL15.GL_ARRAY_BUFFER, colorBuffer, GL15.GL_STATIC_DRAW);
-        GL20.glVertexAttribPointer(attribIndex, 4, GL_FLOAT, false, 0, 0);
+        GL20.glVertexAttribPointer(Shader.COLOR_ATTRIB, 4, GL_FLOAT, false, 0, 0);
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
         return colorVBO;
     }
 
-    static int loadTextureVBO(int attribIndex, float[] colors) {
+    static int loadTextureVBO(float[] colors) {
         int textureVBO = GL15.glGenBuffers();
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, textureVBO);
         FloatBuffer colorBuffer = createFloatBuffer(colors);
         GL15.glBufferData(GL15.GL_ARRAY_BUFFER, colorBuffer, GL15.GL_STATIC_DRAW);
-        GL20.glVertexAttribPointer(attribIndex, 2, GL_FLOAT, false, 0, 0);
+        GL20.glVertexAttribPointer(Shader.TEX_ATTRIB, 2, GL_FLOAT, false, 0, 0);
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
         return textureVBO;
     }
 
-    static int loadNormalsVBO(int attribIndex, float[] normals) {
+    static int loadNormalsVBO(float[] normals) {
         int normalsVBO = GL15.glGenBuffers();
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, normalsVBO);
         FloatBuffer normalBuffer = createFloatBuffer(normals);
         GL15.glBufferData(GL15.GL_ARRAY_BUFFER, normalBuffer, GL15.GL_STATIC_DRAW);
-        GL20.glVertexAttribPointer(attribIndex, 3, GL_FLOAT, false, 0, 0);
+        GL20.glVertexAttribPointer(Shader.NORMAL_ATTRIB, 3, GL_FLOAT, false, 0, 0);
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
         return normalsVBO;
     }

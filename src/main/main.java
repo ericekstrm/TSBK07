@@ -2,6 +2,8 @@ package main;
 
 import util.Loader;
 import java.nio.*;
+import java.util.ArrayList;
+import java.util.List;
 import model.*;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.*;
@@ -12,6 +14,7 @@ import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.system.MemoryUtil.*;
 import shader.Shader;
+import util.Matrix4f;
 import util.Vector3f;
 
 public class main
@@ -23,16 +26,18 @@ public class main
     long window;
 
     Model model1;
-    Model model2;
+    Model windmill;
     Model floor;
     Model tree;
     Skybox skybox;
+    List<Light> pointLights = new ArrayList<>();
 
     int tex;
 
     Shader shader;
+    Shader lightShader;
 
-    Camera camera = new Camera(new Vector3f(2, 1, 2), new Vector3f(0, 0, 0));
+    Camera camera = new Camera(new Vector3f(2, 1, 2), new Vector3f(3, 3, 0));
 
     void initOpenGL()
     {
@@ -56,6 +61,8 @@ public class main
         glfwSetWindowPos(window, (vidmode.width() - WIDTH) / 2, (vidmode.height() - HEIGHT) / 2);
         glfwShowWindow(window);
 
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
         GL.createCapabilities();
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glEnable(GL_DEPTH_TEST);
@@ -70,7 +77,7 @@ public class main
         glBindVertexArray(0);
 
         model1.destroy();
-        model2.destroy();
+        windmill.destroy();
         tree.destroy();
         glfwDestroyWindow(window);
         glfwTerminate();
@@ -79,11 +86,23 @@ public class main
     public void initModel()
     {
         shader = new Shader("test.vert", "test.frag");
+        lightShader = new Shader("light.vert", "light.frag");
 
         model1 = new Model(shader, Loader.loadRawData("res\\bunnyplus.obj", "tex2.jpg"));
 
-        model2 = new Model(shader, Loader.loadRawData("res\\bunnyplus.obj", "tex.jpg"));
-        model2.setPosition(3, 3, 0);
+        windmill = new Model(shader, Loader.loadRawData("res\\windmill\\walls.obj", "tex.jpg"),
+                             Loader.loadRawData("res\\windmill\\balcony.obj", "tex.jpg"),
+                             Loader.loadRawData("res\\windmill\\roof.obj", "tex.jpg"),
+                             Loader.loadRawData("res\\windmill\\blade.obj", "tex.jpg"),
+                             Loader.loadRawData("res\\windmill\\blade.obj", "tex.jpg"),
+                             Loader.loadRawData("res\\windmill\\blade.obj", "tex.jpg"),
+                             Loader.loadRawData("res\\windmill\\blade.obj", "tex.jpg"));
+        windmill.setInternalTransform(3, Matrix4f.translate(5, 9, 0));
+        windmill.setInternalTransform(4, Matrix4f.translate(5, 9, 0).multiply(Matrix4f.rotate(90, 0, 0)));
+        windmill.setInternalTransform(5, Matrix4f.translate(5, 9, 0).multiply(Matrix4f.rotate(180, 0, 0)));
+        windmill.setInternalTransform(6, Matrix4f.translate(5, 9, 0).multiply(Matrix4f.rotate(270, 0, 0)));
+        windmill.setPosition(10, 0, -10);
+        windmill.setRotation(0, 180, 0);
 
         tree = new Model(shader, Loader.loadRawData("res\\tree.obj", "green.jpg"));
         tree.setPosition(-2, 0, -2);
@@ -91,18 +110,22 @@ public class main
 
         floor = new Model(shader, Loader.loadRawData("res\\flat.obj", "grass.jpg"));
         floor.setPosition(0, -0.1f, 0);
-        floor.setScale(3, 1, 3);
+        floor.setScale(20, 1, 20);
 
-        String[] skyboxTextures
-                =
-                {
-                    "tex2.jpg",
-                    "tex2.jpg",
-                    "tex2.jpg",
-                    "tex2.jpg",
-                    "tex2.jpg",
-                    "tex2.jpg",
-                };
+        pointLights.add(new Light(new Vector3f(3.0f, 3.0f, 0.0f),
+                                  new Vector3f(1.0f, 0.0f, 0.0f)));
+        pointLights.add(new Light(new Vector3f(0.0f, 5.0f, 5.0f),
+                                  new Vector3f(0.0f, 1.0f, 0.0f)));
+
+        String[] skyboxTextures =
+        {
+            "tex2.jpg",
+            "tex2.jpg",
+            "tex2.jpg",
+            "tex2.jpg",
+            "tex2.jpg",
+            "tex2.jpg",
+        };
         //skybox = new Skybox(skyboxTextures);
     }
 
@@ -110,6 +133,7 @@ public class main
 
     public void update()
     {
+        windmill.update();
         time = System.currentTimeMillis() % 36000;
         model1.setRotation(0, time / 10, 0);
     }
@@ -130,8 +154,8 @@ public class main
 
     Vector3f[] lightSourcesDirectionsPositions =
     {
-        new Vector3f(3.0f, 3.0f, 0.0f), // Red light, positional
-        new Vector3f(0.0f, 5.0f, 10.0f), // Green light, positional
+        new Vector3f(15.0f, 5.0f, -15.0f), // Red light, positional
+        new Vector3f(0.0f, 5.0f, 5.0f), // Green light, positional
         new Vector3f(-1.0f, 0.0f, 0.0f), // Blue light along X
         new Vector3f(0.0f, 0.0f, -1.0f)  // White light along Z
     };
@@ -149,6 +173,20 @@ public class main
 
             //prepare
             glClear(GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+
+            //draw lights
+            lightShader.start();
+
+            //world-to-view matrix
+            FloatBuffer worldToView = BufferUtils.createFloatBuffer(16);
+            camera.getWorldtoViewMatrix().toBuffer(worldToView);
+            glUniformMatrix4fv(glGetUniformLocation(lightShader.getProgramID(), "worldToView"), false, worldToView);
+
+            for (Light light : pointLights)
+            {
+                light.render(lightShader);
+            }
+            lightShader.stop();
 
             //draw skybox
             //skybox.prepareForRender(camera);
@@ -183,13 +221,11 @@ public class main
 
             //------------------------------------------------------------------
             //world-to-view matrix
-            FloatBuffer worldToView = BufferUtils.createFloatBuffer(16);
-            camera.getWorldtoViewMatrix().toBuffer(worldToView);
             glUniformMatrix4fv(glGetUniformLocation(shader.getProgramID(), "worldToView"), false, worldToView);
 
             //render
             model1.render(shader);
-            model2.render(shader);
+            windmill.render(shader);
             tree.render(shader);
             floor.render(shader);
 

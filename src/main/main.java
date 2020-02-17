@@ -112,7 +112,7 @@ public class main
         floor.setPosition(0, -0.1f, 0);
         floor.setScale(20, 1, 20);
 
-        pointLights.add(new Light(new Vector3f(3.0f, 3.0f, 0.0f),
+        pointLights.add(new Light(new Vector3f(5.0f, 5.0f, 0.0f),
                                   new Vector3f(1.0f, 0.0f, 0.0f)));
         pointLights.add(new Light(new Vector3f(0.0f, 5.0f, 5.0f),
                                   new Vector3f(0.0f, 1.0f, 0.0f)));
@@ -136,26 +136,19 @@ public class main
         windmill.update();
         time = System.currentTimeMillis() % 36000;
         model1.setRotation(0, time / 10, 0);
+        
+        pointLights.get(0).setPosition(Matrix4f.rotate(0, 2, 0).multiply(pointLights.get(0).getPosition()));
     }
 
     //light sources (TEMP)
     Vector3f[] lightSourcesColorsArr =
     {
-        new Vector3f(1.0f, 0.0f, 0.0f), // Red light
-        new Vector3f(0.0f, 1.0f, 0.0f), // Green light
         new Vector3f(0.0f, 0.0f, 1.0f), // Blue light
         new Vector3f(1.0f, 1.0f, 1.0f)  // White light 
     };
 
-    int[] isDirectional =
-    {
-        0, 0, 1, 1
-    };
-
     Vector3f[] lightSourcesDirectionsPositions =
     {
-        new Vector3f(15.0f, 5.0f, -15.0f), // Red light, positional
-        new Vector3f(0.0f, 5.0f, 5.0f), // Green light, positional
         new Vector3f(-1.0f, 0.0f, 0.0f), // Blue light along X
         new Vector3f(0.0f, 0.0f, -1.0f)  // White light along Z
     };
@@ -174,6 +167,9 @@ public class main
             //prepare
             glClear(GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
+            //draw skybox
+            //skybox.prepareForRender(camera);
+            //skybox.render(shader);
             //draw lights
             lightShader.start();
 
@@ -188,38 +184,9 @@ public class main
             }
             lightShader.stop();
 
-            //draw skybox
-            //skybox.prepareForRender(camera);
-            //skybox.render(shader);
             shader.start();
+            loadLights();
 
-            //---------------------- lighting (TEMP) ---------------------------
-            //hehe, there is room for improvement here!
-            //pos/dir
-            FloatBuffer lightSourcesDirPosArr = BufferUtils.createFloatBuffer(12);
-            for (int i = 0; i < 4; i++)
-            {
-                lightSourcesDirPosArr.put(lightSourcesDirectionsPositions[i].x).put(lightSourcesDirectionsPositions[i].y).put(lightSourcesDirectionsPositions[i].z);
-            }
-            lightSourcesDirPosArr.flip();
-            glUniform3fv(glGetUniformLocation(shader.getProgramID(), "lightSourcesDirPosArr"), lightSourcesDirPosArr);
-
-            //color
-            FloatBuffer lightSourcesColorArr = BufferUtils.createFloatBuffer(12);
-            for (int i = 0; i < 4; i++)
-            {
-                lightSourcesColorArr.put(lightSourcesColorsArr[i].x).put(lightSourcesColorsArr[i].y).put(lightSourcesColorsArr[i].z);
-            }
-            lightSourcesColorArr.flip();
-            glUniform3fv(glGetUniformLocation(shader.getProgramID(), "lightSourcesColorArr"), lightSourcesColorArr);
-
-            //specular
-            glUniform1f(glGetUniformLocation(shader.getProgramID(), "specularExponent"), specularExponent[0]);
-
-            //directional
-            glUniform1iv(glGetUniformLocation(shader.getProgramID(), "isDirectional"), isDirectional);
-
-            //------------------------------------------------------------------
             //world-to-view matrix
             glUniformMatrix4fv(glGetUniformLocation(shader.getProgramID(), "worldToView"), false, worldToView);
 
@@ -240,9 +207,6 @@ public class main
         glfwTerminate();
     }
 
-    DoubleBuffer prevXpos = null;
-    DoubleBuffer prevYpos = null;
-
     public void checkInput()
     {
         camera.checkInput(window);
@@ -251,6 +215,52 @@ public class main
         {
             glfwSetWindowShouldClose(window, true);
         }
+    }
+
+    public void loadLights()
+    {
+        //Pointlights position
+        FloatBuffer pointLightPosArr = BufferUtils.createFloatBuffer(3 * pointLights.size());
+        for (Light light : pointLights)
+        {
+            Vector3f pos = light.getPosition();
+            pointLightPosArr.put(pos.x).put(pos.y).put(pos.z);
+        }
+        pointLightPosArr.flip();
+        glUniform3fv(glGetUniformLocation(shader.getProgramID(), "pointLightPosArr"), pointLightPosArr);
+
+        //Pointlights color
+        FloatBuffer pointLightColorArr = BufferUtils.createFloatBuffer(3 * pointLights.size());
+        for (Light light : pointLights)
+        {
+            Vector3f color = light.getColor();
+            pointLightColorArr.put(color.x).put(color.y).put(color.z);
+        }
+        pointLightColorArr.flip();
+        glUniform3fv(glGetUniformLocation(shader.getProgramID(), "pointLightColorArr"), pointLightColorArr);
+
+        //SKA GÖRAS BÄTTRE!!
+        //Directional lights directions
+        FloatBuffer dirLightDirArr = BufferUtils.createFloatBuffer(6);
+        for (int i = 0; i < 2; i++)
+        {
+            dirLightDirArr.put(lightSourcesDirectionsPositions[i].x).put(lightSourcesDirectionsPositions[i].y).put(lightSourcesDirectionsPositions[i].z);
+        }
+        dirLightDirArr.flip();
+        glUniform3fv(glGetUniformLocation(shader.getProgramID(), "dirLightDirArr"), dirLightDirArr);
+
+        //Directional lights color
+        FloatBuffer dirLightColorArr = BufferUtils.createFloatBuffer(6);
+        for (int i = 0; i < 2; i++)
+        {
+            dirLightColorArr.put(lightSourcesColorsArr[i].x).put(lightSourcesColorsArr[i].y).put(lightSourcesColorsArr[i].z);
+        }
+        dirLightColorArr.flip();
+        glUniform3fv(glGetUniformLocation(shader.getProgramID(), "dirLightColorArr"), dirLightColorArr);
+
+        //specular
+        //should be uploaded for each model (or part of model)
+        glUniform1f(glGetUniformLocation(shader.getProgramID(), "specularExponent"), specularExponent[0]);
     }
 
     public static void main(String[] args)

@@ -8,9 +8,6 @@ uniform mat4 modelToWorld;
 uniform mat4 worldToView;
 uniform mat4 projection;
 
-//light stuff
-uniform vec3 lightSourcesDirPosArr[4];
-
 out vec2 texCoord;
 out vec3 normal;
 out vec3 fragPos;

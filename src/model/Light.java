@@ -83,4 +83,19 @@ public class Light
 
         return translate.multiply(scale);
     }
+
+    public Vector3f getPosition()
+    {
+        return position;
+    }
+
+    public Vector3f getColor()
+    {
+        return color;
+    }
+
+    public void setPosition(Vector3f new_position)
+    {
+        position = new_position;
+    }
 }

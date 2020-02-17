@@ -6,37 +6,42 @@ in vec3 fragPos;
 
 uniform sampler2D texUnit;
 
-//all 4 light sources used for now
-uniform vec3 lightSourcesDirPosArr[4];
-uniform vec3 lightSourcesColorArr[4];
+uniform vec3 pointLightPosArr[2];
+uniform vec3 pointLightColorArr[2];
+
+uniform vec3 dirLightDirArr[2];
+uniform vec3 dirLightColorArr[2];
+
 uniform float specularExponent;
-uniform bool isDirectional[4];
 
 out vec4 outColor;
 
 void main()
 {
     float ambientStrength = 0.4;
-    vec3 ambientLight = ambientStrength * lightSourcesColorArr[3];
+    vec3 ambientLight = ambientStrength * vec3(1.0, 1.0, 1.0);
     
-    vec3 diffuseLight;
-    for(int i = 0; i < 4; i++)
+
+    vec3 diffuseLight = vec3(0,0,0);
+    
+    //Point lights
+    for(int i = 0; i < pointLightPosArr.length(); i++)
     {
-        vec3 lightDir;
-        if (isDirectional[i])
-        {
-            lightDir = lightSourcesDirPosArr[i];
-        } else 
-        {
-           lightDir = normalize(lightSourcesDirPosArr[i] - fragPos);
-        }
+        vec3 lightDir = normalize(pointLightPosArr[i] - fragPos);
+        
         float diff = max(0.0, dot(normalize(normal), lightDir));
-        diffuseLight += diff * lightSourcesColorArr[i];
+        diffuseLight += diff * pointLightColorArr[i];
+    }
+
+    //Directional lights
+    for(int i = 0; i < dirLightDirArr.length(); i++)
+    {
+        vec3 lightDir = dirLightDirArr[i];
+        
+        float diff = max(0.0, dot(normalize(normal), lightDir));
+        diffuseLight += diff * dirLightColorArr[i];
     }
 
     vec3 result = (ambientLight + diffuseLight) * vec3(texture(texUnit, texCoord));
     outColor = vec4(result, 0.1);
-
-    //vec3 diffuseLight = lightSourcesColorArr[0] * dot(normalize(lightDirection), normalize(normal));
-    //outColor = texture(texUnit, texCoord) * (vec4(diffuseLight, 1) + vec4(ambientLight,1));
 }

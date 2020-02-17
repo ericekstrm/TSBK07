@@ -77,7 +77,7 @@ public class Shader
         StringBuilder shaderSource = new StringBuilder();
         try
         {
-            BufferedReader reader = new BufferedReader(new FileReader("src\\shader\\" + file_name));
+            BufferedReader reader = new BufferedReader(new FileReader("src/shader/" + file_name));
             String line;
             while ((line = reader.readLine()) != null)
             {

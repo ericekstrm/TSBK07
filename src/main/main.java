@@ -31,11 +31,12 @@ public class main
     Model tree;
     Skybox skybox;
     List<Light> pointLights = new ArrayList<>();
-
+    
     int tex;
 
     Shader shader;
     Shader lightShader;
+    Shader skyboxShader;
 
     Camera camera = new Camera(new Vector3f(2, 1, 2), new Vector3f(3, 3, 0));
 
@@ -87,16 +88,18 @@ public class main
     {
         shader = new Shader("test.vert", "test.frag");
         lightShader = new Shader("light.vert", "light.frag");
+        skyboxShader = new Shader("skybox.vert", "skybox.frag");
 
-        model1 = new Model(shader, Loader.loadRawData("res\\bunnyplus.obj", "tex2.jpg"));
+        model1 = new Model(shader, Loader.loadRawData("bunnyplus.obj", "tex2.jpg"));
+        model1.setPosition(1, 0, 1);
 
-        windmill = new Model(shader, Loader.loadRawData("res\\windmill\\walls.obj", "tex.jpg"),
-                             Loader.loadRawData("res\\windmill\\balcony.obj", "tex.jpg"),
-                             Loader.loadRawData("res\\windmill\\roof.obj", "tex.jpg"),
-                             Loader.loadRawData("res\\windmill\\blade.obj", "tex.jpg"),
-                             Loader.loadRawData("res\\windmill\\blade.obj", "tex.jpg"),
-                             Loader.loadRawData("res\\windmill\\blade.obj", "tex.jpg"),
-                             Loader.loadRawData("res\\windmill\\blade.obj", "tex.jpg"));
+        windmill = new Model(shader, Loader.loadRawData("windmill/walls.obj", "tex.jpg"),
+                             Loader.loadRawData("windmill/balcony.obj", "tex.jpg"),
+                             Loader.loadRawData("windmill/roof.obj", "tex.jpg"),
+                             Loader.loadRawData("windmill/blade.obj", "tex.jpg"),
+                             Loader.loadRawData("windmill/blade.obj", "tex.jpg"),
+                             Loader.loadRawData("windmill/blade.obj", "tex.jpg"),
+                             Loader.loadRawData("windmill/blade.obj", "tex.jpg"));
         windmill.setInternalTransform(3, Matrix4f.translate(5, 9, 0));
         windmill.setInternalTransform(4, Matrix4f.translate(5, 9, 0).multiply(Matrix4f.rotate(90, 0, 0)));
         windmill.setInternalTransform(5, Matrix4f.translate(5, 9, 0).multiply(Matrix4f.rotate(180, 0, 0)));
@@ -104,11 +107,11 @@ public class main
         windmill.setPosition(10, 0, -10);
         windmill.setRotation(0, 180, 0);
 
-        tree = new Model(shader, Loader.loadRawData("res\\tree.obj", "green.jpg"));
+        tree = new Model(shader, Loader.loadRawData("tree.obj", "green.jpg"));
         tree.setPosition(-2, 0, -2);
         tree.setScale(0.1f, 0.1f, 0.1f);
 
-        floor = new Model(shader, Loader.loadRawData("res\\flat.obj", "grass.jpg"));
+        floor = new Model(shader, Loader.loadRawData("flat.obj", "grass.jpg"));
         floor.setPosition(0, -0.1f, 0);
         floor.setScale(20, 1, 20);
 
@@ -117,16 +120,7 @@ public class main
         pointLights.add(new Light(new Vector3f(0.0f, 5.0f, 5.0f),
                                   new Vector3f(0.0f, 1.0f, 0.0f)));
 
-        String[] skyboxTextures =
-        {
-            "tex2.jpg",
-            "tex2.jpg",
-            "tex2.jpg",
-            "tex2.jpg",
-            "tex2.jpg",
-            "tex2.jpg",
-        };
-        //skybox = new Skybox(skyboxTextures);
+        skybox = new Skybox(skyboxShader, Loader.loadRawData("skybox.obj", "SkyBox512.tga"));
     }
 
     long time = 0;
@@ -168,8 +162,13 @@ public class main
             glClear(GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
             //draw skybox
-            //skybox.prepareForRender(camera);
-            //skybox.render(shader);
+            skyboxShader.start();
+            
+            skybox.prepareForRender(camera, skyboxShader);
+            skybox.render(shader);
+            
+            skyboxShader.stop();
+            
             //draw lights
             lightShader.start();
 
@@ -177,7 +176,7 @@ public class main
             FloatBuffer worldToView = BufferUtils.createFloatBuffer(16);
             camera.getWorldtoViewMatrix().toBuffer(worldToView);
             glUniformMatrix4fv(glGetUniformLocation(lightShader.getProgramID(), "worldToView"), false, worldToView);
-
+            
             for (Light light : pointLights)
             {
                 light.render(lightShader);
@@ -186,6 +185,10 @@ public class main
 
             shader.start();
             loadLights();
+            
+            FloatBuffer viewPos = BufferUtils.createFloatBuffer(3);
+            camera.getPosition().toBuffer(viewPos);
+            glUniformMatrix3fv(glGetUniformLocation(shader.getProgramID(), "viewPos"), false, viewPos);
 
             //world-to-view matrix
             glUniformMatrix4fv(glGetUniformLocation(shader.getProgramID(), "worldToView"), false, worldToView);
@@ -265,6 +268,9 @@ public class main
 
     public static void main(String[] args)
     {
+    	System.out.println("Working Directory = " +
+                System.getProperty("user.dir"));
+    	
         main m = new main();
         m.initOpenGL();
         m.initModel();

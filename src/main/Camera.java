@@ -92,4 +92,8 @@ public class Camera
 
         return rotation.multiply(translation);
     }
+    
+    public Vector3f getPosition() {
+		return position;
+	}
 }

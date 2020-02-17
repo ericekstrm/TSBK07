@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="src/lib/lwjgl-assimp-javadoc.jar"/>
+	<classpathentry kind="lib" path="src/lib/lwjgl-assimp-natives-linux.jar"/>
+	<classpathentry kind="lib" path="src/lib/lwjgl-assimp-sources.jar"/>
+	<classpathentry kind="lib" path="src/lib/lwjgl-assimp.jar"/>
+	<classpathentry kind="lib" path="src/lib/lwjgl-glfw-javadoc.jar"/>
+	<classpathentry kind="lib" path="src/lib/lwjgl-glfw-natives-linux.jar"/>
+	<classpathentry kind="lib" path="src/lib/lwjgl-glfw-sources.jar"/>
+	<classpathentry kind="lib" path="src/lib/lwjgl-glfw.jar"/>
+	<classpathentry kind="lib" path="src/lib/lwjgl-javadoc.jar"/>
+	<classpathentry kind="lib" path="src/lib/lwjgl-natives-linux.jar"/>
+	<classpathentry kind="lib" path="src/lib/lwjgl-openal-javadoc.jar"/>
+	<classpathentry kind="lib" path="src/lib/lwjgl-openal-natives-linux.jar"/>
+	<classpathentry kind="lib" path="src/lib/lwjgl-openal-sources.jar"/>
+	<classpathentry kind="lib" path="src/lib/lwjgl-openal.jar"/>
+	<classpathentry kind="lib" path="src/lib/lwjgl-opengl-javadoc.jar"/>
+	<classpathentry kind="lib" path="src/lib/lwjgl-opengl-natives-linux.jar"/>
+	<classpathentry kind="lib" path="src/lib/lwjgl-opengl-sources.jar"/>
+	<classpathentry kind="lib" path="src/lib/lwjgl-opengl.jar"/>
+	<classpathentry kind="lib" path="src/lib/lwjgl-sources.jar"/>
+	<classpathentry kind="lib" path="src/lib/lwjgl-stb-javadoc.jar"/>
+	<classpathentry kind="lib" path="src/lib/lwjgl-stb-natives-linux.jar"/>
+	<classpathentry kind="lib" path="src/lib/lwjgl-stb-sources.jar"/>
+	<classpathentry kind="lib" path="src/lib/lwjgl-stb.jar"/>
+	<classpathentry kind="lib" path="src/lib/lwjgl.jar"/>
+	<classpathentry kind="output" path="build/classes"/>
+</classpath>

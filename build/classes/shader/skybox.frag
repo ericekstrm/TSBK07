@@ -1,12 +1,12 @@
 #version 330 core
 
-in vec3 TexCoords;
+in vec2 TexCoords;
 
-uniform samplerCube skybox;
+uniform sampler2D texUnit;
 
 out vec4 outColor;
 
 void main()
 {
-    outColor = texture(skybox, TexCoords);
+    outColor = texture(texUnit, TexCoords);
 }

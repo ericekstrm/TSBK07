@@ -26,7 +26,7 @@ public class Loader
         BufferedReader br = null;
         try
         {
-            br = new BufferedReader(new FileReader(filename));
+            br = new BufferedReader(new FileReader("res/" + filename));
         } catch (FileNotFoundException ex)
         {
             System.out.println("file not found: " + filename);
@@ -171,7 +171,7 @@ public class Loader
             IntBuffer h = stack.mallocInt(1);
             IntBuffer channels = stack.mallocInt(1);
 
-            File file = new File("res\\" + texture);
+            File file = new File("res/" + texture);
             String filePath = file.getAbsolutePath();
             buffer = STBImage.stbi_load(filePath, w, h, channels, 4);
             if (buffer == null)

@@ -28,7 +28,7 @@ public class Light
     {
         this.position = position;
         this.color = color;
-        RawData data = Loader.loadRawData("res\\light.obj", "");
+        RawData data = Loader.loadRawData("light.obj", "");
         activeVAO = GL30.glGenVertexArrays();
         GL30.glBindVertexArray(activeVAO);
 

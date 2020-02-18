@@ -90,7 +90,7 @@ public class main
         lightShader = new Shader("light.vert", "light.frag");
         skyboxShader = new Shader("skybox.vert", "skybox.frag");
 
-        model1 = new Model(shader, Loader.loadRawData("bunnyplus.obj", "tex2.jpg"));
+        model1 = new Model(shader, Loader.loadRawData("box.obj", "woodbox.jpg"));
         model1.setPosition(1, 0, 1);
 
         windmill = new Model(shader, Loader.loadRawData("windmill/walls.obj", "tex.jpg"),

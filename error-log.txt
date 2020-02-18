@@ -1,0 +1,2 @@
+[INFO] void Java_org_synthclipse_media_audio_AudioWaveformExtractor_init(JNIEnv*, jobject)[line 363]:
+init

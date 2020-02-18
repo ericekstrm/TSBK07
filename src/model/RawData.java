@@ -6,7 +6,9 @@ public class RawData {
     public float[] textureCoords;
     public int[] indices;
     public float[] normals;
-    int textureID;
+    public int textureID;
+    
+    public MaterialProperties matprop = new MaterialProperties();
 
     public RawData(float[] vertices, float[] textureCoords, int[] indices, float[] normals, int textureID)
     {

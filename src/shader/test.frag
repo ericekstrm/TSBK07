@@ -6,40 +6,57 @@ in vec3 fragPos;
 
 uniform sampler2D texUnit;
 
+
+//light properties
 uniform vec3 pointLightPosArr[2];
 uniform vec3 pointLightColorArr[2];
+uniform float Kc;
+uniform float Kl;
+uniform float Kq;
 
 uniform vec3 dirLightDirArr[2];
 uniform vec3 dirLightColorArr[2];
 
+//material properties
+uniform float Ka;
+uniform float Kd;
+uniform float Ks;
 uniform float specularExponent;
+
 uniform vec3 viewPos;
 
 out vec4 outColor;
 
 void main()
 {
-    float ambientStrength = 0.4;
-    vec3 ambientLight = ambientStrength * vec3(1.0, 1.0, 1.0);
-
+    vec3 ambientLight = vec3(0,0,0);
     vec3 diffuseLight = vec3(0,0,0);
     vec3 specularLight = vec3(0,0,0);
     
     //Point lights
     for(int i = 0; i < pointLightPosArr.length(); i++)
     {
+        float Kc = 1;
+        float Kl = 0.045;
+        float Kq = 0.0075;
+        float distance = length(pointLightPosArr[i] - fragPos);
+        float attenuation = 1.0 / (Kc + Kl * distance + Kq * (distance * distance)); 
+
+        //ambient light
+        ambientLight += attenuation * Ka * pointLightColorArr[i];
+
     	//diffuse lighting
         vec3 lightDir = normalize(pointLightPosArr[i] - fragPos);
         
         float diff = max(0.0, dot(normalize(normal), lightDir));
-        diffuseLight += diff * pointLightColorArr[i];
+        diffuseLight += attenuation * Kd * diff * pointLightColorArr[i];
 
         //specular lighting
         vec3 viewDir = normalize(viewPos - fragPos);
         vec3 reflectDir = reflect(-lightDir, normalize(normal));
 
-        float spec = pow(max(0.0, dot(viewDir, reflectDir)), 16); //128 ska va nåt som bestäms för varje objekt
-        specularLight += 0.5 * spec * pointLightColorArr[i];
+        float spec = pow(max(0.0, dot(viewDir, reflectDir)), specularExponent); //128 ska va nåt som bestäms för varje objekt
+        specularLight += attenuation * Ks * spec * pointLightColorArr[i];
     }
 
     //Directional lights
@@ -47,8 +64,9 @@ void main()
     {
         vec3 lightDir = dirLightDirArr[i];
         
+        //diffuse lighting
         float diff = max(0.0, dot(normalize(normal), lightDir));
-        diffuseLight += diff * dirLightColorArr[i];
+        diffuseLight += Kd * diff * dirLightColorArr[i];
     }
 
     vec3 result = (ambientLight + diffuseLight + specularLight) * vec3(texture(texUnit, texCoord));

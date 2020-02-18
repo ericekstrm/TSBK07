@@ -14,7 +14,7 @@ import util.Loader;
 import util.Matrix4f;
 import util.Vector3f;
 
-public class Light
+public class PositionalLight
 {
 
     int activeVAO;
@@ -24,7 +24,7 @@ public class Light
     Vector3f position;
     Vector3f color;
 
-    public Light(Vector3f position, Vector3f color)
+    public PositionalLight(Vector3f position, Vector3f color)
     {
         this.position = position;
         this.color = color;

@@ -8,9 +8,7 @@ import org.lwjgl.opengl.GL11;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glBindTexture;
 import org.lwjgl.opengl.GL20;
-import static org.lwjgl.opengl.GL20.glGetUniformLocation;
-import static org.lwjgl.opengl.GL20.glUniform1i;
-import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
+import static org.lwjgl.opengl.GL20.*;
 import org.lwjgl.opengl.GL30;
 import shader.Shader;
 import util.Matrix4f;
@@ -22,7 +20,8 @@ public class Model extends Movable
     List<Integer> activeVAOs = new ArrayList<>();
     List<Integer> activeVBOs = new ArrayList<>();
     List<Integer> nrOfIndices = new ArrayList<>();
-    
+    List<MaterialProperties> matProperties = new ArrayList<>();
+
     List<Matrix4f> internalTransform = new ArrayList<>();
 
     public Model(Shader shader, RawData... datas)
@@ -35,6 +34,9 @@ public class Model extends Movable
             activeVAOs.add(vaoID);
 
             setVBOs(data);
+            
+            //materials
+            matProperties.add(data.matprop);
 
             //texture binding
             glBindTexture(GL_TEXTURE_2D, data.textureID);
@@ -66,16 +68,26 @@ public class Model extends Movable
             GL20.glEnableVertexAttribArray(Shader.TEX_ATTRIB);
             GL20.glEnableVertexAttribArray(Shader.NORMAL_ATTRIB);
 
-            //bind current model-to-world transformation
-            FloatBuffer translation = BufferUtils.createFloatBuffer(16);
-            getModelToViewMatrix().multiply(internalTransform.get(i)).toBuffer(translation);
-            glUniformMatrix4fv(glGetUniformLocation(shader.getProgramID(), "modelToWorld"), false, translation);
-
+            bindUniforms(shader, i);
+            
             //draw!
             glBindTexture(GL_TEXTURE_2D, textureIDs.get(i));
             GL11.glDrawElements(GL11.GL_TRIANGLES, nrOfIndices.get(i), GL11.GL_UNSIGNED_INT, 0);
             deactivate();
         }
+    }
+
+    private void bindUniforms(Shader shader, int i)
+    {
+        //bind current model-to-world transformation
+        FloatBuffer translation = BufferUtils.createFloatBuffer(16);
+        getModelToViewMatrix().multiply(internalTransform.get(i)).toBuffer(translation);
+        glUniformMatrix4fv(glGetUniformLocation(shader.getProgramID(), "modelToWorld"), false, translation);
+        
+        glUniform1f(glGetUniformLocation(shader.getProgramID(), "Ka"), matProperties.get(i).Ka);
+        glUniform1f(glGetUniformLocation(shader.getProgramID(), "Kd"), matProperties.get(i).Kd);
+        glUniform1f(glGetUniformLocation(shader.getProgramID(), "Ks"), matProperties.get(i).Ks);
+        glUniform1f(glGetUniformLocation(shader.getProgramID(), "specularExponent"), matProperties.get(i).specularExponent);
     }
 
     public void deactivate()
@@ -102,12 +114,12 @@ public class Model extends Movable
 
         //TODO: remove textures
     }
-    
+
     public void setInternalTransform(int VAOindex, Matrix4f transform)
     {
         internalTransform.set(VAOindex, transform);
     }
-    
+
     public void update()
     {
     }

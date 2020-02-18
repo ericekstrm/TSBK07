@@ -30,7 +30,8 @@ public class main
 
     Map<String, Model> models = new HashMap<>();
     Skybox skybox;
-    List<Light> pointLights = new ArrayList<>();
+    List<PositionalLight> pointLights = new ArrayList<>();
+    List<DirectionalLight> dirLights = new ArrayList<>();
 
     int tex;
 
@@ -104,18 +105,23 @@ public class main
         windmill.setRotation(0, 180, 0);
         models.put("windmill", windmill);
 
+        RawData data = Loader.loadRawData("tree.obj", "green.jpg");
         for (int i = 0; i < 100; i++)
         {
-            Model tree = new Model(shader, Loader.loadRawData("tree.obj", "green.jpg"));
+
+            Model tree = new Model(shader, data);
             tree.setPosition((float) Util.randu(20), 0, (float) Util.randu(20));
             tree.setScale(0.1f, 0.1f, 0.1f);
             models.put("tree" + i, tree);
         }
 
-        pointLights.add(new Light(new Vector3f(5.0f, 5.0f, 0.0f),
-                                  new Vector3f(1.0f, 0.0f, 0.0f)));
-        pointLights.add(new Light(new Vector3f(0.0f, 5.0f, 5.0f),
-                                  new Vector3f(0.0f, 1.0f, 0.0f)));
+        pointLights.add(new PositionalLight(new Vector3f(15.0f, 3.0f, 0.0f),
+                                            new Vector3f(1.0f, 0.0f, 0.0f)));
+        pointLights.add(new PositionalLight(new Vector3f(0.0f, 5.0f, 5.0f),
+                                            new Vector3f(0.0f, 1.0f, 0.0f)));
+
+        //dirLights.add(new DirectionalLight(new Vector3f(0.0f, 0.0f, -1.0f),
+        //                                   new Vector3f(1.0f, 1.0f, 1.0f)));
 
         skybox = new Skybox(skyboxShader, Loader.loadRawData("skybox.obj", "SkyBox512.tga"));
     }
@@ -131,80 +137,67 @@ public class main
         pointLights.get(0).setPosition(Matrix4f.rotate(0, 2, 0).multiply(pointLights.get(0).getPosition()));
     }
 
-    //light sources (TEMP)
-    Vector3f[] lightSourcesColorsArr =
-    {
-        new Vector3f(0.0f, 0.0f, 1.0f), // Blue light
-        new Vector3f(1.0f, 1.0f, 1.0f)  // White light 
-    };
-
-    Vector3f[] lightSourcesDirectionsPositions =
-    {
-        new Vector3f(-1.0f, 0.0f, 0.0f), // Blue light along X
-        new Vector3f(0.0f, 0.0f, -1.0f)  // White light along Z
-    };
-
-    float[] specularExponent =
-    {
-        100.0f, 200.0f, 60.0f, 50.0f, 300.0f, 150.0f
-    };
-
     void loop()
     {
         while (!glfwWindowShouldClose(window))
         {
             update();
-
-            //prepare
-            glClear(GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-
-            //draw skybox
-            skyboxShader.start();
-
-            skybox.prepareForRender(camera, skyboxShader);
-            skybox.render(shader);
-
-            skyboxShader.stop();
-
-            //draw lights
-            lightShader.start();
-
-            //world-to-view matrix
-            FloatBuffer worldToView = BufferUtils.createFloatBuffer(16);
-            camera.getWorldtoViewMatrix().toBuffer(worldToView);
-            glUniformMatrix4fv(glGetUniformLocation(lightShader.getProgramID(), "worldToView"), false, worldToView);
-
-            for (Light light : pointLights)
-            {
-                light.render(lightShader);
-            }
-            lightShader.stop();
-
-            shader.start();
-            loadLights();
-
-            FloatBuffer viewPos = BufferUtils.createFloatBuffer(3);
-            camera.getPosition().toBuffer(viewPos);
-            glUniform3fv(glGetUniformLocation(shader.getProgramID(), "viewPos"), viewPos);
-
-            //world-to-view matrix
-            glUniformMatrix4fv(glGetUniformLocation(shader.getProgramID(), "worldToView"), false, worldToView);
-
-            //render
-            for (Map.Entry<String, Model> m : models.entrySet())
-            {
-                m.getValue().render(shader);
-            }
-
-            shader.stop();
-
-            glfwSwapBuffers(window);
+            
+            render();
 
             glfwPollEvents();
             checkInput();
         }
 
         glfwTerminate();
+    }
+
+    public void render()
+    {
+        //prepare
+        glClear(GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+
+        //draw skybox
+        skyboxShader.start();
+
+        skybox.prepareForRender(camera, skyboxShader);
+        skybox.render(shader);
+
+        skyboxShader.stop();
+
+        //draw lights
+        lightShader.start();
+
+        //world-to-view matrix
+        FloatBuffer worldToView = BufferUtils.createFloatBuffer(16);
+        camera.getWorldtoViewMatrix().toBuffer(worldToView);
+        glUniformMatrix4fv(glGetUniformLocation(lightShader.getProgramID(), "worldToView"), false, worldToView);
+
+        for (PositionalLight light : pointLights)
+        {
+            light.render(lightShader);
+        }
+        lightShader.stop();
+
+        shader.start();
+        loadLights();
+
+        FloatBuffer viewPos = BufferUtils.createFloatBuffer(3);
+        camera.getPosition().toBuffer(viewPos);
+        glUniform3fv(glGetUniformLocation(shader.getProgramID(), "viewPos"), viewPos);
+
+        //world-to-view matrix
+        glUniformMatrix4fv(glGetUniformLocation(shader.getProgramID(), "worldToView"), false, worldToView);
+
+        //render
+        for (Map.Entry<String, Model> m : models.entrySet())
+        {
+            m.getValue().render(shader);
+        }
+
+        shader.stop();
+
+        glfwSwapBuffers(window);
     }
 
     public void checkInput()
@@ -221,7 +214,7 @@ public class main
     {
         //Pointlights position
         FloatBuffer pointLightPosArr = BufferUtils.createFloatBuffer(3 * pointLights.size());
-        for (Light light : pointLights)
+        for (PositionalLight light : pointLights)
         {
             Vector3f pos = light.getPosition();
             pointLightPosArr.put(pos.x).put(pos.y).put(pos.z);
@@ -231,7 +224,7 @@ public class main
 
         //Pointlights color
         FloatBuffer pointLightColorArr = BufferUtils.createFloatBuffer(3 * pointLights.size());
-        for (Light light : pointLights)
+        for (PositionalLight light : pointLights)
         {
             Vector3f color = light.getColor();
             pointLightColorArr.put(color.x).put(color.y).put(color.z);
@@ -239,28 +232,25 @@ public class main
         pointLightColorArr.flip();
         glUniform3fv(glGetUniformLocation(shader.getProgramID(), "pointLightColorArr"), pointLightColorArr);
 
-        //SKA GÖRAS BÄTTRE!!
         //Directional lights directions
         FloatBuffer dirLightDirArr = BufferUtils.createFloatBuffer(6);
-        for (int i = 0; i < 2; i++)
+        for (DirectionalLight dirLight : dirLights)
         {
-            dirLightDirArr.put(lightSourcesDirectionsPositions[i].x).put(lightSourcesDirectionsPositions[i].y).put(lightSourcesDirectionsPositions[i].z);
+            Vector3f dir = dirLight.getDirection();
+            dirLightDirArr.put(dir.x).put(dir.y).put(dir.z);
         }
         dirLightDirArr.flip();
         glUniform3fv(glGetUniformLocation(shader.getProgramID(), "dirLightDirArr"), dirLightDirArr);
 
         //Directional lights color
         FloatBuffer dirLightColorArr = BufferUtils.createFloatBuffer(6);
-        for (int i = 0; i < 2; i++)
+        for (DirectionalLight dirLight : dirLights)
         {
-            dirLightColorArr.put(lightSourcesColorsArr[i].x).put(lightSourcesColorsArr[i].y).put(lightSourcesColorsArr[i].z);
+            Vector3f color = dirLight.getColor();
+            dirLightColorArr.put(color.x).put(color.y).put(color.z);
         }
         dirLightColorArr.flip();
         glUniform3fv(glGetUniformLocation(shader.getProgramID(), "dirLightColorArr"), dirLightColorArr);
-
-        //specular
-        //should be uploaded for each model (or part of model)
-        glUniform1f(glGetUniformLocation(shader.getProgramID(), "specularExponent"), specularExponent[0]);
     }
 
     public static void main(String[] args)

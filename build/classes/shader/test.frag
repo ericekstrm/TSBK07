@@ -13,8 +13,7 @@ uniform vec3 dirLightDirArr[2];
 uniform vec3 dirLightColorArr[2];
 
 uniform float specularExponent;
-//uniform vec3 viewPos;
-uniform mat4 worldToView;
+uniform vec3 viewPos;
 
 out vec4 outColor;
 
@@ -36,7 +35,6 @@ void main()
         diffuseLight += diff * pointLightColorArr[i];
 
         //specular lighting
-        vec3 viewPos = worldToView[3].xyz; //transformerad underligt. skicka in som uniform istället!!
         vec3 viewDir = normalize(viewPos - fragPos);
         vec3 reflectDir = reflect(-lightDir, normalize(normal));
 
@@ -53,6 +51,6 @@ void main()
         diffuseLight += diff * dirLightColorArr[i];
     }
 
-    vec3 result = (ambientLight + specularLight) * vec3(texture(texUnit, texCoord));
+    vec3 result = (ambientLight + diffuseLight + specularLight) * vec3(texture(texUnit, texCoord));
     outColor = vec4(result, 0.1);
 }

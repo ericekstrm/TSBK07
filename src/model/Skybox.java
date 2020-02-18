@@ -11,6 +11,7 @@ import util.Matrix4f;
 
 public class Skybox extends Model
 {
+
     int texID;
 
     public Skybox(Shader shader, RawData... datas)
@@ -25,12 +26,10 @@ public class Skybox extends Model
         //activate();
         GL11.glDisable(GL11.GL_DEPTH_TEST);
 
-        
         super.render(shader);
         //GL11.glBindTexture(GL13.GL_TEXTURE_2D, texID);
 
         //GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 36);
-
         GL11.glEnable(GL11.GL_DEPTH_TEST);
 
         deactivate();

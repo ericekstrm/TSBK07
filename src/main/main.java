@@ -3,7 +3,9 @@ package main;
 import util.Loader;
 import java.nio.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import model.*;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.*;
@@ -15,6 +17,7 @@ import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.system.MemoryUtil.*;
 import shader.Shader;
 import util.Matrix4f;
+import util.Util;
 import util.Vector3f;
 
 public class main
@@ -25,10 +28,7 @@ public class main
 
     long window;
 
-    Model model1;
-    Model windmill;
-    Model floor;
-    Model tree;
+    Map<String, Model> models = new HashMap<>();
     Skybox skybox;
     List<Light> pointLights = new ArrayList<>();
 
@@ -77,9 +77,10 @@ public class main
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
 
-        model1.destroy();
-        windmill.destroy();
-        tree.destroy();
+        for (Map.Entry<String, Model> m : models.entrySet())
+        {
+            m.getValue().destroy();
+        }
         glfwDestroyWindow(window);
         glfwTerminate();
     }
@@ -90,30 +91,26 @@ public class main
         lightShader = new Shader("light.vert", "light.frag");
         skyboxShader = new Shader("skybox.vert", "skybox.frag");
 
-        model1 = new Model(shader, Loader.loadRawData("bunnyplus.obj", "tex2.jpg"));
-        model1.setPosition(1, 0, 1);
-
-        windmill = new Model(shader, Loader.loadRawData("windmill/walls.obj", "tex.jpg"),
-                             Loader.loadRawData("windmill/balcony.obj", "tex.jpg"),
-                             Loader.loadRawData("windmill/roof.obj", "tex.jpg"),
-                             Loader.loadRawData("windmill/blade.obj", "tex.jpg"),
-                             Loader.loadRawData("windmill/blade.obj", "tex.jpg"),
-                             Loader.loadRawData("windmill/blade.obj", "tex.jpg"),
-                             Loader.loadRawData("windmill/blade.obj", "tex.jpg"));
-        windmill.setInternalTransform(3, Matrix4f.translate(5, 9, 0));
-        windmill.setInternalTransform(4, Matrix4f.translate(5, 9, 0).multiply(Matrix4f.rotate(90, 0, 0)));
-        windmill.setInternalTransform(5, Matrix4f.translate(5, 9, 0).multiply(Matrix4f.rotate(180, 0, 0)));
-        windmill.setInternalTransform(6, Matrix4f.translate(5, 9, 0).multiply(Matrix4f.rotate(270, 0, 0)));
-        windmill.setPosition(10, 0, -10);
-        windmill.setRotation(0, 180, 0);
-
-        tree = new Model(shader, Loader.loadRawData("tree.obj", "green.jpg"));
-        tree.setPosition(-2, 0, -2);
-        tree.setScale(0.1f, 0.1f, 0.1f);
-
-        floor = new Model(shader, Loader.loadRawData("flat.obj", "grass.jpg"));
+        Model floor = new Model(shader, Loader.loadRawData("flat.obj", "grass.jpg"));
         floor.setPosition(0, -0.1f, 0);
         floor.setScale(20, 1, 20);
+        models.put("floor", floor);
+
+        models.put("bunny", new Model(shader, Loader.loadRawData("bunnyplus.obj", "tex2.jpg")));
+        models.get("bunny").setPosition(1, 0, 1);
+
+        Model windmill = new Windmill(shader);
+        windmill.setPosition(10, 0, -10);
+        windmill.setRotation(0, 180, 0);
+        models.put("windmill", windmill);
+
+        for (int i = 0; i < 100; i++)
+        {
+            Model tree = new Model(shader, Loader.loadRawData("tree.obj", "green.jpg"));
+            tree.setPosition((float) Util.randu(20), 0, (float) Util.randu(20));
+            tree.setScale(0.1f, 0.1f, 0.1f);
+            models.put("tree" + i, tree);
+        }
 
         pointLights.add(new Light(new Vector3f(5.0f, 5.0f, 0.0f),
                                   new Vector3f(1.0f, 0.0f, 0.0f)));
@@ -127,9 +124,9 @@ public class main
 
     public void update()
     {
-        windmill.update();
+        models.get("windmill").update();
         time = System.currentTimeMillis() % 36000;
-        model1.setRotation(0, time / 10, 0);
+        models.get("bunny").setRotation(0, time / 10, 0);
 
         pointLights.get(0).setPosition(Matrix4f.rotate(0, 2, 0).multiply(pointLights.get(0).getPosition()));
     }
@@ -194,10 +191,10 @@ public class main
             glUniformMatrix4fv(glGetUniformLocation(shader.getProgramID(), "worldToView"), false, worldToView);
 
             //render
-            model1.render(shader);
-            windmill.render(shader);
-            tree.render(shader);
-            floor.render(shader);
+            for (Map.Entry<String, Model> m : models.entrySet())
+            {
+                m.getValue().render(shader);
+            }
 
             shader.stop();
 

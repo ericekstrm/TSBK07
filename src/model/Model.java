@@ -110,9 +110,5 @@ public class Model extends Movable
     
     public void update()
     {
-        internalTransform.set(3, internalTransform.get(3).multiply(Matrix4f.rotate(-0.5f, 0, 0)));
-        internalTransform.set(4, internalTransform.get(4).multiply(Matrix4f.rotate(-0.5f, 0, 0)));
-        internalTransform.set(5, internalTransform.get(5).multiply(Matrix4f.rotate(-0.5f, 0, 0)));
-        internalTransform.set(6, internalTransform.get(6).multiply(Matrix4f.rotate(-0.5f, 0, 0)));
     }
 }

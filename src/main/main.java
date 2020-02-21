@@ -94,7 +94,7 @@ public class main
 
         Model floor = new Model(shader, Loader.loadRawData("flat.obj", "grass.jpg"));
         floor.setPosition(0, -0.1f, 0);
-        floor.setScale(20, 1, 20);
+        floor.setScale(500, 1, 500);
         models.put("floor", floor);
 
         models.put("bunny", new Model(shader, Loader.loadRawData("bunnyplus.obj", "tex2.jpg")));
@@ -106,12 +106,13 @@ public class main
         models.put("windmill", windmill);
 
         RawData data = Loader.loadRawData("tree.obj", "green.jpg");
-        for (int i = 0; i < 100; i++)
+        for (int i = 0; i < 1000; i++)
         {
 
             Model tree = new Model(shader, data);
-            tree.setPosition((float) Util.randu(20), 0, (float) Util.randu(20));
+            tree.setPosition((float) Util.randu(100), 0, (float) Util.randu(100));
             tree.setScale(0.1f, 0.1f, 0.1f);
+            tree.setRotation(0, Util.rand(0, 360), 0);
             models.put("tree" + i, tree);
         }
 
@@ -120,8 +121,8 @@ public class main
         pointLights.add(new PositionalLight(new Vector3f(0.0f, 5.0f, 5.0f),
                                             new Vector3f(0.0f, 1.0f, 0.0f)));
 
-        //dirLights.add(new DirectionalLight(new Vector3f(0.0f, 0.0f, -1.0f),
-        //                                   new Vector3f(1.0f, 1.0f, 1.0f)));
+        dirLights.add(new DirectionalLight(new Vector3f(0.0f, 1.0f, 0.5f),
+                                           new Vector3f(0.5f, 0.5f, 0.5f)));
 
         skybox = new Skybox(skyboxShader, Loader.loadRawData("skybox.obj", "SkyBox512.tga"));
     }
@@ -132,7 +133,7 @@ public class main
     {
         models.get("windmill").update();
         time = System.currentTimeMillis() % 36000;
-        models.get("bunny").setRotation(0, time / 10, 0);
+        models.get("bunny").setRotation(0, time / 100, 0);
 
         pointLights.get(0).setPosition(Matrix4f.rotate(0, 2, 0).multiply(pointLights.get(0).getPosition()));
     }

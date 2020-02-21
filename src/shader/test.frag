@@ -3,9 +3,9 @@
 in vec2 texCoord;
 in vec3 normal;
 in vec3 fragPos;
+in vec4 viewSpace;
 
 uniform sampler2D texUnit;
-
 
 //light properties
 uniform vec3 pointLightPosArr[2];
@@ -33,6 +33,7 @@ void main()
     vec3 diffuseLight = vec3(0,0,0);
     vec3 specularLight = vec3(0,0,0);
     
+    //======================================================
     //Point lights
     for(int i = 0; i < pointLightPosArr.length(); i++)
     {
@@ -59,6 +60,7 @@ void main()
         specularLight += attenuation * Ks * spec * pointLightColorArr[i];
     }
 
+    //===================================================
     //Directional lights
     for(int i = 0; i < dirLightDirArr.length(); i++)
     {
@@ -68,7 +70,23 @@ void main()
         float diff = max(0.0, dot(normalize(normal), lightDir));
         diffuseLight += Kd * diff * dirLightColorArr[i];
     }
+    
+    vec3 lightColor = (ambientLight + diffuseLight + specularLight) * vec3(texture(texUnit, texCoord));
+ 
+    //=====================================================
+    //compute distance used in fog equations
+    float dist = abs(viewSpace.z);
+    //dist = (gl_FragCoord.z / gl_FragCoord.w);
+    
+    //linear fog
+    // 20 - fog starts; 80 - fog ends
+    float fogFactor = (80 - dist)/(80 - 20);
+    fogFactor = clamp( fogFactor, 0.0, 1.0 );
+    vec3 fogColor = vec3(0.5, 0.5, 0.5);
+ 
+    //if you inverse color in glsl mix function you have to
+    //put 1.0 - fogFactor
+    vec3 finalColor = mix(fogColor, lightColor, fogFactor);
 
-    vec3 result = (ambientLight + diffuseLight + specularLight) * vec3(texture(texUnit, texCoord));
-    outColor = vec4(result, 0.1);
+    outColor = vec4(finalColor, 1);
 }

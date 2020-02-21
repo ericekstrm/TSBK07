@@ -373,7 +373,7 @@ public class Matrix4f
     public static Matrix4f frustum_new()
     {
         float near = 1f;
-        float far = 50.0f;
+        float far = 500.0f;
         float right = 0.5f;
         float left = -0.5f;
         float top = 0.5f;

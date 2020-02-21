@@ -11,11 +11,13 @@ uniform mat4 projection;
 out vec2 texCoord;
 out vec3 normal;
 out vec3 fragPos;
+out vec4 viewSpace;
 
 void main()
 {
     normal = mat3(transpose(inverse(modelToWorld))) * in_Normal;
     fragPos = vec3(modelToWorld * vec4(in_Position, 1.0));
+    viewSpace = worldToView * modelToWorld * vec4(in_Position,1);
 
     texCoord = in_Texture;
     gl_Position = projection * worldToView * modelToWorld * vec4(in_Position, 1.0);

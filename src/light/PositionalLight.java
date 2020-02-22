@@ -1,8 +1,10 @@
-package model;
+package light;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import model.ModelLoader;
+import model.RawData;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;

@@ -1,11 +1,12 @@
 package main;
 
+import light.DirectionalLight;
+import light.PositionalLight;
 import util.Loader;
 import java.nio.*;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import light.Lights;
 import model.*;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.*;
@@ -16,6 +17,8 @@ import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.system.MemoryUtil.*;
 import shader.Shader;
+import terrain.Terrain;
+import terrain.TerrainLoader;
 import util.Matrix4f;
 import util.Util;
 import util.Vector3f;
@@ -29,15 +32,11 @@ public class main
     long window;
 
     Map<String, Model> models = new HashMap<>();
+    Terrain terrain;
     Skybox skybox;
-    List<PositionalLight> pointLights = new ArrayList<>();
-    List<DirectionalLight> dirLights = new ArrayList<>();
-
-    int tex;
+    Lights lights;
 
     Shader shader;
-    Shader lightShader;
-    Shader skyboxShader;
 
     Camera camera = new Camera(new Vector3f(2, 1, 2), new Vector3f(3, 3, 0));
 
@@ -89,13 +88,6 @@ public class main
     public void initModel()
     {
         shader = new Shader("test.vert", "test.frag");
-        lightShader = new Shader("light.vert", "light.frag");
-        skyboxShader = new Shader("skybox.vert", "skybox.frag");
-
-        Model floor = new Model(shader, Loader.loadRawData("flat.obj", "grass.jpg"));
-        floor.setPosition(0, -0.1f, 0);
-        floor.setScale(500, 1, 500);
-        models.put("floor", floor);
 
         models.put("bunny", new Model(shader, Loader.loadRawData("bunnyplus.obj", "tex2.jpg")));
         models.get("bunny").setPosition(1, 0, 1);
@@ -116,15 +108,15 @@ public class main
             models.put("tree" + i, tree);
         }
 
-        pointLights.add(new PositionalLight(new Vector3f(15.0f, 3.0f, 0.0f),
-                                            new Vector3f(1.0f, 0.0f, 0.0f)));
-        pointLights.add(new PositionalLight(new Vector3f(0.0f, 5.0f, 5.0f),
-                                            new Vector3f(0.0f, 1.0f, 0.0f)));
+        lights = new Lights();
+        lights.addPosLight(new Vector3f(15.0f, 3.0f, 0.0f), new Vector3f(1.0f, 0.0f, 0.0f));
+        lights.addPosLight(new Vector3f(0.0f, 5.0f, 5.0f), new Vector3f(0.0f, 1.0f, 0.0f));
 
-        dirLights.add(new DirectionalLight(new Vector3f(0.0f, 1.0f, 0.5f),
-                                           new Vector3f(0.5f, 0.5f, 0.5f)));
+        lights.addDirLight(new Vector3f(0.0f, 1.0f, 0.5f), new Vector3f(0.5f, 0.5f, 0.5f));
 
-        skybox = new Skybox(skyboxShader, Loader.loadRawData("skybox.obj", "SkyBox512.tga"));
+        skybox = new Skybox(new Shader("skybox.vert", "skybox.frag"),
+                            Loader.loadRawData("skybox.obj", "SkyBox512.tga"));
+        terrain = new Terrain();
     }
 
     long time = 0;
@@ -135,7 +127,7 @@ public class main
         time = System.currentTimeMillis() % 36000;
         models.get("bunny").setRotation(0, time / 100, 0);
 
-        pointLights.get(0).setPosition(Matrix4f.rotate(0, 2, 0).multiply(pointLights.get(0).getPosition()));
+        lights.moveLight(0, Matrix4f.rotate(0, 2, 0));
     }
 
     void loop()
@@ -143,7 +135,7 @@ public class main
         while (!glfwWindowShouldClose(window))
         {
             update();
-            
+
             render();
 
             glfwPollEvents();
@@ -158,37 +150,24 @@ public class main
         //prepare
         glClear(GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
-        //draw skybox
-        skyboxShader.start();
-
-        skybox.prepareForRender(camera, skyboxShader);
+        //render skybox
+        skybox.prepareForRender(camera);
         skybox.render(shader);
 
-        skyboxShader.stop();
+        //render lights
+        lights.render(camera);
 
-        //draw lights
-        lightShader.start();
+        //render terrain
+        terrain.render(camera, lights);
 
-        //world-to-view matrix
-        FloatBuffer worldToView = BufferUtils.createFloatBuffer(16);
-        camera.getWorldtoViewMatrix().toBuffer(worldToView);
-        glUniformMatrix4fv(glGetUniformLocation(lightShader.getProgramID(), "worldToView"), false, worldToView);
-
-        for (PositionalLight light : pointLights)
-        {
-            light.render(lightShader);
-        }
-        lightShader.stop();
-
+        //render objects
         shader.start();
-        loadLights();
+        lights.loadLights(shader);
+        camera.worldToViewUniform(shader);
 
         FloatBuffer viewPos = BufferUtils.createFloatBuffer(3);
         camera.getPosition().toBuffer(viewPos);
         glUniform3fv(glGetUniformLocation(shader.getProgramID(), "viewPos"), viewPos);
-
-        //world-to-view matrix
-        glUniformMatrix4fv(glGetUniformLocation(shader.getProgramID(), "worldToView"), false, worldToView);
 
         //render
         for (Map.Entry<String, Model> m : models.entrySet())
@@ -209,49 +188,6 @@ public class main
         {
             glfwSetWindowShouldClose(window, true);
         }
-    }
-
-    public void loadLights()
-    {
-        //Pointlights position
-        FloatBuffer pointLightPosArr = BufferUtils.createFloatBuffer(3 * pointLights.size());
-        for (PositionalLight light : pointLights)
-        {
-            Vector3f pos = light.getPosition();
-            pointLightPosArr.put(pos.x).put(pos.y).put(pos.z);
-        }
-        pointLightPosArr.flip();
-        glUniform3fv(glGetUniformLocation(shader.getProgramID(), "pointLightPosArr"), pointLightPosArr);
-
-        //Pointlights color
-        FloatBuffer pointLightColorArr = BufferUtils.createFloatBuffer(3 * pointLights.size());
-        for (PositionalLight light : pointLights)
-        {
-            Vector3f color = light.getColor();
-            pointLightColorArr.put(color.x).put(color.y).put(color.z);
-        }
-        pointLightColorArr.flip();
-        glUniform3fv(glGetUniformLocation(shader.getProgramID(), "pointLightColorArr"), pointLightColorArr);
-
-        //Directional lights directions
-        FloatBuffer dirLightDirArr = BufferUtils.createFloatBuffer(6);
-        for (DirectionalLight dirLight : dirLights)
-        {
-            Vector3f dir = dirLight.getDirection();
-            dirLightDirArr.put(dir.x).put(dir.y).put(dir.z);
-        }
-        dirLightDirArr.flip();
-        glUniform3fv(glGetUniformLocation(shader.getProgramID(), "dirLightDirArr"), dirLightDirArr);
-
-        //Directional lights color
-        FloatBuffer dirLightColorArr = BufferUtils.createFloatBuffer(6);
-        for (DirectionalLight dirLight : dirLights)
-        {
-            Vector3f color = dirLight.getColor();
-            dirLightColorArr.put(color.x).put(color.y).put(color.z);
-        }
-        dirLightColorArr.flip();
-        glUniform3fv(glGetUniformLocation(shader.getProgramID(), "dirLightColorArr"), dirLightColorArr);
     }
 
     public static void main(String[] args)

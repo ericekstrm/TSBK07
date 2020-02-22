@@ -10,7 +10,7 @@ import shader.Shader;
 
 public class ModelLoader {
 
-    static int loadVertexVBO(float[] vertices) {
+    public static int loadVertexVBO(float[] vertices) {
         int vertexVBO = GL15.glGenBuffers();
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vertexVBO);
         FloatBuffer vertexBuffer = createFloatBuffer(vertices);
@@ -20,7 +20,7 @@ public class ModelLoader {
         return vertexVBO;
     }
 
-    static int loadIndicesVBO(int[] indices) {
+    public static int loadIndicesVBO(int[] indices) {
         int indexVBO = GL15.glGenBuffers();
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, indexVBO);
         IntBuffer indexBuffer = createIntBuffer(indices);
@@ -28,7 +28,7 @@ public class ModelLoader {
         return indexVBO;
     }
 
-    static int loadColorVBO(float[] colors) {
+    public static int loadColorVBO(float[] colors) {
         int colorVBO = GL15.glGenBuffers();
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, colorVBO);
         FloatBuffer colorBuffer = createFloatBuffer(colors);
@@ -38,7 +38,7 @@ public class ModelLoader {
         return colorVBO;
     }
 
-    static int loadTextureVBO(float[] colors) {
+    public static int loadTextureVBO(float[] colors) {
         int textureVBO = GL15.glGenBuffers();
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, textureVBO);
         FloatBuffer colorBuffer = createFloatBuffer(colors);
@@ -48,7 +48,7 @@ public class ModelLoader {
         return textureVBO;
     }
 
-    static int loadNormalsVBO(float[] normals) {
+    public static int loadNormalsVBO(float[] normals) {
         int normalsVBO = GL15.glGenBuffers();
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, normalsVBO);
         FloatBuffer normalBuffer = createFloatBuffer(normals);
@@ -58,14 +58,14 @@ public class ModelLoader {
         return normalsVBO;
     }
 
-    static FloatBuffer createFloatBuffer(float[] data) {
+    public static FloatBuffer createFloatBuffer(float[] data) {
         FloatBuffer buffer = BufferUtils.createFloatBuffer(data.length);
         buffer.put(data);
         buffer.flip();
         return buffer;
     }
 
-    static IntBuffer createIntBuffer(int[] data) {
+    public static IntBuffer createIntBuffer(int[] data) {
         IntBuffer buffer = BufferUtils.createIntBuffer(data.length);
         buffer.put(data);
         buffer.flip();

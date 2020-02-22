@@ -12,36 +12,37 @@ import util.Matrix4f;
 public class Skybox extends Model
 {
 
+    Shader skyboxShader;
     int texID;
 
-    public Skybox(Shader shader, RawData... datas)
+    public Skybox(Shader skyboxShader, RawData... datas)
     {
-        super(shader, datas);
+        super(skyboxShader, datas);
+        this.skyboxShader = skyboxShader;
         System.out.println(datas[0].indices.length);
     }
 
-    @Override
-    public void render(Shader shader)
+    public void render(Camera camera)
     {
-        //activate();
+        skyboxShader.start();
+
         GL11.glDisable(GL11.GL_DEPTH_TEST);
 
-        super.render(shader);
-        //GL11.glBindTexture(GL13.GL_TEXTURE_2D, texID);
-
-        //GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 36);
+        super.render(skyboxShader);
         GL11.glEnable(GL11.GL_DEPTH_TEST);
 
         deactivate();
+
+        skyboxShader.stop();
     }
 
-    public void prepareForRender(Camera camera, Shader shader)
+    public void prepareForRender(Camera camera)
     {
         //world-to-view matrix
         FloatBuffer worldToView = BufferUtils.createFloatBuffer(16);
         Matrix4f mat = camera.getWorldtoViewMatrix();
         Matrix4f.remove_translation(mat);
         mat.toBuffer(worldToView);
-        glUniformMatrix4fv(glGetUniformLocation(shader.getProgramID(), "worldToView"), false, worldToView);
+        glUniformMatrix4fv(glGetUniformLocation(skyboxShader.getProgramID(), "worldToView"), false, worldToView);
     }
 }

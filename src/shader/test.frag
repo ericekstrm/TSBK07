@@ -76,13 +76,14 @@ void main()
     //=====================================================
     //compute distance used in fog equations
     float dist = abs(viewSpace.z);
-    //dist = (gl_FragCoord.z / gl_FragCoord.w);
     
     //linear fog
     // 20 - fog starts; 80 - fog ends
-    float fogFactor = (80 - dist)/(80 - 20);
+    float fogStart = 120;
+    float fogEnd = 500;
+    float fogFactor = (fogEnd - dist)/(fogEnd - fogStart);
     fogFactor = clamp( fogFactor, 0.0, 1.0 );
-    vec3 fogColor = vec3(0.5, 0.5, 0.5);
+    vec3 fogColor = vec3(91.0/255.0, 142/255.0, 194.0/255.0);
  
     //if you inverse color in glsl mix function you have to
     //put 1.0 - fogFactor

@@ -1,4 +1,4 @@
-package model;
+package light;
 
 import util.Vector3f;
 

@@ -1,8 +1,12 @@
 package main;
 
 import java.nio.DoubleBuffer;
+import java.nio.FloatBuffer;
 import org.lwjgl.BufferUtils;
 import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL20.glGetUniformLocation;
+import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
+import shader.Shader;
 import util.Matrix4f;
 import util.Vector3f;
 
@@ -12,6 +16,8 @@ public class Camera
     Vector3f position;
     Vector3f direction;
     Vector3f upVector = new Vector3f(0, 1, 0);
+    
+    float speed = 0.6f;
 
     public Camera(Vector3f position, Vector3f lookAt)
     {
@@ -39,36 +45,35 @@ public class Camera
             direction = Matrix4f.rotate((float) (y - prevY) / 10, dir).multiply(direction);
         }
         glfwSetCursorPos(window, prevX, prevY);
-
-        float speed = 0.1f;
+        
         if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
         {
             //forward
             Vector3f movement = direction.scale(speed);
-            move(movement);
+            position = position.add(movement);
         }
         if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
         {
             Vector3f movement = direction.scale(-speed);
-            move(movement);
+            position = position.add(movement);
         }
         if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
         {
             Vector3f direction = this.direction.cross(upVector);
             Vector3f movement = direction.scale(-speed);
-            move(movement);
+            position = position.add(movement);
         }
         if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
         {
             Vector3f direction = this.direction.cross(upVector);
             Vector3f movement = direction.scale(speed);
-            move(movement);
+            position = position.add(movement);
         }
     }
 
-    public void move(Vector3f movement)
+    public void move(Matrix4f transform)
     {
-        position = position.add(movement);
+        position = transform.multiply(position);
     }
 
     /**
@@ -91,6 +96,14 @@ public class Camera
         Matrix4f translation = Matrix4f.translate(-position.x, -position.y, -position.z);
 
         return rotation.multiply(translation);
+    }
+    
+    public void worldToViewUniform(Shader shader)
+    {
+        FloatBuffer worldToView = BufferUtils.createFloatBuffer(16);
+        getWorldtoViewMatrix().toBuffer(worldToView);
+        glUniformMatrix4fv(glGetUniformLocation(shader.getProgramID(), "worldToView"), false, worldToView);
+
     }
 
     public Vector3f getPosition()

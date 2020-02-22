@@ -16,13 +16,13 @@ import util.Matrix4f;
 public class Model extends Movable
 {
 
-    List<Integer> textureIDs = new ArrayList<>();
-    List<Integer> activeVAOs = new ArrayList<>();
-    List<Integer> activeVBOs = new ArrayList<>();
-    List<Integer> nrOfIndices = new ArrayList<>();
-    List<MaterialProperties> matProperties = new ArrayList<>();
+    protected List<Integer> textureIDs = new ArrayList<>();
+    protected List<Integer> activeVAOs = new ArrayList<>();
+    protected List<Integer> activeVBOs = new ArrayList<>();
+    protected List<Integer> nrOfIndices = new ArrayList<>();
+    protected List<MaterialProperties> matProperties = new ArrayList<>();
 
-    List<Matrix4f> internalTransform = new ArrayList<>();
+    protected List<Matrix4f> internalTransform = new ArrayList<>();
 
     public Model(Shader shader, RawData... datas)
     {
@@ -77,7 +77,7 @@ public class Model extends Movable
         }
     }
 
-    private void bindUniforms(Shader shader, int i)
+    protected void bindUniforms(Shader shader, int i)
     {
         //bind current model-to-world transformation
         FloatBuffer translation = BufferUtils.createFloatBuffer(16);

@@ -17,8 +17,7 @@ import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.system.MemoryUtil.*;
 import shader.Shader;
-import terrain.Terrain;
-import terrain.TerrainLoader;
+import terrain.TerrainHandler;
 import util.Matrix4f;
 import util.Util;
 import util.Vector3f;
@@ -32,7 +31,7 @@ public class main
     long window;
 
     Map<String, Model> models = new HashMap<>();
-    Terrain terrain;
+    TerrainHandler terrain;
     Skybox skybox;
     Lights lights;
 
@@ -89,6 +88,15 @@ public class main
     {
         shader = new Shader("test.vert", "test.frag");
 
+        skybox = new Skybox(new Shader("skybox.vert", "skybox.frag"),
+                            Loader.loadRawData("skybox.obj", "SkyBox512.tga"));
+        terrain = new TerrainHandler();
+
+        lights = new Lights();
+        lights.addPosLight(new Vector3f(15.0f, 3.0f, 0.0f), new Vector3f(1.0f, 0.0f, 0.0f));
+        lights.addPosLight(new Vector3f(0.0f, 5.0f, 5.0f), new Vector3f(0.0f, 1.0f, 0.0f));
+        lights.addDirLight(new Vector3f(0.0f, 1.0f, 0.5f), new Vector3f(0.5f, 0.5f, 0.5f));
+
         models.put("bunny", new Model(shader, Loader.loadRawData("bunnyplus.obj", "tex2.jpg")));
         models.get("bunny").setPosition(1, 0, 1);
 
@@ -100,23 +108,14 @@ public class main
         RawData data = Loader.loadRawData("tree.obj", "green.jpg");
         for (int i = 0; i < 1000; i++)
         {
-
             Model tree = new Model(shader, data);
-            tree.setPosition((float) Util.randu(100), 0, (float) Util.randu(100));
+            float x = (float) Util.randu(100);
+            float z = (float) Util.randu(100);
+            tree.setPosition(x, terrain.getHeight(x, z), z);
             tree.setScale(0.1f, 0.1f, 0.1f);
             tree.setRotation(0, Util.rand(0, 360), 0);
             models.put("tree" + i, tree);
         }
-
-        lights = new Lights();
-        lights.addPosLight(new Vector3f(15.0f, 3.0f, 0.0f), new Vector3f(1.0f, 0.0f, 0.0f));
-        lights.addPosLight(new Vector3f(0.0f, 5.0f, 5.0f), new Vector3f(0.0f, 1.0f, 0.0f));
-
-        lights.addDirLight(new Vector3f(0.0f, 1.0f, 0.5f), new Vector3f(0.5f, 0.5f, 0.5f));
-
-        skybox = new Skybox(new Shader("skybox.vert", "skybox.frag"),
-                            Loader.loadRawData("skybox.obj", "SkyBox512.tga"));
-        terrain = new Terrain();
     }
 
     long time = 0;

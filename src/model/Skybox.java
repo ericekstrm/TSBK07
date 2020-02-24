@@ -19,12 +19,18 @@ public class Skybox extends Model
     {
         super(skyboxShader, datas);
         this.skyboxShader = skyboxShader;
-        System.out.println(datas[0].indices.length);
     }
 
     public void render(Camera camera)
     {
         skyboxShader.start();
+    	
+    	//world-to-view matrix
+        FloatBuffer worldToView = BufferUtils.createFloatBuffer(16);
+        Matrix4f mat = camera.getWorldtoViewMatrix();
+        Matrix4f.remove_translation(mat);
+        mat.toBuffer(worldToView);
+        glUniformMatrix4fv(glGetUniformLocation(skyboxShader.getProgramID(), "worldToView"), false, worldToView);
 
         GL11.glDisable(GL11.GL_DEPTH_TEST);
 
@@ -34,15 +40,5 @@ public class Skybox extends Model
         deactivate();
 
         skyboxShader.stop();
-    }
-
-    public void prepareForRender(Camera camera)
-    {
-        //world-to-view matrix
-        FloatBuffer worldToView = BufferUtils.createFloatBuffer(16);
-        Matrix4f mat = camera.getWorldtoViewMatrix();
-        Matrix4f.remove_translation(mat);
-        mat.toBuffer(worldToView);
-        glUniformMatrix4fv(glGetUniformLocation(skyboxShader.getProgramID(), "worldToView"), false, worldToView);
     }
 }

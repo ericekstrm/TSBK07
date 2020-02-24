@@ -56,7 +56,7 @@ void main()
         vec3 viewDir = normalize(viewPos - fragPos);
         vec3 reflectDir = reflect(-lightDir, normalize(normal));
 
-        float spec = pow(max(0.0, dot(viewDir, reflectDir)), specularExponent); //128 ska va nåt som bestäms för varje objekt
+        float spec = pow(max(0.0, dot(viewDir, reflectDir)), specularExponent);
         specularLight += attenuation * Ks * spec * pointLightColorArr[i];
     }
 

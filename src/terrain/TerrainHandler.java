@@ -40,11 +40,26 @@ public class TerrainHandler
 
     public float getHeight(float x, float z)
     {
-        if (x < 0 || z < 0 || x > terrain.heightData.length || z > terrain.heightData.length)
+    	
+        if (x < 1 || z < 1 || Math.floor(x) + 1 >= terrain.heightData.length || Math.floor(z) + 1 >= terrain.heightData.length)
         {
             return 0;
         }
+        int x1 = (int) Math.floor(x);
+        int x2 = (int) Math.floor(x) + 1;
+        int z1 = (int) Math.floor(z);
+        int z2 = (int) Math.floor(z) + 1;
+        
+        //interpolation in the x-direction
+        float f1 = (x2 - x) / (x2 - x1) * terrain.heightData[x1][z1] + 
+        		   (x - x1) / (x2 - x1) * terrain.heightData[x2][z1];
+        
+        float f2 = (x2 - x) / (x2 - x1) * terrain.heightData[x1][z2] + 
+        		   (x - x1) / (x2 - x1) * terrain.heightData[x2][z2];
+        
+        float h = (z2 - z) / (z2 - z1) * f1 + (z - z1) / (z2 - z1) * f2;
+        
         float height = terrain.heightData[Math.round(x)][Math.round(z)];
-        return height;
+        return h;
     }
 }

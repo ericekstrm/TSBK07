@@ -5,8 +5,8 @@ public class Util
 
     public static float rand(int low, int high)
     {
-        double r = Math.random() * (high - low);
-        return (float) r - (high - low) / 2;
+        double r = Math.random() * (high - low - 1);
+        return (float) r ;
     }
     
     public static float randu(int i)

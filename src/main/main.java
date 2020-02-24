@@ -1,7 +1,5 @@
 package main;
 
-import light.DirectionalLight;
-import light.PositionalLight;
 import util.Loader;
 import java.nio.*;
 import java.util.HashMap;
@@ -99,6 +97,7 @@ public class main
 
         models.put("bunny", new Model(shader, Loader.loadRawData("bunnyplus.obj", "tex2.jpg")));
         models.get("bunny").setPosition(1, 0, 1);
+        models.get("bunny").setMaterialProperties(0, new MaterialProperties(0.1f, 0.4f, 1f, 8));
 
         Model windmill = new Windmill(shader);
         windmill.setPosition(10, 0, -10);
@@ -109,10 +108,10 @@ public class main
         for (int i = 0; i < 1000; i++)
         {
             Model tree = new Model(shader, data);
-            float x = (float) Util.randu(100);
-            float z = (float) Util.randu(100);
+            float x = (float) Util.rand(0, 400);
+            float z = (float) Util.rand(0, 400);
             tree.setPosition(x, terrain.getHeight(x, z), z);
-            tree.setScale(0.1f, 0.1f, 0.1f);
+            tree.setScale(0.3f, 0.3f, 0.3f);
             tree.setRotation(0, Util.rand(0, 360), 0);
             models.put("tree" + i, tree);
         }
@@ -150,8 +149,7 @@ public class main
         glClear(GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
         //render skybox
-        skybox.prepareForRender(camera);
-        skybox.render(shader);
+        skybox.render(camera);
 
         //render lights
         lights.render(camera);

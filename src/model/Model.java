@@ -119,6 +119,11 @@ public class Model extends Movable
     {
         internalTransform.set(VAOindex, transform);
     }
+    
+    public void setMaterialProperties(int index, MaterialProperties matProp)
+    {
+    	matProperties.set(index, matProp);
+    }
 
     public void update()
     {

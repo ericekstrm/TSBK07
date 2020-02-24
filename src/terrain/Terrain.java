@@ -56,8 +56,8 @@ public class Terrain extends Model
                 normalsArray[v * 3 + 1] = n.y;
                 normalsArray[v * 3 + 2] = n.z;
 
-                textureArray[v * 2] = i / (vertexCount - 1);
-                textureArray[v * 2 + 1] = j / (vertexCount - 1);
+                textureArray[v * 2] = (float) i / (vertexCount - 1);
+                textureArray[v * 2 + 1] = (float) j / (vertexCount - 1);
 
                 v++;
             }

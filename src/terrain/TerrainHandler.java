@@ -3,11 +3,9 @@ package terrain;
 import java.nio.FloatBuffer;
 import light.Lights;
 import main.Camera;
-import model.Model;
 import org.lwjgl.BufferUtils;
 import static org.lwjgl.opengl.GL20.glGetUniformLocation;
 import static org.lwjgl.opengl.GL20.glUniform3fv;
-import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
 import shader.Shader;
 
 public class TerrainHandler
@@ -15,7 +13,7 @@ public class TerrainHandler
 
     //static List<Model> terrainTiles = new ArrayList<>();
     Terrain terrain;
-    Shader terrainShader = new Shader("test.vert", "test.frag");
+    Shader terrainShader = new Shader("terrain.vert", "terrain.frag");
 
     public TerrainHandler()
     {
@@ -33,10 +31,8 @@ public class TerrainHandler
         glUniform3fv(glGetUniformLocation(terrainShader.getProgramID(), "viewPos"), viewPos);
 
         //world-to-view matrix
-        FloatBuffer worldToView = BufferUtils.createFloatBuffer(16);
-        camera.getWorldtoViewMatrix().toBuffer(worldToView);
-        glUniformMatrix4fv(glGetUniformLocation(terrainShader.getProgramID(), "worldToView"), false, worldToView);
-
+        camera.worldToViewUniform(terrainShader);
+        
         terrain.render(terrainShader);
 
         terrainShader.stop();

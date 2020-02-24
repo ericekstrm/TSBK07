@@ -1,6 +1,8 @@
 package main;
 
-import util.Loader;
+import loader.MaterialProperties;
+import loader.RawData;
+import loader.Loader;
 import java.nio.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -103,6 +105,10 @@ public class main
         windmill.setPosition(10, 0, -10);
         windmill.setRotation(0, 180, 0);
         models.put("windmill", windmill);
+
+        //models.put("plant", new Model(shader, Loader.loadRawData("street/LowPolyMill.obj", "tex2.jpg")));
+        //models.get("plant").setScale(0.01f, 0.01f, 0.01f);
+        //models.get("plant").setPosition(-10f, 1f, -10f);
 
         RawData data = Loader.loadRawData("tree.obj", "green.jpg");
         for (int i = 0; i < 1000; i++)

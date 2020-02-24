@@ -5,9 +5,9 @@ import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import model.Model;
-import model.RawData;
+import loader.RawData;
 import shader.Shader;
-import util.Loader;
+import loader.Loader;
 import util.Vector3f;
 
 public class Terrain extends Model

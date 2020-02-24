@@ -1,7 +1,7 @@
 package model;
 
 import shader.Shader;
-import util.Loader;
+import loader.Loader;
 import util.Matrix4f;
 
 public class Windmill extends Model

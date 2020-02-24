@@ -1,4 +1,4 @@
-package model;
+package loader;
 
 public class RawData {
     

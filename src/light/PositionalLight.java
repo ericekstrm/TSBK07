@@ -4,7 +4,7 @@ import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import model.ModelLoader;
-import model.RawData;
+import loader.RawData;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
@@ -12,7 +12,7 @@ import static org.lwjgl.opengl.GL20.glGetUniformLocation;
 import static org.lwjgl.opengl.GL20.*;
 import org.lwjgl.opengl.GL30;
 import shader.Shader;
-import util.Loader;
+import loader.Loader;
 import util.Matrix4f;
 import util.Vector3f;
 

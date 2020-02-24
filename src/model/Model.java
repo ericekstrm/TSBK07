@@ -1,5 +1,7 @@
 package model;
 
+import loader.MaterialProperties;
+import loader.RawData;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +36,7 @@ public class Model extends Movable
             activeVAOs.add(vaoID);
 
             setVBOs(data);
-            
+
             //materials
             matProperties.add(data.matprop);
 
@@ -69,7 +71,7 @@ public class Model extends Movable
             GL20.glEnableVertexAttribArray(Shader.NORMAL_ATTRIB);
 
             bindUniforms(shader, i);
-            
+
             //draw!
             glBindTexture(GL_TEXTURE_2D, textureIDs.get(i));
             GL11.glDrawElements(GL11.GL_TRIANGLES, nrOfIndices.get(i), GL11.GL_UNSIGNED_INT, 0);
@@ -83,7 +85,7 @@ public class Model extends Movable
         FloatBuffer translation = BufferUtils.createFloatBuffer(16);
         getModelToViewMatrix().multiply(internalTransform.get(i)).toBuffer(translation);
         glUniformMatrix4fv(glGetUniformLocation(shader.getProgramID(), "modelToWorld"), false, translation);
-        
+
         glUniform1f(glGetUniformLocation(shader.getProgramID(), "Ka"), matProperties.get(i).Ka);
         glUniform1f(glGetUniformLocation(shader.getProgramID(), "Kd"), matProperties.get(i).Kd);
         glUniform1f(glGetUniformLocation(shader.getProgramID(), "Ks"), matProperties.get(i).Ks);
@@ -119,10 +121,10 @@ public class Model extends Movable
     {
         internalTransform.set(VAOindex, transform);
     }
-    
+
     public void setMaterialProperties(int index, MaterialProperties matProp)
     {
-    	matProperties.set(index, matProp);
+        matProperties.set(index, matProp);
     }
 
     public void update()

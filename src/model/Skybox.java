@@ -1,5 +1,6 @@
 package model;
 
+import loader.RawData;
 import java.nio.FloatBuffer;
 import main.Camera;
 import org.lwjgl.BufferUtils;

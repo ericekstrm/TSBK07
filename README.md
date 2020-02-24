@@ -2,8 +2,8 @@
 
 A work in progress 3D world for the course TSBK07.
 
-* working right now
+##working right now
 
 
 
-*plans for the future
+##plans for the future

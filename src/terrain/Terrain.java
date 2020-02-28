@@ -13,9 +13,9 @@ import util.Vector3f;
 public class Terrain extends Model
 {
 
-    private static final int SIZE = 400;
-    private static final int MAX_PIXEL_COLOR = 256 * 256 * 256;
-    private static final int MAX_HEIGHT = 40;
+    public static final float SIZE = 400;
+    public static final int MAX_PIXEL_COLOR = 256 * 256 * 256;
+    public static final int MAX_HEIGHT = 40;
 
     public float[][] heightData;
 
@@ -73,12 +73,12 @@ public class Terrain extends Model
                 int bottomLeft = (i + 1) * vertexCount + j;
                 int bottomRight = bottomLeft + 1;
 
+                indicesArray[p++] = topRight;
+                indicesArray[p++] = bottomLeft;
                 indicesArray[p++] = topLeft;
-                indicesArray[p++] = bottomLeft;
-                indicesArray[p++] = topRight;
-                indicesArray[p++] = topRight;
-                indicesArray[p++] = bottomLeft;
                 indicesArray[p++] = bottomRight;
+                indicesArray[p++] = bottomLeft;
+                indicesArray[p++] = topRight;
             }
         }
 

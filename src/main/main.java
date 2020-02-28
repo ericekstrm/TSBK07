@@ -64,8 +64,13 @@ public class main
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
         GL.createCapabilities();
-        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        glClearColor(91.0f/255.0f, 142f/255.0f, 194.0f/255.0f, 1);
         glEnable(GL_DEPTH_TEST);
+        glEnable(GL_CULL_FACE);
+        
+        //for transparency
+        //glEnable(GL_BLEND);
+        //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
     public void destroyOpenGL()
@@ -90,6 +95,7 @@ public class main
 
         skybox = new Skybox(new Shader("skybox.vert", "skybox.frag"),
                             Loader.loadRawData("skybox.obj", "SkyBox512.tga"));
+        skybox.setPosition(0, -3, 0);
         terrain = new TerrainHandler();
 
         lights = new Lights();
@@ -111,11 +117,11 @@ public class main
         //models.get("plant").setPosition(-10f, 1f, -10f);
 
         RawData data = Loader.loadRawData("tree.obj", "green.jpg");
-        for (int i = 0; i < 1000; i++)
+        for (int i = 0; i < 2000; i++)
         {
             Model tree = new Model(shader, data);
-            float x = (float) Util.rand(0, 400);
-            float z = (float) Util.rand(0, 400);
+            float x = (float) Util.randu(800);
+            float z = (float) Util.randu(800);
             tree.setPosition(x, terrain.getHeight(x, z), z);
             tree.setScale(0.3f, 0.3f, 0.3f);
             tree.setRotation(0, Util.rand(0, 360), 0);
@@ -132,6 +138,7 @@ public class main
         models.get("bunny").setRotation(0, time / 100, 0);
 
         lights.moveLight(0, Matrix4f.rotate(0, 2, 0));
+        //camera.position.y = terrain.getHeight(camera.position.x, camera.position.z) + 5;
     }
 
     void loop()

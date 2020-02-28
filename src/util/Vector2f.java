@@ -7,7 +7,8 @@ import java.nio.FloatBuffer;
  *
  * @author Heiko Brumme
  */
-public class Vector2f {
+public class Vector2f
+{
 
     public float x;
     public float y;
@@ -15,7 +16,8 @@ public class Vector2f {
     /**
      * Creates a default 2-tuple vector with all values set to 0.
      */
-    public Vector2f() {
+    public Vector2f()
+    {
         this.x = 0f;
         this.y = 0f;
     }
@@ -26,9 +28,30 @@ public class Vector2f {
      * @param x x value
      * @param y y value
      */
-    public Vector2f(float x, float y) {
+    public Vector2f(float x, float y)
+    {
         this.x = x;
         this.y = y;
+    }
+
+    //implements the equals-function to be able to compare vectors.
+    @Override
+    public boolean equals(Object obj)
+    {
+        return hashCode() == obj.hashCode();
+    }
+
+    @Override
+    public int hashCode()
+    {
+        //int hash = 7;
+        //hash = 71 * hash + Float.floatToIntBits(this.x);
+        //hash = 71 * hash + Float.floatToIntBits(this.y);
+        //return hash;
+
+        //float temp = (this.y + ((this.x + 1) / 2));
+        //return (int) x + (int) (temp * temp);
+        return (int)x*10 + (int)y;
     }
 
     /**
@@ -36,7 +59,8 @@ public class Vector2f {
      *
      * @return Squared length of this vector
      */
-    public float lengthSquared() {
+    public float lengthSquared()
+    {
         return x * x + y * y;
     }
 
@@ -45,7 +69,8 @@ public class Vector2f {
      *
      * @return Length of this vector
      */
-    public float length() {
+    public float length()
+    {
         return (float) Math.sqrt(lengthSquared());
     }
 
@@ -54,7 +79,8 @@ public class Vector2f {
      *
      * @return Normalized vector
      */
-    public Vector2f normalize() {
+    public Vector2f normalize()
+    {
         float length = length();
         return divide(length);
     }
@@ -66,7 +92,8 @@ public class Vector2f {
      *
      * @return Sum of this + other
      */
-    public Vector2f add(Vector2f other) {
+    public Vector2f add(Vector2f other)
+    {
         float x = this.x + other.x;
         float y = this.y + other.y;
         return new Vector2f(x, y);
@@ -77,7 +104,8 @@ public class Vector2f {
      *
      * @return Negated vector
      */
-    public Vector2f negate() {
+    public Vector2f negate()
+    {
         return scale(-1f);
     }
 
@@ -88,7 +116,8 @@ public class Vector2f {
      *
      * @return Difference of this - other
      */
-    public Vector2f subtract(Vector2f other) {
+    public Vector2f subtract(Vector2f other)
+    {
         return this.add(other.negate());
     }
 
@@ -99,7 +128,8 @@ public class Vector2f {
      *
      * @return Scalar product of this * scalar
      */
-    public Vector2f scale(float scalar) {
+    public Vector2f scale(float scalar)
+    {
         float x = this.x * scalar;
         float y = this.y * scalar;
         return new Vector2f(x, y);
@@ -112,7 +142,8 @@ public class Vector2f {
      *
      * @return Scalar quotient of this / scalar
      */
-    public Vector2f divide(float scalar) {
+    public Vector2f divide(float scalar)
+    {
         return scale(1f / scalar);
     }
 
@@ -123,7 +154,8 @@ public class Vector2f {
      *
      * @return Dot product of this * other
      */
-    public float dot(Vector2f other) {
+    public float dot(Vector2f other)
+    {
         return this.x * other.x + this.y * other.y;
     }
 
@@ -136,7 +168,8 @@ public class Vector2f {
      *
      * @return Linear interpolated vector
      */
-    public Vector2f lerp(Vector2f other, float alpha) {
+    public Vector2f lerp(Vector2f other, float alpha)
+    {
         return this.scale(1f - alpha).add(other.scale(alpha));
     }
 
@@ -145,7 +178,8 @@ public class Vector2f {
      *
      * @param buffer The buffer to store the vector data
      */
-    public void toBuffer(FloatBuffer buffer) {
+    public void toBuffer(FloatBuffer buffer)
+    {
         buffer.put(x).put(y);
         buffer.flip();
     }

@@ -5,6 +5,7 @@ import java.nio.FloatBuffer;
 import main.Camera;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
+import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.glGetUniformLocation;
 import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
 import shader.Shader;
@@ -25,6 +26,7 @@ public class Skybox extends Model
     public void render(Camera camera)
     {
         skyboxShader.start();
+        glDisable(GL_CULL_FACE);
     	
     	//world-to-view matrix
         FloatBuffer worldToView = BufferUtils.createFloatBuffer(16);
@@ -40,6 +42,7 @@ public class Skybox extends Model
 
         deactivate();
 
+        glEnable(GL_CULL_FACE);
         skyboxShader.stop();
     }
 }

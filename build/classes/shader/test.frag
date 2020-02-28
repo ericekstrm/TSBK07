@@ -78,9 +78,9 @@ void main()
     float dist = abs(viewSpace.z);
     
     //linear fog
-    // 20 - fog starts; 80 - fog ends
-    float fogStart = 120;
-    float fogEnd = 500;
+    //if you change the start and stop points, dont forget to change in the other shaders as well!.
+    float fogStart = 300; 
+    float fogEnd = 800;
     float fogFactor = (fogEnd - dist)/(fogEnd - fogStart);
     fogFactor = clamp( fogFactor, 0.0, 1.0 );
     vec3 fogColor = vec3(91.0/255.0, 142/255.0, 194.0/255.0);

@@ -1,12 +1,8 @@
 package main;
 
 import java.nio.DoubleBuffer;
-import java.nio.FloatBuffer;
 import org.lwjgl.BufferUtils;
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL20.glGetUniformLocation;
-import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
-import shader.Shader;
 import util.Matrix4f;
 import util.Vector3f;
 
@@ -96,14 +92,6 @@ public class Camera
         Matrix4f translation = Matrix4f.translate(-position.x, -position.y, -position.z);
 
         return rotation.multiply(translation);
-    }
-    
-    public void worldToViewUniform(Shader shader)
-    {
-        FloatBuffer worldToView = BufferUtils.createFloatBuffer(16);
-        getWorldtoViewMatrix().toBuffer(worldToView);
-        glUniformMatrix4fv(glGetUniformLocation(shader.getProgramID(), "worldToView"), false, worldToView);
-
     }
 
     public Vector3f getPosition()

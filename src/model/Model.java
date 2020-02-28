@@ -13,6 +13,7 @@ import static org.lwjgl.opengl.GL11.glBindTexture;
 import org.lwjgl.opengl.GL20;
 import static org.lwjgl.opengl.GL20.*;
 import org.lwjgl.opengl.GL30;
+import shader.ModelShader;
 import shader.Shader;
 
 public class Model extends Movable
@@ -49,17 +50,16 @@ public class Model extends Movable
             Texture tex = data.textures.get(i);
             for (int j = 0; j < tex.size(); j++)
             {
-                glActiveTexture(GL_TEXTURE0 + j);
-                glBindTexture(GL_TEXTURE_2D, tex.get(j));
-                //glUniform1i(glGetUniformLocation(shader.getProgramID(), "texUnit" + j), j);
+                //glActiveTexture(GL_TEXTURE0 + j);
+                //glBindTexture(GL_TEXTURE_2D, tex.get(j));
                 textureIDs.add(tex);
             }
-            
+
             GL30.glBindVertexArray(0);
         }
     }
 
-    public void render(Shader shader)
+    public void render(ModelShader shader)
     {
         for (int i = 0; i < activeVAOs.size(); i++)
         {
@@ -68,8 +68,11 @@ public class Model extends Movable
             GL20.glEnableVertexAttribArray(Shader.TEX_ATTRIB);
             GL20.glEnableVertexAttribArray(Shader.NORMAL_ATTRIB);
 
-            bindUniforms(shader, i);
-
+            shader.loadModelToWorldMatrix(getModelToViewMatrix());
+            shader.loadMaterialLightingProperties(matProperties.get(i).Ka,
+                                                  matProperties.get(i).Kd,
+                                                  matProperties.get(i).Ks,
+                                                  matProperties.get(i).specularExponent);
             //textures
             for (int j = 0; j < textureIDs.get(i).size(); j++)
             {
@@ -81,19 +84,6 @@ public class Model extends Movable
             GL11.glDrawElements(GL11.GL_TRIANGLES, nrOfIndices.get(i), GL11.GL_UNSIGNED_INT, 0);
             deactivate();
         }
-    }
-
-    protected void bindUniforms(Shader shader, int i)
-    {
-        //bind current model-to-world transformation
-        FloatBuffer translation = BufferUtils.createFloatBuffer(16);
-        getModelToViewMatrix().toBuffer(translation);
-        glUniformMatrix4fv(glGetUniformLocation(shader.getProgramID(), "modelToWorld"), false, translation);
-
-        glUniform1f(glGetUniformLocation(shader.getProgramID(), "Ka"), matProperties.get(i).Ka);
-        glUniform1f(glGetUniformLocation(shader.getProgramID(), "Kd"), matProperties.get(i).Kd);
-        glUniform1f(glGetUniformLocation(shader.getProgramID(), "Ks"), matProperties.get(i).Ks);
-        glUniform1f(glGetUniformLocation(shader.getProgramID(), "specularExponent"), matProperties.get(i).specularExponent);
     }
 
     public void deactivate()

@@ -1,27 +1,22 @@
 package light;
 
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import main.Camera;
-import org.lwjgl.BufferUtils;
-import static org.lwjgl.opengl.GL20.glGetUniformLocation;
-import static org.lwjgl.opengl.GL20.glUniform3fv;
-import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
-import shader.Shader;
+import shader.LightShader;
 import util.Matrix4f;
 import util.Vector3f;
 
 public class Lights {
     
-    Shader lightShader;
+    LightShader lightShader;
     
     List<PositionalLight> pointLights = new ArrayList<>();
     List<DirectionalLight> dirLights = new ArrayList<>();
 
     public Lights()
     {
-        lightShader = new Shader("light.vert", "light.frag");
+        lightShader = new LightShader(Matrix4f.frustum_new());
     }
     
     public void addPosLight(Vector3f pos, Vector3f color)
@@ -38,17 +33,12 @@ public class Lights {
     public void render(Camera camera)
     {
         lightShader.start();
+        lightShader.loadWorldToViewMatrix(camera);
         
-        
-        FloatBuffer worldToView = BufferUtils.createFloatBuffer(16);
-        camera.getWorldtoViewMatrix().toBuffer(worldToView);
-        glUniformMatrix4fv(glGetUniformLocation(lightShader.getProgramID(), "worldToView"), false, worldToView);
-
         for (PositionalLight light : pointLights)
         {
             light.render(lightShader);
         }
-        
         
         lightShader.stop();
     }
@@ -58,46 +48,13 @@ public class Lights {
         pointLights.get(index).setPosition(transform.multiply(pointLights.get(index).getPosition()));
     }
     
-    public void loadLights(Shader shader)
+    public List<PositionalLight> getPointLights()
     {
-        //Pointlights position
-        FloatBuffer pointLightPosArr = BufferUtils.createFloatBuffer(3 * pointLights.size());
-        for (PositionalLight light : pointLights)
-        {
-            Vector3f pos = light.getPosition();
-            pointLightPosArr.put(pos.x).put(pos.y).put(pos.z);
-        }
-        pointLightPosArr.flip();
-        glUniform3fv(glGetUniformLocation(shader.getProgramID(), "pointLightPosArr"), pointLightPosArr);
-
-        //Pointlights color
-        FloatBuffer pointLightColorArr = BufferUtils.createFloatBuffer(3 * pointLights.size());
-        for (PositionalLight light : pointLights)
-        {
-            Vector3f color = light.getColor();
-            pointLightColorArr.put(color.x).put(color.y).put(color.z);
-        }
-        pointLightColorArr.flip();
-        glUniform3fv(glGetUniformLocation(shader.getProgramID(), "pointLightColorArr"), pointLightColorArr);
-
-        //Directional lights directions
-        FloatBuffer dirLightDirArr = BufferUtils.createFloatBuffer(6);
-        for (DirectionalLight dirLight : dirLights)
-        {
-            Vector3f dir = dirLight.getDirection();
-            dirLightDirArr.put(dir.x).put(dir.y).put(dir.z);
-        }
-        dirLightDirArr.flip();
-        glUniform3fv(glGetUniformLocation(shader.getProgramID(), "dirLightDirArr"), dirLightDirArr);
-
-        //Directional lights color
-        FloatBuffer dirLightColorArr = BufferUtils.createFloatBuffer(6);
-        for (DirectionalLight dirLight : dirLights)
-        {
-            Vector3f color = dirLight.getColor();
-            dirLightColorArr.put(color.x).put(color.y).put(color.z);
-        }
-        dirLightColorArr.flip();
-        glUniform3fv(glGetUniformLocation(shader.getProgramID(), "dirLightColorArr"), dirLightColorArr);
+        return pointLights;
+    }
+    
+    public List<DirectionalLight> getDirLights()
+    {
+        return dirLights;
     }
 }

@@ -1,14 +1,12 @@
 package model;
 
-import shader.Shader;
 import loader.Loader;
-import util.Matrix4f;
-import util.Vector3f;
+import shader.ModelShader;
 
 public class Windmill extends MultiPartModel
 {
 
-    public Windmill(Shader shader)
+    public Windmill(ModelShader shader)
     {
         super(shader, Loader.loadRawData("windmill/walls.obj", "tex.jpg"),
               Loader.loadRawData("windmill/balcony.obj", "tex.jpg"),

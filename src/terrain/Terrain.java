@@ -7,9 +7,17 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import model.Model;
 import loader.RawData;
-import shader.Shader;
 import loader.MaterialProperties;
 import loader.Texture;
+import org.lwjgl.opengl.GL11;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.glBindTexture;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL13.glActiveTexture;
+import org.lwjgl.opengl.GL20;
+import org.lwjgl.opengl.GL30;
+import shader.Shader;
+import shader.TerrainShader;
 import util.Vector3f;
 
 public class Terrain extends Model
@@ -21,10 +29,37 @@ public class Terrain extends Model
 
     public float[][] heightData;
 
-    public Terrain(Shader shader, String heightMap, String... textures)
+    public Terrain(TerrainShader shader, String heightMap, String... textures)
     {
         super(shader, generateTerrain(heightMap, textures));
         heightData = getHeightData(heightMap);
+    }
+    
+    public void render(TerrainShader shader)
+    {
+        for (int i = 0; i < activeVAOs.size(); i++)
+        {
+            GL30.glBindVertexArray(activeVAOs.get(i));
+            GL20.glEnableVertexAttribArray(Shader.POS_ATTRIB);
+            GL20.glEnableVertexAttribArray(Shader.TEX_ATTRIB);
+            GL20.glEnableVertexAttribArray(Shader.NORMAL_ATTRIB);
+
+            shader.loadModelToWorldMatrix(getModelToViewMatrix());
+            shader.loadMaterialLightingProperties(matProperties.get(i).Ka,
+                                                  matProperties.get(i).Kd,
+                                                  matProperties.get(i).Ks,
+                                                  matProperties.get(i).specularExponent);
+            //textures
+            for (int j = 0; j < textureIDs.get(i).size(); j++)
+            {
+                glActiveTexture(GL_TEXTURE0 + j);
+                glBindTexture(GL_TEXTURE_2D, textureIDs.get(i).get(j));
+            }
+
+            //draw!
+            GL11.glDrawElements(GL11.GL_TRIANGLES, nrOfIndices.get(i), GL11.GL_UNSIGNED_INT, 0);
+            deactivate();
+        }
     }
 
     private static RawData generateTerrain(String heightMap, String... textureFileNames)
@@ -58,8 +93,8 @@ public class Terrain extends Model
                 normalsArray[v * 3 + 1] = n.y;
                 normalsArray[v * 3 + 2] = n.z;
 
-                textureArray[v * 2] = (float) i / (vertexCount - 1) * 50;
-                textureArray[v * 2 + 1] = (float) j / (vertexCount - 1) * 50;
+                textureArray[v * 2] = (float) i / (vertexCount - 1);
+                textureArray[v * 2 + 1] = (float) j / (vertexCount - 1);
 
                 v++;
             }

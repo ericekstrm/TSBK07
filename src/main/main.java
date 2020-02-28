@@ -3,12 +3,10 @@ package main;
 import loader.MaterialProperties;
 import loader.RawData;
 import loader.Loader;
-import java.nio.*;
 import java.util.HashMap;
 import java.util.Map;
 import light.Lights;
 import model.*;
-import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.*;
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -16,7 +14,7 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.system.MemoryUtil.*;
-import shader.Shader;
+import shader.ModelShader;
 import terrain.TerrainHandler;
 import util.Matrix4f;
 import util.Util;
@@ -24,7 +22,8 @@ import util.Vector3f;
 
 public class main
 {
-
+    public static Matrix4f projectionMatrix = Matrix4f.frustum_new();
+    
     public static final int WIDTH = 800;
     public static final int HEIGHT = 800;
 
@@ -36,7 +35,7 @@ public class main
     Skybox skybox;
     Lights lights;
 
-    Shader shader;
+    ModelShader shader;
 
     Camera camera = new Camera(new Vector3f(2, 1, 2), new Vector3f(3, 3, 0));
 
@@ -92,16 +91,20 @@ public class main
 
     public void initModel()
     {
-        shader = new Shader("test.vert", "test.frag");
+        shader = new ModelShader();
+        shader.start();
+        shader.loadProjectionMatrix(Matrix4f.frustum_new());
+        shader.connectTextureUnits();
+        shader.stop();
 
-        skybox = new Skybox(new Shader("skybox.vert", "skybox.frag"),
+        skybox = new Skybox(new ModelShader("skybox.vert", "skybox.frag"),
                             Loader.loadRawData("skybox.obj", "SkyBox512.tga"));
         skybox.setPosition(0, -3, 0);
         terrain = new TerrainHandler();
 
         lights = new Lights();
         lights.addPosLight(new Vector3f(15.0f, 3.0f, 0.0f), new Vector3f(1.0f, 0.0f, 0.0f));
-        lights.addPosLight(new Vector3f(0.0f, 5.0f, 5.0f), new Vector3f(0.0f, 1.0f, 0.0f));
+        lights.addPosLight(new Vector3f(9.0f, 7.0f, 0.0f), new Vector3f(0.0f, 1.0f, 0.0f));
         lights.addDirLight(new Vector3f(0.0f, 1.0f, 0.5f), new Vector3f(0.5f, 0.5f, 0.5f));
 
         models.put("bunny", new Model(shader, Loader.loadRawData("bunnyplus.obj", "tex2.jpg")));
@@ -175,13 +178,8 @@ public class main
 
         //render objects
         shader.start();
-        lights.loadLights(shader);
-        camera.worldToViewUniform(shader);
-
-        FloatBuffer viewPos = BufferUtils.createFloatBuffer(3);
-        camera.getPosition().toBuffer(viewPos);
-        glUniform3fv(glGetUniformLocation(shader.getProgramID(), "viewPos"), viewPos);
-
+        shader.loadLights(lights.getPointLights(), lights.getDirLights());
+        shader.loadWorldToViewMatrix(camera);
         //render
         for (Map.Entry<String, Model> m : models.entrySet())
         {

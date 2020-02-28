@@ -5,7 +5,7 @@ in vec3 normal;
 in vec3 fragPos;
 in vec4 viewSpace;
 
-uniform sampler2D texUnit0, texUnit1;
+uniform sampler2D texUnit;
 
 //light properties
 uniform vec3 pointLightPosArr[2];
@@ -37,9 +37,6 @@ void main()
     //Point lights
     for(int i = 0; i < pointLightPosArr.length(); i++)
     {
-        float Kc = 1;
-        float Kl = 0.045;
-        float Kq = 0.0075;
         float distance = length(pointLightPosArr[i] - fragPos);
         float attenuation = 1.0 / (Kc + Kl * distance + Kq * (distance * distance)); 
 
@@ -71,7 +68,7 @@ void main()
         diffuseLight += Kd * diff * dirLightColorArr[i];
     }
     
-    vec3 lightColor = (ambientLight + diffuseLight + specularLight) * vec3(texture(texUnit1, texCoord));
+    vec3 lightColor = (ambientLight + diffuseLight + specularLight) * vec3(texture(texUnit, texCoord));
  
     //=====================================================
     //compute distance used in fog equations

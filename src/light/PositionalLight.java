@@ -1,18 +1,15 @@
 package light;
 
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import model.ModelLoader;
 import loader.RawData;
-import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
-import static org.lwjgl.opengl.GL20.glGetUniformLocation;
-import static org.lwjgl.opengl.GL20.*;
 import org.lwjgl.opengl.GL30;
 import shader.Shader;
 import loader.Loader;
+import shader.LightShader;
 import util.Matrix4f;
 import util.Vector3f;
 
@@ -42,19 +39,13 @@ public class PositionalLight
         GL30.glBindVertexArray(0);
     }
 
-    public void render(Shader shader)
+    public void render(LightShader shader)
     {
         GL30.glBindVertexArray(activeVAO);
         GL20.glEnableVertexAttribArray(Shader.POS_ATTRIB);
 
-        //bind current model-to-world transformation
-        FloatBuffer translation = BufferUtils.createFloatBuffer(16);
-        getModelToViewMatrix().toBuffer(translation);
-        glUniformMatrix4fv(glGetUniformLocation(shader.getProgramID(), "modelToWorld"), false, translation);
-
-        FloatBuffer colorBuffer = BufferUtils.createFloatBuffer(3);
-        color.toBuffer(colorBuffer);;
-        glUniform3fv(glGetUniformLocation(shader.getProgramID(), "color"), colorBuffer);
+        shader.loadModelToWorldMatrix(getModelToWorldMatrix());
+        shader.loadColor(color);
         
         //draw!
         GL11.glDrawElements(GL11.GL_TRIANGLES, nrIndices, GL11.GL_UNSIGNED_INT, 0);
@@ -78,7 +69,7 @@ public class PositionalLight
         GL30.glDeleteVertexArrays(activeVAO);
     }
     
-    public Matrix4f getModelToViewMatrix()
+    public Matrix4f getModelToWorldMatrix()
     {
         Matrix4f scale = Matrix4f.scale(0.1f, 0.1f, 0.1f);
         Matrix4f translate = Matrix4f.translate(position.x, position.y, position.z);

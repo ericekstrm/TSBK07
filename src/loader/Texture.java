@@ -17,13 +17,23 @@ public class Texture
     private static HashMap<String, Integer> textureIdMap = new HashMap<>();
 
     private List<Integer> textureIDs = new ArrayList<>();
-    
+
     public Texture(String... textureNames)
     {
         for (String texturename : textureNames)
         {
             textureIDs.add(load(texturename));
         }
+    }
+
+    public int size()
+    {
+        return textureIDs.size();
+    }
+
+    public int get(int i)
+    {
+        return textureIDs.get(i);
     }
 
     public static int load(String texture)
@@ -71,15 +81,5 @@ public class Texture
             e.printStackTrace();
         }
         return 0;
-    }
-
-    public int size()
-    {
-        return textureIDs.size();
-    }
-    
-    public int get(int i)
-    {
-        return textureIDs.get(i);
     }
 }

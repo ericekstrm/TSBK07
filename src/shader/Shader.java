@@ -8,11 +8,14 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import static org.lwjgl.opengl.GL20.glGetUniformLocation;
 import static org.lwjgl.opengl.GL20.glUniform1i;
+import static org.lwjgl.opengl.GL20.glUniform3fv;
 import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
 import util.Matrix4f;
+import util.Vector3f;
 
-public class Shader
+public abstract class Shader
 {
+
     private int programID;
     private int vertexID;
     private int fragmentID;
@@ -34,7 +37,15 @@ public class Shader
         bindAttributes();
 
         GL20.glLinkProgram(programID);
+        getAllUniformLocations();
     }
+
+    protected int getUniformLocation(String uniformName)
+    {
+        return GL20.glGetUniformLocation(programID, uniformName);
+    }
+    
+    protected abstract void getAllUniformLocations();
 
     public void start()
     {
@@ -44,7 +55,7 @@ public class Shader
         FloatBuffer projection = BufferUtils.createFloatBuffer(16);
         projectionMatrix.toBuffer(projection);
         glUniformMatrix4fv(glGetUniformLocation(getProgramID(), "projection"), false, projection);
-        
+
         glUniform1i(glGetUniformLocation(getProgramID(), "texUnit0"), 0);
         glUniform1i(glGetUniformLocation(getProgramID(), "texUnit1"), 1);
     }
@@ -76,6 +87,47 @@ public class Shader
         GL20.glBindAttribLocation(programID, attribute, variableName);
     }
 
+    public int getProgramID()
+    {
+        return programID;
+    }
+
+    protected void loadInt(int location, int value)
+    {
+        GL20.glUniform1i(location, value);
+    }
+    
+    protected void loadFloat(int location, float value)
+    {
+        GL20.glUniform1f(location, value);
+    }
+
+    protected void loadVector(int location, Vector3f vector)
+    {
+        FloatBuffer buffer = BufferUtils.createFloatBuffer(3);
+        vector.toBuffer(buffer);
+        GL20.glUniform3fv(location, buffer);
+    }
+
+    protected void loadMatrix(int location, Matrix4f matrix)
+    {
+        FloatBuffer translation = BufferUtils.createFloatBuffer(16);
+        matrix.toBuffer(translation);
+        //translation.flip();
+        glUniformMatrix4fv(location, false, translation);
+    }
+    
+    protected void loadList3f(int location, float[] list)
+    {
+        FloatBuffer buffer = BufferUtils.createFloatBuffer(list.length);
+        for (float f : list)
+        {
+            buffer.put(f);
+        }
+        buffer.flip();
+        glUniform3fv(location, buffer);
+    }
+
     public static int loadShader(String file_name, int type)
     {
         StringBuilder shaderSource = new StringBuilder();
@@ -104,20 +156,5 @@ public class Shader
             System.exit(-1);
         }
         return shaderID;
-    }
-
-    public int getProgramID()
-    {
-        return programID;
-    }
-
-    public int getVertexID()
-    {
-        return vertexID;
-    }
-
-    public int getFragmentID()
-    {
-        return fragmentID;
     }
 }

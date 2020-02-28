@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
+import shader.ModelShader;
 import shader.Shader;
 
 public class MultiPartModel extends Movable
@@ -12,7 +13,7 @@ public class MultiPartModel extends Movable
 
     protected List<Model> models = new ArrayList<>();
 
-    public MultiPartModel(Shader shader, RawData... datas)
+    public MultiPartModel(ModelShader shader, RawData... datas)
     {
         for (RawData data : datas)
         {
@@ -20,7 +21,7 @@ public class MultiPartModel extends Movable
         }
     }
 
-    public void render(Shader shader)
+    public void render(ModelShader shader)
     {
         for (int i = 0; i < models.size(); i++)
         {

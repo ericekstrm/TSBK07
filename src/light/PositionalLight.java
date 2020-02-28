@@ -36,8 +36,8 @@ public class PositionalLight
 
         activeVBOs.add(ModelLoader.loadVertexVBO(data.vertices));
 
-        activeVBOs.add(ModelLoader.loadIndicesVBO(data.indices));
-        nrIndices = data.indices.length;
+        activeVBOs.add(ModelLoader.loadIndicesVBO(data.indices.get(0)));
+        nrIndices = data.indices.get(0).length;
 
         GL30.glBindVertexArray(0);
     }

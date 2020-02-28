@@ -3,8 +3,9 @@ package model;
 import shader.Shader;
 import loader.Loader;
 import util.Matrix4f;
+import util.Vector3f;
 
-public class Windmill extends Model
+public class Windmill extends MultiPartModel
 {
 
     public Windmill(Shader shader)
@@ -16,19 +17,20 @@ public class Windmill extends Model
               Loader.loadRawData("windmill/blade.obj", "tex.jpg"),
               Loader.loadRawData("windmill/blade.obj", "tex.jpg"),
               Loader.loadRawData("windmill/blade.obj", "tex.jpg"));
-        setInternalTransform(3, Matrix4f.translate(5, 9, 0));
-        setInternalTransform(4, Matrix4f.translate(5, 9, 0).multiply(Matrix4f.rotate(90, 0, 0)));
-        setInternalTransform(5, Matrix4f.translate(5, 9, 0).multiply(Matrix4f.rotate(180, 0, 0)));
-        setInternalTransform(6, Matrix4f.translate(5, 9, 0).multiply(Matrix4f.rotate(270, 0, 0)));
+        models.get(3).setPosition(5, 9, 0);
+        models.get(4).setPosition(5, 9, 0);
+        models.get(5).setPosition(5, 9, 0);
+        models.get(6).setPosition(5, 9, 0);
+        models.get(4).setRotation(90, 0, 0);
+        models.get(5).setRotation(180, 0, 0);
+        models.get(6).setRotation(270, 0, 0);
     }
 
-    @Override
-    public void update()
+    public void update(long time)
     {
-        internalTransform.set(3, internalTransform.get(3).multiply(Matrix4f.rotate(-0.5f, 0, 0)));
-        internalTransform.set(4, internalTransform.get(4).multiply(Matrix4f.rotate(-0.5f, 0, 0)));
-        internalTransform.set(5, internalTransform.get(5).multiply(Matrix4f.rotate(-0.5f, 0, 0)));
-        internalTransform.set(6, internalTransform.get(6).multiply(Matrix4f.rotate(-0.5f, 0, 0)));
+        models.get(3).rotate(-0.5f, 0, 0);
+        models.get(4).rotate(-0.5f, 0, 0);
+        models.get(5).rotate(-0.5f, 0, 0);
+        models.get(6).rotate(-0.5f, 0, 0);
     }
-
 }

@@ -3,11 +3,14 @@ package terrain;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import model.Model;
 import loader.RawData;
 import shader.Shader;
 import loader.Loader;
+import loader.MaterialProperties;
+import loader.Texture;
 import util.Vector3f;
 
 public class Terrain extends Model
@@ -19,13 +22,13 @@ public class Terrain extends Model
 
     public float[][] heightData;
 
-    public Terrain(Shader shader, String heightMap, String texture)
+    public Terrain(Shader shader, String heightMap, String... textures)
     {
-        super(shader, generateTerrain(heightMap, texture));
+        super(shader, generateTerrain(heightMap, textures));
         heightData = getHeightData(heightMap);
     }
 
-    private static RawData generateTerrain(String heightMap, String texture)
+    private static RawData generateTerrain(String heightMap, String... textureFileNames)
     {
         BufferedImage image = null;
         try
@@ -82,8 +85,19 @@ public class Terrain extends Model
             }
         }
 
-        int texID = Loader.loadTexture(texture);
-        RawData data = new RawData(verticesArray, textureArray, indicesArray, normalsArray, texID);
+        ArrayList<int[]> indicesList = new ArrayList<>();
+        indicesList.add(indicesArray);
+
+        ArrayList<Texture> textureIDs = new ArrayList<>();
+        for (String textureFileName : textureFileNames)
+        {
+            textureIDs.add(new Texture(textureFileName));
+        }
+
+        ArrayList<MaterialProperties> materialProperties = new ArrayList<>();
+        materialProperties.add(new MaterialProperties());
+
+        RawData data = new RawData(verticesArray, normalsArray, textureArray, indicesList, textureIDs, materialProperties);
         return data;
     }
 

@@ -32,7 +32,7 @@ public class TerrainHandler
     {
         if (!terrainTiles.containsKey(new Vector2f(i, j)))
         {
-            Terrain t = new Terrain(terrainShader, "height_map.png", "grass.jpg");
+            Terrain t = new Terrain(terrainShader, "height_map.png", "grass.jpg", "dirt.jpg");
             t.setPosition(i * Terrain.SIZE, 0, j * Terrain.SIZE);
             terrainTiles.put(new Vector2f(i, j), t);
         }

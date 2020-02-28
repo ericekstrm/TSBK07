@@ -31,6 +31,7 @@ public class main
     long window;
 
     Map<String, Model> models = new HashMap<>();
+    Windmill windmill;
     TerrainHandler terrain;
     Skybox skybox;
     Lights lights;
@@ -107,10 +108,10 @@ public class main
         models.get("bunny").setPosition(1, 0, 1);
         models.get("bunny").setMaterialProperties(0, new MaterialProperties(0.1f, 0.4f, 1f, 8));
 
-        Model windmill = new Windmill(shader);
+        windmill = new Windmill(shader);
         windmill.setPosition(10, 0, -10);
         windmill.setRotation(0, 180, 0);
-        models.put("windmill", windmill);
+        //models.put("windmill", windmill);
 
         //models.put("plant", new Model(shader, Loader.loadRawData("street/LowPolyMill.obj", "tex2.jpg")));
         //models.get("plant").setScale(0.01f, 0.01f, 0.01f);
@@ -133,7 +134,9 @@ public class main
 
     public void update()
     {
-        models.get("windmill").update();
+        //models.get("windmill").update();
+        windmill.update(time);
+        
         time = System.currentTimeMillis() % 36000;
         models.get("bunny").setRotation(0, time / 100, 0);
 
@@ -184,6 +187,7 @@ public class main
         {
             m.getValue().render(shader);
         }
+        windmill.render(shader);
 
         shader.stop();
 

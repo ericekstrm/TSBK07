@@ -17,9 +17,9 @@ public class Skybox extends Model
     Shader skyboxShader;
     int texID;
 
-    public Skybox(Shader skyboxShader, RawData... datas)
+    public Skybox(Shader skyboxShader, RawData data)
     {
-        super(skyboxShader, datas);
+        super(skyboxShader, data);
         this.skyboxShader = skyboxShader;
     }
 

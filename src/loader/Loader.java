@@ -1,38 +1,27 @@
 package loader;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL30;
-import org.lwjgl.stb.STBImage;
-import org.lwjgl.system.MemoryStack;
 import util.Vector2f;
 import util.Vector3f;
 
 public class Loader
 {
 
-    private static HashMap<String, Integer> textureIdMap = new HashMap<>();
-
     /**
      * Loads .obj files <br>
-     * 
-     * - One of the problems with this method is that it does not save on memory.
-     * in exchange for the extra memory the load time is increased. (from linear
-     * time to constant time) <br>
-     * 
+     *
+     * - One of the problems with this method is that it does not save on
+     * memory. in exchange for the extra memory the load time is increased.
+     * (from linear time to constant time) <br>
+     *
      * - how do we incorporate different materials for different faces?
-     * 
+     *
      *
      * @param filename name of the file to load. (.obj file format)
      * @param textureFileName texture file name.
@@ -99,7 +88,7 @@ public class Loader
                 } else if (line.startsWith("usemtl"))
                 {
                     //what happens here?
-                    
+
                 }
 
                 line = br.readLine();
@@ -139,7 +128,16 @@ public class Loader
                 indicesArray[i] = i;
             }
 
-            RawData data = new RawData(verticesArray, textureArray, indicesArray, normalsArray, loadTexture(textureFileName));
+            ArrayList<int[]> indicesList = new ArrayList<>();
+            indicesList.add(indicesArray);
+
+            ArrayList<Texture> textureIDs = new ArrayList<>();
+            textureIDs.add(new Texture(textureFileName));
+            
+            ArrayList<MaterialProperties> materialProperties = new ArrayList<>();
+            materialProperties.add(new MaterialProperties());
+            
+            RawData data = new RawData(verticesArray, normalsArray, textureArray, indicesList, textureIDs, materialProperties);
             return data;
 
         } catch (IOException | NumberFormatException e)
@@ -149,50 +147,4 @@ public class Loader
         }
     }
 
-    public static int loadTexture(String texture)
-    {
-        if (texture.equals(""))
-        {
-            return 0;
-        }
-        if (textureIdMap.containsKey(texture))
-        {
-            return textureIdMap.get(texture);
-        }
-
-        int width;
-        int height;
-        ByteBuffer buffer;
-        try (MemoryStack stack = MemoryStack.stackPush())
-        {
-            IntBuffer w = stack.mallocInt(1);
-            IntBuffer h = stack.mallocInt(1);
-            IntBuffer channels = stack.mallocInt(1);
-
-            File file = new File("res/textures/" + texture);
-            String filePath = file.getAbsolutePath();
-            buffer = STBImage.stbi_load(filePath, w, h, channels, 4);
-            if (buffer == null)
-            {
-                throw new Exception("Can't load file " + texture + " " + STBImage.stbi_failure_reason());
-            }
-            width = w.get();
-            height = h.get();
-
-            int id = GL11.glGenTextures();
-            textureIdMap.put(texture, id);
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, id);
-
-            GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, width, height, 0,
-                              GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer);
-
-            GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
-            STBImage.stbi_image_free(buffer);
-            return id;
-        } catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        return 0;
-    }
 }

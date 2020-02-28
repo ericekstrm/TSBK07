@@ -1,6 +1,7 @@
 package model;
 
 import util.Matrix4f;
+import util.Vector3f;
 
 public class Movable
 {
@@ -28,6 +29,35 @@ public class Movable
         this.rotX = rotX;
         this.rotY = rotY;
         this.rotZ = rotZ;
+    }
+
+    public void move(Vector3f translation)
+    {
+        x += translation.x;
+        y += translation.y;
+        z += translation.z;
+    }
+
+    public void rotate(float x, float y, float z)
+    {
+        rotX += x;
+        rotY += y;
+        rotZ += z;
+    }
+
+    public Vector3f getPosition()
+    {
+        return new Vector3f(x, y, z);
+    }
+
+    public Vector3f getScale()
+    {
+        return new Vector3f(scaleX, scaleY, scaleZ);
+    }
+
+    public Vector3f getRotation()
+    {
+        return new Vector3f(rotX, rotY, rotZ);
     }
 
     public Matrix4f getModelToViewMatrix()

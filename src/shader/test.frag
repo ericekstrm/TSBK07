@@ -5,7 +5,8 @@ in vec3 normal;
 in vec3 fragPos;
 in vec4 viewSpace;
 
-uniform sampler2D texUnit;
+uniform sampler2D texUnit0;
+uniform sampler2D texUnit1;
 
 //light properties
 uniform vec3 pointLightPosArr[2];
@@ -71,7 +72,7 @@ void main()
         diffuseLight += Kd * diff * dirLightColorArr[i];
     }
     
-    vec3 lightColor = (ambientLight + diffuseLight + specularLight) * vec3(texture(texUnit, texCoord));
+    vec3 lightColor = (ambientLight + diffuseLight + specularLight) * vec3(texture(texUnit1, texCoord));
  
     //=====================================================
     //compute distance used in fog equations

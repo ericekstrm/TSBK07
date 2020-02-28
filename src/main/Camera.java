@@ -17,7 +17,7 @@ public class Camera
     Vector3f direction;
     Vector3f upVector = new Vector3f(0, 1, 0);
     
-    float speed = 4f;
+    float speed = 1f;
 
     public Camera(Vector3f position, Vector3f lookAt)
     {

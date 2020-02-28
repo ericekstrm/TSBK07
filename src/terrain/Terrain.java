@@ -8,7 +8,6 @@ import javax.imageio.ImageIO;
 import model.Model;
 import loader.RawData;
 import shader.Shader;
-import loader.Loader;
 import loader.MaterialProperties;
 import loader.Texture;
 import util.Vector3f;
@@ -89,10 +88,7 @@ public class Terrain extends Model
         indicesList.add(indicesArray);
 
         ArrayList<Texture> textureIDs = new ArrayList<>();
-        for (String textureFileName : textureFileNames)
-        {
-            textureIDs.add(new Texture(textureFileName));
-        }
+        textureIDs.add(new Texture(textureFileNames));
 
         ArrayList<MaterialProperties> materialProperties = new ArrayList<>();
         materialProperties.add(new MaterialProperties());

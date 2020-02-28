@@ -5,8 +5,7 @@ in vec3 normal;
 in vec3 fragPos;
 in vec4 viewSpace;
 
-uniform sampler2D texUnit0;
-uniform sampler2D texUnit1;
+uniform sampler2D texUnit0, texUnit1;
 
 //light properties
 uniform vec3 pointLightPosArr[2];

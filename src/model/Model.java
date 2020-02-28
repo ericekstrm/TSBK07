@@ -42,19 +42,20 @@ public class Model extends Movable
             activeVBOs.add(ModelLoader.loadIndicesVBO(data.indices.get(i)));
             nrOfIndices.add(data.indices.get(i).length);
 
-            GL30.glBindVertexArray(0);
-
             //materials
             matProperties.add(data.matprop.get(i));
 
             //texture binding
-            for (int j = 0; j < data.textures.get(i).size(); j++)
+            Texture tex = data.textures.get(i);
+            for (int j = 0; j < tex.size(); j++)
             {
-                Texture tex = data.textures.get(i);
-                glBindTexture(GL_TEXTURE_2D, tex.get(i));
-                glUniform1i(glGetUniformLocation(shader.getProgramID(), "texUnit" + j), j);
+                glActiveTexture(GL_TEXTURE0 + j);
+                glBindTexture(GL_TEXTURE_2D, tex.get(j));
+                //glUniform1i(glGetUniformLocation(shader.getProgramID(), "texUnit" + j), j);
                 textureIDs.add(tex);
             }
+            
+            GL30.glBindVertexArray(0);
         }
     }
 
@@ -72,7 +73,7 @@ public class Model extends Movable
             //textures
             for (int j = 0; j < textureIDs.get(i).size(); j++)
             {
-                glActiveTexture(GL_TEXTURE0 + i);
+                glActiveTexture(GL_TEXTURE0 + j);
                 glBindTexture(GL_TEXTURE_2D, textureIDs.get(i).get(j));
             }
 

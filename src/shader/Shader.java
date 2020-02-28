@@ -7,6 +7,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import static org.lwjgl.opengl.GL20.glGetUniformLocation;
+import static org.lwjgl.opengl.GL20.glUniform1i;
 import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
 import util.Matrix4f;
 
@@ -43,6 +44,9 @@ public class Shader
         FloatBuffer projection = BufferUtils.createFloatBuffer(16);
         projectionMatrix.toBuffer(projection);
         glUniformMatrix4fv(glGetUniformLocation(getProgramID(), "projection"), false, projection);
+        
+        glUniform1i(glGetUniformLocation(getProgramID(), "texUnit0"), 0);
+        glUniform1i(glGetUniformLocation(getProgramID(), "texUnit1"), 1);
     }
 
     public void stop()

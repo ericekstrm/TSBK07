@@ -26,9 +26,9 @@ public class Windmill extends MultiPartModel
 
     public void update(long time)
     {
-        models.get(3).rotate(-0.5f, 0, 0);
-        models.get(4).rotate(-0.5f, 0, 0);
-        models.get(5).rotate(-0.5f, 0, 0);
-        models.get(6).rotate(-0.5f, 0, 0);
+        models.get(3).rotate(-1f, 0, 0);
+        models.get(4).rotate(-1f, 0, 0);
+        models.get(5).rotate(-1f, 0, 0);
+        models.get(6).rotate(-1f, 0, 0);
     }
 }

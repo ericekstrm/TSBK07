@@ -116,7 +116,7 @@ public class Model extends Movable
         matProperties.set(index, matProp);
     }
 
-    public void update()
+    public void update(float deltaTime)
     {
     }
 }

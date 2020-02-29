@@ -532,6 +532,53 @@ public class Matrix4f
         return inMatrix;
     }
 
+    public Quat createQuaternion()
+    {
+        float w = (float) Math.sqrt(m00 + m11 + m22 + m33) / 2;
+        float x, y, z;
+
+        float a = m00, b = m01, c = m02;
+        float d = m10, e = m11, f = m12;
+        float g = m20, h = m21, m = m22;
+
+        if (w != 0)
+        {
+            x = (h - f) / (4 * w);
+            y = (c - g) / (4 * w);
+            z = (d - b) / (4 * w);
+        } else
+        {
+            if (a > e && a > m)
+            {
+                float S = (float) Math.sqrt(1.0f + a - e - m) * 2f;
+                w = (f - h) / S;
+                x = 0.25f * S;
+                y = (b + d) / S;
+                z = (c + g) / S;
+            } else if (e > m)
+            {
+                float S = (float) Math.sqrt(1.0f + e - a - m) * 2f;
+                w = (c - g) / S;
+                x = (b + d) / S;
+                y = 0.25f * S;
+                z = (f + h) / S;
+            } else
+            {
+                float S = (float) Math.sqrt(1.0f + m - a - e) * 2f;
+                w = (b - d) / S;
+                x = (c + g) / S;
+                y = (f + h) / S;
+                z = 0.25f * S;
+            }
+        }
+        return new Quat(w, new Vector3f(x, y, z));
+    }
+
+    public Matrix3f toMatrix3f()
+    {
+        return new Matrix3f(m00, m01, m02, m10, m11, m12, m20, m21, m22);
+    }
+    
     public static void print(Matrix4f m)
     {
         System.out.println("----------------------------");
@@ -540,4 +587,6 @@ public class Matrix4f
         System.out.println(m.m20 + " " + m.m21 + " " + m.m22 + " " + m.m23);
         System.out.println(m.m30 + " " + m.m31 + " " + m.m32 + " " + m.m33);
     }
+
+    
 }

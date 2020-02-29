@@ -22,8 +22,9 @@ import util.Vector3f;
 
 public class main
 {
+
     public static Matrix4f projectionMatrix = Matrix4f.frustum_new();
-    
+
     public static final int WIDTH = 800;
     public static final int HEIGHT = 800;
 
@@ -64,10 +65,10 @@ public class main
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
         GL.createCapabilities();
-        glClearColor(91.0f/255.0f, 142f/255.0f, 194.0f/255.0f, 1);
+        glClearColor(91.0f / 255.0f, 142f / 255.0f, 194.0f / 255.0f, 1);
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
-        
+
         //for transparency
         //glEnable(GL_BLEND);
         //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -119,7 +120,6 @@ public class main
         //models.put("plant", new Model(shader, Loader.loadRawData("street/LowPolyMill.obj", "tex2.jpg")));
         //models.get("plant").setScale(0.01f, 0.01f, 0.01f);
         //models.get("plant").setPosition(-10f, 1f, -10f);
-
         RawData data = Loader.loadRawData("tree.obj", "green.jpg");
         for (int i = 0; i < 2000; i++)
         {
@@ -131,27 +131,47 @@ public class main
             tree.setRotation(0, Util.rand(0, 360), 0);
             models.put("tree" + i, tree);
         }
+
+        data = Loader.loadRawData("ball.obj", "green.jpg");
+        RigidSphere ball = new RigidSphere(shader, data);
+        ball.setPosition(10, 10, 10);
+        ball.setScale(0.5f, 0.5f, 0.5f);
+        models.put("ball", ball);
     }
 
     long time = 0;
 
-    public void update()
+    public void update(float deltaTime)
     {
-        //models.get("windmill").update();
+        //convert to seconds
+        deltaTime /= 1000;
+
         windmill.update(time);
-        
+
         time = System.currentTimeMillis() % 36000;
         models.get("bunny").setRotation(0, time / 100, 0);
 
         lights.moveLight(0, Matrix4f.rotate(0, 2, 0));
-        //camera.position.y = terrain.getHeight(camera.position.x, camera.position.z) + 5;
+
+        models.get("ball").update(deltaTime);
+
+        RigidSphere m = (RigidSphere) models.get("ball");
+        if (m.getPosition().y <= terrain.getHeight(m.getPosition().x, m.getPosition().z))
+        {
+            m.collisionCallback(new Vector3f(), new Vector3f());
+        }
     }
+
+    long prevTime;
 
     void loop()
     {
+        prevTime = System.currentTimeMillis();
         while (!glfwWindowShouldClose(window))
         {
-            update();
+            long currentTime = System.currentTimeMillis();
+            update(System.currentTimeMillis() - prevTime);
+            prevTime = currentTime;
 
             render();
 

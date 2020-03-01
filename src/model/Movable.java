@@ -28,12 +28,14 @@ public class Movable
     public void setRotation(float rotX, float rotY, float rotZ)
     {
         orientation = Matrix3f.rotate(rotX, rotY, rotZ);
-        //this.rotX = rotX;
-        //this.rotY = rotY;
-        //this.rotZ = rotZ;
+    }
+    
+    public void setRotation(Matrix3f rotationMatrix)
+    {
+        orientation = rotationMatrix;
     }
 
-    public void move(Vector3f translation)
+    public void translate(Vector3f translation)
     {
         position.x += translation.x;
         position.y += translation.y;
@@ -43,9 +45,6 @@ public class Movable
     public void rotate(float x, float y, float z)
     {
         orientation = orientation.multiply(Matrix3f.rotate(x, y, z));
-        //rotX += x;
-        //rotY += y;
-        //rotZ += z;
     }
 
     public Vector3f getPosition()

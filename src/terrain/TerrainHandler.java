@@ -7,6 +7,7 @@ import main.Camera;
 import shader.TerrainShader;
 import util.Matrix4f;
 import util.Vector2f;
+import util.Vector3f;
 
 public class TerrainHandler
 {
@@ -21,7 +22,7 @@ public class TerrainHandler
         terrainShader.loadProjectionMatrix(Matrix4f.frustum_new());
         terrainShader.connectTextureUnits();
         terrainShader.stop();
-        
+
         for (int i = -2; i < 2; i++)
         {
             for (int j = -2; j < 2; j++)
@@ -55,11 +56,19 @@ public class TerrainHandler
         terrainShader.stop();
     }
 
+    /**
+     * returns the height of a point of the terrain.
+     * 
+     * <br> not really working great :(
+     * @param xin
+     * @param zin
+     * @return 
+     */
     public float getHeight(float xin, float zin)
     {
         //find which terrain patch we are in.
-        int i =  (int)Math.floor(xin / Terrain.SIZE);
-        int j =  (int)Math.floor(zin / Terrain.SIZE);
+        int i = (int) Math.floor(xin / Terrain.SIZE);
+        int j = (int) Math.floor(zin / Terrain.SIZE);
         float[][] heightData = terrainTiles.get(new Vector2f(i, j)).heightData;
 
         //normalize coordinates
@@ -86,5 +95,50 @@ public class TerrainHandler
         float h = (z2 - z) / (z2 - z1) * f1 + (z - z1) / (z2 - z1) * f2;
 
         return h;
+    }
+
+    /**
+     * returns the normal vector of a point of the terrain.
+     * 
+     * <br> good enough for now.
+     * @param xin
+     * @param zin
+     * @return 
+     */
+    public Vector3f getNormal(float xin, float zin)
+    {
+        //find which terrain patch we are in.
+        int i = (int) Math.floor(xin / Terrain.SIZE);
+        int j = (int) Math.floor(zin / Terrain.SIZE);
+        float[][] heightData = terrainTiles.get(new Vector2f(i, j)).heightData;
+
+        //normalize coordinates
+        float x = (xin / Terrain.SIZE - i) * heightData.length;
+        float z = (zin / Terrain.SIZE - j) * heightData.length;
+
+        //if outside the terrain, assume the plain is flat
+        if (x < 1 || z < 1 || Math.floor(x) + 1 >= heightData.length || Math.floor(z) + 1 >= heightData.length)
+        {
+            return new Vector3f(0, 1, 0);
+        }
+
+        int x1 = (int) Math.floor(x);
+        int x2 = (int) Math.floor(x) + 1;
+        int z1 = (int) Math.floor(z);
+        int z2 = (int) Math.floor(z) + 1;
+
+        //which triangle are we in?
+        if (x - x1 < z - z1)
+        {
+            Vector3f v1 = new Vector3f(x2 - x1, heightData[x2][z2] - heightData[x1][z1], z2 - z1);
+            Vector3f v2 = new Vector3f(x2 - x1, heightData[x2][z1] - heightData[x1][z1], z1 - z1);
+            return v1.cross(v2).normalize();
+
+        } else
+        {
+            Vector3f v1 = new Vector3f(x2 - x1, heightData[x2][z2] - heightData[x1][z1], z2 - z1);
+            Vector3f v2 = new Vector3f(x1 - x1, heightData[x1][z2] - heightData[x1][z1], z2 - z1);
+            return v2.cross(v1).normalize();
+        }
     }
 }

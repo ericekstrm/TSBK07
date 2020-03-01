@@ -115,13 +115,9 @@ public class main
         windmill = new Windmill(shader);
         windmill.setPosition(10, 0, -10);
         windmill.setRotation(0, 180, 0);
-        //models.put("windmill", windmill);
 
-        //models.put("plant", new Model(shader, Loader.loadRawData("street/LowPolyMill.obj", "tex2.jpg")));
-        //models.get("plant").setScale(0.01f, 0.01f, 0.01f);
-        //models.get("plant").setPosition(-10f, 1f, -10f);
         RawData data = Loader.loadRawData("tree.obj", "green.jpg");
-        for (int i = 0; i < 2000; i++)
+        for (int i = 0; i < 20; i++)
         {
             Model tree = new Model(shader, data);
             float x = (float) Util.randu(800);
@@ -130,6 +126,21 @@ public class main
             tree.setScale(0.3f, 0.3f, 0.3f);
             tree.setRotation(0, Util.rand(0, 360), 0);
             models.put("tree" + i, tree);
+        }
+
+        data = Loader.loadRawData("arrow.obj", "green.jpg");
+        for (int i = 0; i < 10000; i++)
+        {
+            Model tree = new Model(shader, data);
+            float x = (float) Util.randu(100);
+            float z = (float) Util.randu(100);
+            tree.setPosition(x, terrain.getHeight(x, z), z);
+            tree.setScale(0.3f, 0.3f, 0.3f);
+            Vector3f rotationaxis = new Vector3f(0, 1, 0).cross(terrain.getNormal(x, z));
+            float angle = (float) Math.acos(terrain.getNormal(x, z).dot(new Vector3f(0, 1, 0))) / (2 * (float) Math.PI) * 360;
+
+            //tree.setRotation(Matrix4f.rotate(angle, rotationaxis).toMatrix3f());
+            models.put("arrow" + i, tree);
         }
 
         data = Loader.loadRawData("ball.obj", "green.jpg");
@@ -160,6 +171,7 @@ public class main
         {
             m.collisionCallback(new Vector3f(), new Vector3f());
         }
+        m.move(deltaTime);
     }
 
     long prevTime;

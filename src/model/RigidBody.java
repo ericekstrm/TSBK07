@@ -23,6 +23,8 @@ public abstract class RigidBody extends Model
     }
 
     public abstract void update(float deltaTime);
+    
+    public abstract void move(float deltaTime);
 
     public abstract void collisionCallback(Vector3f point, Vector3f direction);
 }

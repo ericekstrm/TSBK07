@@ -14,8 +14,8 @@ public abstract class RigidBody extends Model
 
     //Computed quantities
     //In the real application these have to be calcualted based on the suroundings.
-    Vector3f force = new Vector3f(0, -9.82f, 0); //gravity!
-    Vector3f torque = new Vector3f(1, 0, 0); //"rotational force"
+    Vector3f force = new Vector3f(0, -3.82f, 0); //gravity!
+    Vector3f torque = new Vector3f(); //"rotational force"
 
     public RigidBody(Shader shader, RawData data)
     {
@@ -27,4 +27,6 @@ public abstract class RigidBody extends Model
     public abstract void move(float deltaTime);
 
     public abstract void collisionCallback(Vector3f point, Vector3f direction);
+    
+    public abstract float getCenterOfMassHeight();
 }

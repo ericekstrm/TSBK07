@@ -41,7 +41,7 @@ public class main
 
     ModelShader shader;
 
-    Camera camera = new Camera(new Vector3f(2, 1, 2), new Vector3f(3, 3, 0));
+    Camera camera;
 
     void initOpenGL()
     {
@@ -95,6 +95,8 @@ public class main
 
     public void initModel()
     {
+    	camera = new Camera(new Vector3f(2, 1, 2), new Vector3f(3, 3, 0), window);
+    	
         shader = new ModelShader();
         shader.start();
         shader.loadProjectionMatrix(Matrix4f.frustum_new());
@@ -136,7 +138,7 @@ public class main
         }
 
         data = Loader.loadRawData("arrow.obj", "green.jpg");
-        for (int i = 0; i < 10000; i++)
+        for (int i = 0; i < 1000; i++)
         {
             Model tree = new Model(shader, data);
             float x = (float) Util.randu(100);
@@ -144,6 +146,9 @@ public class main
             tree.setPosition(x, terrain.getHeight(x, z), z);
             tree.setScale(0.3f, 0.3f, 0.3f);
             Vector3f rotationaxis = new Vector3f(0, 1, 0).cross(terrain.getNormal(x, z));
+            if (rotationaxis.length() == 0) {
+				rotationaxis = new Vector3f(0,1,0);
+			}
             float angle = (float) Math.acos(terrain.getNormal(x, z).dot(new Vector3f(0, 1, 0))) / (2 * (float) Math.PI) * 360;
 
             tree.setRotation(Matrix4f.rotate(angle, rotationaxis).toMatrix3f());
@@ -152,7 +157,7 @@ public class main
 
         data = Loader.loadRawData("ball.obj", "green.jpg");
         RigidSphere ball = new RigidSphere(shader, data);
-        ball.setPosition(10, 10, 10);
+        ball.setPosition(-10, 10, 10);
         ball.setScale(0.5f, 0.5f, 0.5f);
         models.put("ball", ball);
     }
@@ -174,9 +179,10 @@ public class main
         models.get("ball").update(deltaTime);
 
         RigidSphere m = (RigidSphere) models.get("ball");
-        if (m.getPosition().y <= terrain.getHeight(m.getPosition().x, m.getPosition().z))
+        Vector3f collisionPoint = new Vector3f(m.getPosition().x, terrain.getHeight(m.getPosition().x, m.getPosition().z), m.getPosition().z);
+        if (m.getPosition().y - m.getCenterOfMassHeight() <= collisionPoint.y)
         {
-            m.collisionCallback(new Vector3f(), new Vector3f());
+            m.collisionCallback(collisionPoint, terrain.getNormal(m.getPosition().x, m.getPosition().z));
         }
         m.move(deltaTime);
     }
@@ -236,6 +242,14 @@ public class main
 
     public void checkInput()
     {
+    	/*
+    	 * ===| Controls |===
+    	 * 
+    	 * Arrows : move the camera around 
+    	 *      F : toggle flying mode for camera
+    	 * scroll : change movement speed
+    	 */
+    	
         camera.checkInput(window);
 
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)

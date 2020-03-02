@@ -81,7 +81,7 @@ public class TerrainHandler
         }
         float[][] heightData = t.heightData;
 
-        //normalize coordinates
+        //normalise coordinates
         float x = (xin / Terrain.SIZE - i) * heightData.length;
         float z = (zin / Terrain.SIZE - j) * heightData.length;
 

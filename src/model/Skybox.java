@@ -9,7 +9,6 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.glGetUniformLocation;
 import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
 import shader.ModelShader;
-import shader.Shader;
 import util.Matrix4f;
 
 public class Skybox extends Model

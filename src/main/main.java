@@ -1,5 +1,6 @@
 package main;
 
+import water.Water;
 import loader.MaterialProperties;
 import loader.RawData;
 import loader.Loader;
@@ -15,6 +16,7 @@ import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.system.MemoryUtil.*;
 import shader.ModelShader;
+import water.WaterShader;
 import terrain.TerrainHandler;
 import util.Matrix4f;
 import util.Util;
@@ -34,6 +36,7 @@ public class main
     Windmill windmill;
     TerrainHandler terrain;
     Skybox skybox;
+    Water water;
     Lights lights;
 
     ModelShader shader;
@@ -102,6 +105,10 @@ public class main
                             Loader.loadRawData("skybox.obj", "SkyBox512.tga"));
         skybox.setPosition(0, -3, 0);
         terrain = new TerrainHandler();
+        
+        water = new Water(new WaterShader());
+        water.setPosition(200, -5, 200);
+        water.setScale(3, 3, 3);
 
         lights = new Lights();
         lights.addPosLight(new Vector3f(15.0f, 3.0f, 0.0f), new Vector3f(1.0f, 0.0f, 0.0f));
@@ -139,7 +146,7 @@ public class main
             Vector3f rotationaxis = new Vector3f(0, 1, 0).cross(terrain.getNormal(x, z));
             float angle = (float) Math.acos(terrain.getNormal(x, z).dot(new Vector3f(0, 1, 0))) / (2 * (float) Math.PI) * 360;
 
-            //tree.setRotation(Matrix4f.rotate(angle, rotationaxis).toMatrix3f());
+            tree.setRotation(Matrix4f.rotate(angle, rotationaxis).toMatrix3f());
             models.put("arrow" + i, tree);
         }
 
@@ -207,6 +214,9 @@ public class main
 
         //render terrain
         terrain.render(camera, lights);
+        
+        //render water
+        water.render(camera);
 
         //render objects
         shader.start();

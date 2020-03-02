@@ -23,20 +23,24 @@ public class TerrainHandler
         terrainShader.connectTextureUnits();
         terrainShader.stop();
 
-        for (int i = -2; i < 2; i++)
+        for (int i = -2; i < 3; i++)
         {
-            for (int j = -2; j < 2; j++)
+            for (int j = -2; j < 3; j++)
             {
-                addTerrain(i, j);
+                if (i != 0 || j != 0)
+                {
+                    addTerrain(i, j, "height_map.png");
+                }
             }
         }
+        addTerrain(0, 0, "height_map_lake.png");
     }
 
-    public void addTerrain(int i, int j)
+    public void addTerrain(int i, int j, String heightmap)
     {
         if (!terrainTiles.containsKey(new Vector2f(i, j)))
         {
-            Terrain t = new Terrain(terrainShader, "height_map.png", "grass.jpg", "dirt.jpg", "cobblestone.jpg", "blendmap.jpg");
+            Terrain t = new Terrain(terrainShader, heightmap, "grass.jpg", "dirt.jpg", "cobblestone.jpg", "blendmap.jpg");
             t.setPosition(i * Terrain.SIZE, 0, j * Terrain.SIZE);
             terrainTiles.put(new Vector2f(i, j), t);
         }
@@ -58,18 +62,24 @@ public class TerrainHandler
 
     /**
      * returns the height of a point of the terrain.
-     * 
+     *
      * <br> not really working great :(
+     *
      * @param xin
      * @param zin
-     * @return 
+     * @return
      */
     public float getHeight(float xin, float zin)
     {
         //find which terrain patch we are in.
         int i = (int) Math.floor(xin / Terrain.SIZE);
         int j = (int) Math.floor(zin / Terrain.SIZE);
-        float[][] heightData = terrainTiles.get(new Vector2f(i, j)).heightData;
+        Terrain t = terrainTiles.get(new Vector2f(i, j));
+        if (t == null)
+        {
+            return 0;
+        }
+        float[][] heightData = t.heightData;
 
         //normalize coordinates
         float x = (xin / Terrain.SIZE - i) * heightData.length;
@@ -99,18 +109,24 @@ public class TerrainHandler
 
     /**
      * returns the normal vector of a point of the terrain.
-     * 
+     *
      * <br> good enough for now.
+     *
      * @param xin
      * @param zin
-     * @return 
+     * @return
      */
     public Vector3f getNormal(float xin, float zin)
     {
         //find which terrain patch we are in.
         int i = (int) Math.floor(xin / Terrain.SIZE);
         int j = (int) Math.floor(zin / Terrain.SIZE);
-        float[][] heightData = terrainTiles.get(new Vector2f(i, j)).heightData;
+        Terrain t = terrainTiles.get(new Vector2f(i, j));
+        if (t == null)
+        {
+            return new Vector3f(0, 1, 0);
+        }
+        float[][] heightData = t.heightData;
 
         //normalize coordinates
         float x = (xin / Terrain.SIZE - i) * heightData.length;

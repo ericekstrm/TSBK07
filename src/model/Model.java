@@ -2,11 +2,9 @@ package model;
 
 import loader.MaterialProperties;
 import loader.RawData;
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import loader.Texture;
-import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glBindTexture;

@@ -27,6 +27,7 @@ public class main
 
     public static Matrix4f projectionMatrix = Matrix4f.frustum_new();
 
+    //window size
     public static final int WIDTH = 800;
     public static final int HEIGHT = 800;
 
@@ -137,7 +138,7 @@ public class main
             models.put("tree" + i, tree);
         }
 
-        data = Loader.loadRawData("arrow.obj", "green.jpg");
+        /*data = Loader.loadRawData("arrow.obj", "green.jpg");
         for (int i = 0; i < 1000; i++)
         {
             Model tree = new Model(shader, data);
@@ -153,13 +154,20 @@ public class main
 
             tree.setRotation(Matrix4f.rotate(angle, rotationaxis).toMatrix3f());
             models.put("arrow" + i, tree);
-        }
+        }*/
 
         data = Loader.loadRawData("ball.obj", "green.jpg");
-        RigidSphere ball = new RigidSphere(shader, data);
-        ball.setPosition(-10, 10, 10);
-        ball.setScale(0.5f, 0.5f, 0.5f);
-        models.put("ball", ball);
+        for (int i = 0; i < 100; i++) {
+			for (int j = 0; j < 100; j++) {
+				RigidSphere ball = new RigidSphere(shader, data);
+		        ball.setPosition(-50 - i, 10, 50 + j);
+		        ball.setScale(0.5f, 0.5f, 0.5f);
+		        models.put("ball" + i + "" + j, ball);
+			}
+		}
+        
+        
+        
     }
 
     long time = 0;
@@ -176,15 +184,22 @@ public class main
 
         lights.moveLight(0, Matrix4f.rotate(0, 2, 0));
 
-        models.get("ball").update(deltaTime);
+        for (int i = 0; i < 100; i++) {
+			for (int j = 0; j < 100; j++) {
+				models.get("ball" + i + "" + j).update(deltaTime);
+				
+				RigidSphere m = (RigidSphere) models.get("ball" + i + "" + j);
+		        Vector3f collisionPoint = new Vector3f(m.getPosition().x, terrain.getHeight(m.getPosition().x, m.getPosition().z), m.getPosition().z);
+		        if (m.getPosition().y <= collisionPoint.y)
+		        {
+		            m.collisionCallback(collisionPoint, terrain.getNormal(m.getPosition().x, m.getPosition().z));
+		        }
+		        m.move(deltaTime);
+			}
+		}
+        
 
-        RigidSphere m = (RigidSphere) models.get("ball");
-        Vector3f collisionPoint = new Vector3f(m.getPosition().x, terrain.getHeight(m.getPosition().x, m.getPosition().z), m.getPosition().z);
-        if (m.getPosition().y - m.getCenterOfMassHeight() <= collisionPoint.y)
-        {
-            m.collisionCallback(collisionPoint, terrain.getNormal(m.getPosition().x, m.getPosition().z));
-        }
-        m.move(deltaTime);
+        
     }
 
     long prevTime;

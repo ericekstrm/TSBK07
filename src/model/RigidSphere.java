@@ -48,7 +48,8 @@ public class RigidSphere extends RigidBody
     	//P = P.add(impulse);
         //L = L.add(point.cross(impulse));
         
-      //reflects the momentum in the plane that the sphere collided with.
+    	//alternative
+    	//reflects the momentum in the plane that the sphere collided with.
         Vector3f reflectionP = P.subtract(direction.scale(2 * P.dot(direction)));
         P = reflectionP;
     }

@@ -22,9 +22,9 @@ public class TerrainShader extends Shader
     //lighting coefficients
     private int location_pointLightPosArr[];
     private int location_pointLightColorArr[];
-    private int location_Kc;
-    private int location_Kl;
-    private int location_Kq;
+    private int location_r[];
+    private int location_intensity[];
+    
     private int location_dirLightDirArr[];
     private int location_dirLightColorArr[];
 
@@ -52,9 +52,6 @@ public class TerrainShader extends Shader
         location_modelToWorld = getUniformLocation("modelToWorld");
         location_worldToView = getUniformLocation("worldToView");
         location_projection = getUniformLocation("projection");
-        location_Kc = getUniformLocation("Kc");
-        location_Kl = getUniformLocation("Kl");
-        location_Kq = getUniformLocation("Kq");
         location_Ka = getUniformLocation("Ka");
         location_Kd = getUniformLocation("Kd");
         location_Ks = getUniformLocation("Ks");
@@ -69,12 +66,17 @@ public class TerrainShader extends Shader
         location_pointLightColorArr = new int[MAX_LIGHTS];
         location_dirLightDirArr = new int[MAX_LIGHTS];
         location_dirLightColorArr = new int[MAX_LIGHTS];
+        location_r = new int[MAX_LIGHTS];
+        location_intensity = new int[MAX_LIGHTS];
 
         for (int i = 0; i < MAX_LIGHTS; i++) {
             location_pointLightPosArr[i] = super.getUniformLocation("pointLightPosArr[" + i + "]");
             location_pointLightColorArr[i] = super.getUniformLocation("pointLightColorArr[" + i + "]");
             location_dirLightDirArr[i] = super.getUniformLocation("dirLightDirArr[" + i + "]");
             location_dirLightColorArr[i] = super.getUniformLocation("dirLightColorArr[" + i + "]");
+            
+            location_r[i] = getUniformLocation("r[" + i + "]");
+            location_intensity[i] = getUniformLocation("intensity[" + i + "]");
         }
     }
     
@@ -125,10 +127,14 @@ public class TerrainShader extends Shader
             {
                 loadVector(location_pointLightPosArr[i], pointLights.get(i).getPosition());
                 loadVector(location_pointLightColorArr[i], pointLights.get(i).getColor());
+                loadFloat(location_r[i], pointLights.get(i).getR());
+                loadFloat(location_intensity[i], pointLights.get(i).getIntensity());
             } else
             {
                 loadVector(location_pointLightPosArr[i], new Vector3f(0,0,0));
                 loadVector(location_pointLightColorArr[i], new Vector3f(0,0,0));
+                loadFloat(location_r[i], 0);
+                loadFloat(location_intensity[i], 0);
             }
             if (i < dirLights.size())
             {
@@ -140,9 +146,5 @@ public class TerrainShader extends Shader
                 loadVector(location_dirLightColorArr[i], new Vector3f(0,0,0));
             }
         }
-        
-        loadFloat(location_Kc, 1);
-        loadFloat(location_Kl, 0.045f);
-        loadFloat(location_Kq, 0.0075f);
     }
 }

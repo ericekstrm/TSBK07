@@ -22,6 +22,8 @@ public class PositionalLight
     
     Vector3f position;
     Vector3f color;
+    float intensity = 1; //value between 0 and 1
+    float radius = 10; // value to decide an attenuation
 
     public PositionalLight(Vector3f position, Vector3f color)
     {
@@ -91,4 +93,12 @@ public class PositionalLight
     {
         position = new_position;
     }
+
+	public float getR() {
+		return radius;
+	}
+
+	public float getIntensity() {
+		return intensity;
+	}
 }

@@ -27,20 +27,21 @@ public class TerrainHandler
         {
             for (int j = -2; j < 3; j++)
             {
-                if (i != 0 || j != 0)
+                if ((i != 0 || j != 0) && (i != -1 || j != -1))
                 {
-                    addTerrain(i, j, "height_map.png");
+                    addTerrain(i, j, "height_map.png", "grass.jpg", "dirt.jpg", "cobblestone.jpg", "blendmap.jpg");
                 }
             }
         }
-        addTerrain(0, 0, "height_map_lake.png");
+        addTerrain(0, 0, "height_map_lake.png", "grass.jpg", "dirt.jpg", "cobblestone.jpg", "blendmap.jpg");
+        addTerrain(-1, -1, "height_map_forrest.png", "grass.jpg", "dirt.jpg", "cobblestone_new.jpg", "blendmap_forrest2.jpg");
     }
 
-    public void addTerrain(int i, int j, String heightmap)
+    public void addTerrain(int i, int j, String heightmap, String rTextures, String gTexture, String bTexture, String blendmap)
     {
         if (!terrainTiles.containsKey(new Vector2f(i, j)))
         {
-            Terrain t = new Terrain(terrainShader, heightmap, "grass.jpg", "dirt.jpg", "cobblestone.jpg", "blendmap.jpg");
+            Terrain t = new Terrain(terrainShader, heightmap, rTextures, gTexture, bTexture, blendmap);
             t.setPosition(i * Terrain.SIZE, 0, j * Terrain.SIZE);
             terrainTiles.put(new Vector2f(i, j), t);
         }

@@ -11,11 +11,10 @@ uniform sampler2D bTexture;
 uniform sampler2D blendmap;
 
 //light properties
-uniform vec3 pointLightPosArr[2];
-uniform vec3 pointLightColorArr[2];
-uniform float Kc;
-uniform float Kl;
-uniform float Kq;
+uniform vec3 pointLightPosArr[4];
+uniform vec3 pointLightColorArr[4];
+uniform float r[4];
+uniform float intensity[4];
 
 uniform vec3 dirLightDirArr[2];
 uniform vec3 dirLightColorArr[2];
@@ -40,11 +39,14 @@ void main()
     //Point lights
     for(int i = 0; i < pointLightPosArr.length(); i++)
     {
-        float Kc = 1;
-        float Kl = 0.045;
-        float Kq = 0.0075;
-        float distance = length(pointLightPosArr[i] - fragPos);
-        float attenuation = 1.0 / (Kc + Kl * distance + Kq * (distance * distance)); 
+        //float Kc = 1;
+        //float Kl = 0.045;
+        //float Kq = 0.0075;
+    	float Kc = 1;
+	    float Kl = 2 / r[i];
+    	float Kq = 1 / (r[i] * r[i]);
+    	float distance = length(pointLightPosArr[i] - fragPos);
+        float attenuation = intensity[i] / (Kc + Kl * distance + Kq * (distance * distance));
 
         //ambient light
         ambientLight += attenuation * Ka * pointLightColorArr[i];
@@ -59,7 +61,7 @@ void main()
         vec3 viewDir = normalize(viewPos - fragPos);
         vec3 reflectDir = reflect(-lightDir, normalize(normal));
 
-        float spec = pow(max(0.0, dot(viewDir, reflectDir)), specularExponent); //128 ska va nåt som bestäms för varje objekt
+        float spec = pow(max(0.0, dot(viewDir, reflectDir)), specularExponent);
         specularLight += attenuation * Ks * spec * pointLightColorArr[i];
     }
 

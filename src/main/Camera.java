@@ -61,6 +61,7 @@ public class Camera implements GLFWScrollCallbackI
     
     public void checkInputWaking(long window)
     {
+    	position.y = 2;
         if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
         {
         	

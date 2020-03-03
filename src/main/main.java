@@ -126,6 +126,7 @@ public class main
         windmill.setPosition(10, 0, -10);
         windmill.setRotation(0, 180, 0);
 
+        //a bunch of trees
         RawData data = Loader.loadRawData("tree.obj", "green.jpg");
         for (int i = 0; i < 20; i++)
         {
@@ -138,6 +139,7 @@ public class main
             models.put("tree" + i, tree);
         }
 
+        //a bunch of arrows
         /*data = Loader.loadRawData("arrow.obj", "green.jpg");
         for (int i = 0; i < 1000; i++)
         {
@@ -156,7 +158,7 @@ public class main
             models.put("arrow" + i, tree);
         }*/
 
-        data = Loader.loadRawData("ball.obj", "green.jpg");
+        /*data = Loader.loadRawData("ball.obj", "green.jpg");
         for (int i = 0; i < 100; i++) {
 			for (int j = 0; j < 100; j++) {
 				RigidSphere ball = new RigidSphere(shader, data);
@@ -164,7 +166,7 @@ public class main
 		        ball.setScale(0.5f, 0.5f, 0.5f);
 		        models.put("ball" + i + "" + j, ball);
 			}
-		}
+		}*/
         
         
         
@@ -184,7 +186,7 @@ public class main
 
         lights.moveLight(0, Matrix4f.rotate(0, 2, 0));
 
-        for (int i = 0; i < 100; i++) {
+        /*for (int i = 0; i < 100; i++) {
 			for (int j = 0; j < 100; j++) {
 				models.get("ball" + i + "" + j).update(deltaTime);
 				
@@ -196,9 +198,7 @@ public class main
 		        }
 		        m.move(deltaTime);
 			}
-		}
-        
-
+		}*/
         
     }
 

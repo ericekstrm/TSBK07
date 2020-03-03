@@ -38,7 +38,7 @@ void main()
     for(int i = 0; i < pointLightPosArr.length(); i++)
     {
         float distance = length(pointLightPosArr[i] - fragPos);
-        float attenuation = 1.0 / (Kc + Kl * distance + Kq * (distance * distance)); 
+        float attenuation = 1 / (Kc + Kl * distance + Kq * (distance * distance));
 
         //ambient light
         ambientLight += attenuation * Ka * pointLightColorArr[i];
@@ -82,8 +82,6 @@ void main()
     fogFactor = clamp( fogFactor, 0.0, 1.0 );
     vec3 fogColor = vec3(91.0/255.0, 142/255.0, 194.0/255.0);
  
-    //if you inverse color in glsl mix function you have to
-    //put 1.0 - fogFactor
     vec3 finalColor = mix(fogColor, lightColor, fogFactor);
 
     outColor = vec4(finalColor, 1);

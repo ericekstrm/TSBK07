@@ -2,7 +2,6 @@ package main;
 
 import java.nio.DoubleBuffer;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.glfw.GLFWScrollCallback;
 import org.lwjgl.glfw.GLFWScrollCallbackI;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -15,9 +14,9 @@ public class Camera implements GLFWScrollCallbackI
     Vector3f position;
     Vector3f direction;
     Vector3f upVector = new Vector3f(0, 1, 0);
-    
+
     float speed = 1f;
-    
+
     boolean flying = true;
     boolean keyPressedLastTime = false;
 
@@ -25,7 +24,7 @@ public class Camera implements GLFWScrollCallbackI
     {
         this.position = position;
         this.direction = lookAt.subtract(position).normalize();
-        
+
         glfwSetScrollCallback(window, this);
     }
 
@@ -33,7 +32,7 @@ public class Camera implements GLFWScrollCallbackI
     double prevY = 200;
 
     public void checkInputFlying(long window)
-    {   
+    {
         if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
         {
             //forward
@@ -58,13 +57,13 @@ public class Camera implements GLFWScrollCallbackI
             position = position.add(movement);
         }
     }
-    
+
     public void checkInputWaking(long window)
     {
-    	position.y = 2;
+        position.y = 2;
         if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
         {
-        	
+
             Vector3f movement = direction.scale(speed);
             movement.y = 0;
             position = position.add(movement);
@@ -90,11 +89,11 @@ public class Camera implements GLFWScrollCallbackI
             position = position.add(movement);
         }
     }
-    
+
     public void checkInput(long window)
     {
-    	//rotation camera
-    	DoubleBuffer xBuffer = BufferUtils.createDoubleBuffer(1);
+        //rotation camera
+        DoubleBuffer xBuffer = BufferUtils.createDoubleBuffer(1);
         DoubleBuffer yBuffer = BufferUtils.createDoubleBuffer(1);
         glfwGetCursorPos(window, xBuffer, yBuffer);
         double x = (float) xBuffer.get(0);
@@ -109,37 +108,38 @@ public class Camera implements GLFWScrollCallbackI
             direction = Matrix4f.rotate((float) (y - prevY) / 10, dir).multiply(direction);
         }
         glfwSetCursorPos(window, prevX, prevY);
-    	
+
         //toggle flying
         if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS && !keyPressedLastTime)
         {
-        	flying = !flying;
+            flying = !flying;
         }
         keyPressedLastTime = glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS;
-        
-        if(flying)
+
+        if (flying)
         {
-        	checkInputFlying(window);
+            checkInputFlying(window);
         } else
         {
-        	checkInputWaking(window);
+            checkInputWaking(window);
         }
     }
-    
+
     //callback for scroll wheel
     @Override
-	public void invoke(long window, double xoffset, double yoffset) {
-		speed += yoffset / 2;
-		if (speed < 0.5f)
-		{
-			speed  = 0.5f;
-		}
-		if (speed > 10)
-		{
-			speed = 10;
-		}
-		System.out.println("Camera speed: " + speed);
-	}
+    public void invoke(long window, double xoffset, double yoffset)
+    {
+        speed += yoffset / 2;
+        if (speed < 0.5f)
+        {
+            speed = 0.5f;
+        }
+        if (speed > 10)
+        {
+            speed = 10;
+        }
+        System.out.println("Camera speed: " + speed);
+    }
 
     public void move(Matrix4f transform)
     {

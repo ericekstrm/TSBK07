@@ -1,12 +1,12 @@
 package main;
 
 import water.Water;
-import loader.MaterialProperties;
 import loader.RawData;
 import loader.Loader;
 import java.util.HashMap;
 import java.util.Map;
 import light.Lights;
+import loader.Material;
 import model.*;
 import org.lwjgl.opengl.*;
 import static org.lwjgl.glfw.GLFW.*;
@@ -96,8 +96,8 @@ public class main
 
     public void initModel()
     {
-    	camera = new Camera(new Vector3f(2, 1, 2), new Vector3f(3, 3, 0), window);
-    	
+        camera = new Camera(new Vector3f(2, 1, 2), new Vector3f(3, 3, 0), window);
+
         shader = new ModelShader();
         shader.start();
         shader.loadProjectionMatrix(Matrix4f.frustum_new());
@@ -108,7 +108,7 @@ public class main
                             Loader.loadRawData("skybox.obj", "SkyBox512.tga"));
         skybox.setPosition(0, -3, 0);
         terrain = new TerrainHandler();
-        
+
         water = new Water(new WaterShader());
         water.setPosition(200, -5, 200);
         water.setScale(3, 3, 3);
@@ -120,11 +120,14 @@ public class main
 
         models.put("bunny", new Model(shader, Loader.loadRawData("bunnyplus.obj", "tex2.jpg")));
         models.get("bunny").setPosition(1, 0, 1);
-        models.get("bunny").setMaterialProperties(0, new MaterialProperties(0.1f, 0.4f, 1f, 8));
+        models.get("bunny").setMaterialProperties(0, new Material());
 
         windmill = new Windmill(shader);
         windmill.setPosition(10, 0, -10);
         windmill.setRotation(0, 180, 0);
+        
+        models.put("house", new Model(shader, Loader.loadRawData("House.obj", "")));
+        models.get("house").setPosition(-20, 10, -20);
 
         //a bunch of trees
         RawData data = Loader.loadRawData("tree.obj", "green.jpg");
@@ -157,19 +160,18 @@ public class main
             tree.setRotation(Matrix4f.rotate(angle, rotationaxis).toMatrix3f());
             models.put("arrow" + i, tree);
         }*/
-
         /*data = Loader.loadRawData("ball.obj", "green.jpg");
-        for (int i = 0; i < 100; i++) {
-			for (int j = 0; j < 100; j++) {
-				RigidSphere ball = new RigidSphere(shader, data);
-		        ball.setPosition(-50 - i, 10, 50 + j);
-		        ball.setScale(0.5f, 0.5f, 0.5f);
-		        models.put("ball" + i + "" + j, ball);
-			}
-		}*/
-        
-        
-        
+        for (int i = 0; i < 50; i++)
+        {
+            for (int j = 0; j < 50; j++)
+            {
+                RigidSphere ball = new RigidSphere(shader, data);
+                ball.setPosition(-50 - i, 10, 50 + j);
+                ball.setScale(0.5f, 0.5f, 0.5f);
+                models.put("ball" + i + "" + j, ball);
+            }
+        }*/
+
     }
 
     long time = 0;
@@ -186,20 +188,21 @@ public class main
 
         lights.moveLight(0, Matrix4f.rotate(0, 2, 0));
 
-        /*for (int i = 0; i < 100; i++) {
-			for (int j = 0; j < 100; j++) {
-				models.get("ball" + i + "" + j).update(deltaTime);
-				
-				RigidSphere m = (RigidSphere) models.get("ball" + i + "" + j);
-		        Vector3f collisionPoint = new Vector3f(m.getPosition().x, terrain.getHeight(m.getPosition().x, m.getPosition().z), m.getPosition().z);
-		        if (m.getPosition().y <= collisionPoint.y)
-		        {
-		            m.collisionCallback(collisionPoint, terrain.getNormal(m.getPosition().x, m.getPosition().z));
-		        }
-		        m.move(deltaTime);
-			}
-		}*/
-        
+        /*for (int i = 0; i < 50; i++)
+        {
+            for (int j = 0; j < 50; j++)
+            {
+                models.get("ball" + i + "" + j).update(deltaTime);
+
+                RigidSphere m = (RigidSphere) models.get("ball" + i + "" + j);
+                Vector3f collisionPoint = new Vector3f(m.getPosition().x, terrain.getHeight(m.getPosition().x, m.getPosition().z), m.getPosition().z);
+                if (m.getPosition().y <= collisionPoint.y)
+                {
+                    m.collisionCallback(collisionPoint, terrain.getNormal(m.getPosition().x, m.getPosition().z));
+                }
+                m.move(deltaTime);
+            }
+        }*/
     }
 
     long prevTime;
@@ -235,7 +238,7 @@ public class main
 
         //render terrain
         terrain.render(camera, lights);
-        
+
         //render water
         water.render(camera);
 
@@ -257,14 +260,14 @@ public class main
 
     public void checkInput()
     {
-    	/*
+        /*
     	 * ===| Controls |===
     	 * 
     	 * Arrows : move the camera around 
     	 *      F : toggle flying mode for camera
     	 * scroll : change movement speed
-    	 */
-    	
+         */
+
         camera.checkInput(window);
 
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)

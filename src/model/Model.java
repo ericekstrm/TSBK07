@@ -1,6 +1,6 @@
 package model;
 
-import loader.MaterialProperties;
+import loader.Material;
 import loader.RawData;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,11 +21,11 @@ public class Model extends Movable
     protected List<Integer> activeVAOs = new ArrayList<>();
     protected List<Integer> activeVBOs = new ArrayList<>();
     protected List<Integer> nrOfIndices = new ArrayList<>();
-    protected List<MaterialProperties> matProperties = new ArrayList<>();
+    protected List<Material> matProperties = new ArrayList<>();
 
-    public Model(Shader shader, RawData data)
+    public Model(Shader shader, RawData... data)
     {
-        for (int i = 0; i < data.indices.size(); i++)
+        for (int i = 0; i < data.length; i++)
         {
             //add new vao to list
             int vaoID = GL30.glGenVertexArrays();
@@ -33,25 +33,19 @@ public class Model extends Movable
             activeVAOs.add(vaoID);
 
             //add data that is the same for all vaos (this is where there is a lot of memory waste.)
-            activeVBOs.add(ModelLoader.loadVertexVBO(data.vertices));
-            activeVBOs.add(ModelLoader.loadTextureVBO(data.textureCoords));
-            activeVBOs.add(ModelLoader.loadNormalsVBO(data.normals));
+            activeVBOs.add(ModelLoader.loadVertexVBO(data[i].vertices));
+            activeVBOs.add(ModelLoader.loadTextureVBO(data[i].textureCoords));
+            activeVBOs.add(ModelLoader.loadNormalsVBO(data[i].normals));
 
             //add data that is specific to that vao
-            activeVBOs.add(ModelLoader.loadIndicesVBO(data.indices.get(i)));
-            nrOfIndices.add(data.indices.get(i).length);
+            activeVBOs.add(ModelLoader.loadIndicesVBO(data[i].indices));
+            nrOfIndices.add(data[i].indices.length);
 
             //materials
-            matProperties.add(data.matprop.get(i));
+            matProperties.add(data[i].material);
 
             //texture binding
-            Texture tex = data.textures.get(i);
-            for (int j = 0; j < tex.size(); j++)
-            {
-                //glActiveTexture(GL_TEXTURE0 + j);
-                //glBindTexture(GL_TEXTURE_2D, tex.get(j));
-                textureIDs.add(tex);
-            }
+            textureIDs.add(data[i].textures);
 
             GL30.glBindVertexArray(0);
         }
@@ -67,10 +61,7 @@ public class Model extends Movable
             GL20.glEnableVertexAttribArray(Shader.NORMAL_ATTRIB);
 
             shader.loadModelToWorldMatrix(getModelToViewMatrix());
-            shader.loadMaterialLightingProperties(matProperties.get(i).Ka,
-                                                  matProperties.get(i).Kd,
-                                                  matProperties.get(i).Ks,
-                                                  matProperties.get(i).specularExponent);
+            shader.loadMaterialLightingProperties(matProperties.get(i));
             //textures
             for (int j = 0; j < textureIDs.get(i).size(); j++)
             {
@@ -109,7 +100,7 @@ public class Model extends Movable
         //TODO: remove textures
     }
 
-    public void setMaterialProperties(int index, MaterialProperties matProp)
+    public void setMaterialProperties(int index, Material matProp)
     {
         matProperties.set(index, matProp);
     }

@@ -5,7 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
-import loader.MaterialProperties;
+import loader.Material;
 import loader.RawData;
 import loader.Texture;
 import static terrain.Terrain.MAX_HEIGHT;
@@ -73,16 +73,7 @@ public class TerrainGeneration
             }
         }
 
-        ArrayList<int[]> indicesList = new ArrayList<>();
-        indicesList.add(indicesArray);
-
-        ArrayList<Texture> textureIDs = new ArrayList<>();
-        textureIDs.add(new Texture(textureFileNames));
-
-        ArrayList<MaterialProperties> materialProperties = new ArrayList<>();
-        materialProperties.add(new MaterialProperties());
-
-        RawData data = new RawData(verticesArray, normalsArray, textureArray, indicesList, textureIDs, materialProperties);
+        RawData data = new RawData(verticesArray, normalsArray, textureArray, indicesArray, new Texture(textureFileNames), new Material());
         return data;
     }
 

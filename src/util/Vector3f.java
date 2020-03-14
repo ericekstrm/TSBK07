@@ -184,4 +184,9 @@ public class Vector3f
         buffer.put(x).put(y).put(z);
         buffer.flip();
     }
+
+    public void print()
+    {
+        System.out.println(x + ", " + y + ", " + z);
+    }
 }

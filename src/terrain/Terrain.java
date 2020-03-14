@@ -3,12 +3,8 @@ package terrain;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import model.Model;
-import loader.RawData;
-import loader.MaterialProperties;
-import loader.Texture;
 import org.lwjgl.opengl.GL11;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glBindTexture;
@@ -18,7 +14,6 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import shader.Shader;
 import shader.TerrainShader;
-import util.Vector3f;
 
 public class Terrain extends Model
 {
@@ -45,10 +40,7 @@ public class Terrain extends Model
             GL20.glEnableVertexAttribArray(Shader.NORMAL_ATTRIB);
 
             shader.loadModelToWorldMatrix(getModelToViewMatrix());
-            shader.loadMaterialLightingProperties(matProperties.get(i).Ka,
-                                                  matProperties.get(i).Kd,
-                                                  matProperties.get(i).Ks,
-                                                  matProperties.get(i).specularExponent);
+            shader.loadMaterialLightingProperties(matProperties.get(i));
             //textures
             for (int j = 0; j < textureIDs.get(i).size(); j++)
             {

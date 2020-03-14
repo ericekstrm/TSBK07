@@ -20,9 +20,9 @@ uniform vec3 dirLightDirArr[2];
 uniform vec3 dirLightColorArr[2];
 
 //material properties
-uniform float Ka;
-uniform float Kd;
-uniform float Ks;
+uniform vec3 Ka;
+uniform vec3 Kd;
+uniform vec3 Ks;
 uniform float specularExponent;
 
 uniform vec3 viewPos;
@@ -43,7 +43,7 @@ void main()
         //float Kl = 0.045;
         //float Kq = 0.0075;
     	float Kc = 1;
-	    float Kl = 2 / r[i];
+	float Kl = 2 / r[i];
     	float Kq = 1 / (r[i] * r[i]);
     	float distance = length(pointLightPosArr[i] - fragPos);
         float attenuation = intensity[i] / (Kc + Kl * distance + Kq * (distance * distance));

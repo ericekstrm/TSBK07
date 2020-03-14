@@ -18,9 +18,9 @@ uniform vec3 dirLightDirArr[2];
 uniform vec3 dirLightColorArr[2];
 
 //material properties
-uniform float Ka;
-uniform float Kd;
-uniform float Ks;
+uniform vec3 Ka;
+uniform vec3 Kd;
+uniform vec3 Ks;
 uniform float specularExponent;
 
 uniform vec3 viewPos;

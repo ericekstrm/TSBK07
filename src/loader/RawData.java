@@ -1,8 +1,5 @@
 package loader;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class RawData
 {
 
@@ -10,17 +7,26 @@ public class RawData
     public float[] normals;
     public float[] textureCoords;
 
-    public List<int[]> indices = new ArrayList<>();
-    public List<Texture> textures = new ArrayList<>();
-    public List<MaterialProperties> matprop = new ArrayList<>();
+    public int[] indices;
+    public Texture textures;
+    public Material material;
 
-    public RawData(float[] vertices, float[] normals, float[] textureCoords, ArrayList<int[]> indices, ArrayList<Texture> textures, ArrayList<MaterialProperties> matProp)
+    public RawData(float[] vertices, float[] normals, float[] textureCoords, int[] indices, Texture textures, Material material)
     {
         this.vertices = vertices;
         this.textureCoords = textureCoords;
         this.indices = indices;
         this.textures = textures;
         this.normals = normals;
-        this.matprop = matProp;
+        this.material = material;
+    }
+
+    RawData(float[] vertices, float[] normals, float[] textureCoords, int[] indices, Material material)
+    {
+        this.vertices = vertices;
+        this.textureCoords = textureCoords;
+        this.indices = indices;
+        this.normals = normals;
+        this.material = material;
     }
 }

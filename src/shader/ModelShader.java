@@ -3,6 +3,7 @@ package shader;
 import java.util.List;
 import light.DirectionalLight;
 import light.PositionalLight;
+import loader.Material;
 import main.Camera;
 import util.Matrix4f;
 import util.Vector3f;
@@ -108,12 +109,12 @@ public class ModelShader extends Shader
         loadMatrix(location_projection, projection);
     }   
 
-    public void loadMaterialLightingProperties(float Ka, float Kd, float Ks, float specularExponent)
+    public void loadMaterialLightingProperties(Material mat)
     {
-        loadFloat(location_Ka, Ka);
-        loadFloat(location_Kd, Kd);
-        loadFloat(location_Ks, Ks);
-        loadFloat(location_specularExponent, specularExponent);
+        loadVector(location_Ka, mat.Ka);
+        loadVector(location_Kd, mat.Kd);
+        loadVector(location_Ks, mat.Ks);
+        loadFloat(location_specularExponent, mat.Ns);
     }
     
     public void loadLights(List<PositionalLight> pointLights, List<DirectionalLight> dirLights)

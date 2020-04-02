@@ -68,7 +68,9 @@ void main()
         diffuseLight += Kd * diff * dirLightColorArr[i];
     }
     
-    vec3 lightColor = (ambientLight + diffuseLight + specularLight) * vec3(texture(texUnit, texCoord));
+    // borde vara en shader för modeller med textur och en för modeller utan
+    //vec3 lightColor = (ambientLight + diffuseLight + specularLight) * vec3(texture(texUnit, texCoord));
+    vec3 lightColor = (ambientLight + diffuseLight + specularLight);
  
     //=====================================================
     //compute distance used in fog equations

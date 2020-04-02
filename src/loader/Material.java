@@ -4,8 +4,8 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import util.Vector3f;
@@ -14,8 +14,8 @@ public class Material
 {
 
     public String name = "";
-    public Vector3f Ka = new Vector3f(1,1,1);
-    public Vector3f Kd = new Vector3f(1,1,1);
+    public Vector3f Ka = new Vector3f(1, 1, 1);
+    public Vector3f Kd = new Vector3f(1, 1, 1);
     public Vector3f Ks = new Vector3f();
     public Vector3f Ke = new Vector3f();
     public float Ns = 1;
@@ -23,17 +23,17 @@ public class Material
     public float d = 0;
     public float illum = 0;
 
-    public static List<Material> loadMtlFile(String mtlfile)
+    public static Map<String, Material> loadMtlFile(String mtlfile)
     {
-        List<Material> newMaterials = new ArrayList<>();
+        Map<String, Material> newMaterials = new HashMap<>();
         BufferedReader br = null;
         try
         {
-            br = new BufferedReader(new FileReader("res/materials" + mtlfile));
             System.out.println("Loading file: " + mtlfile);
+            br = new BufferedReader(new FileReader("res/materials/" + mtlfile));
         } catch (FileNotFoundException ex)
         {
-            System.out.println("material file not found: " + mtlfile);
+            System.out.println("Material file not found: " + mtlfile);
             return null;
         }
 
@@ -50,7 +50,7 @@ public class Material
                 {
                     if (currentMaterial != null)
                     {
-                        newMaterials.add(currentMaterial);
+                        newMaterials.put(currentMaterial.name, currentMaterial);
                     }
                     currentMaterial = new Material();
                     currentMaterial.name = currentLine[1];
@@ -91,6 +91,7 @@ public class Material
 
                 line = br.readLine();
             }
+            newMaterials.put(currentMaterial.name, currentMaterial);
 
         } catch (IOException ex)
         {
@@ -98,5 +99,18 @@ public class Material
         }
 
         return newMaterials;
+    }
+
+    public void print()
+    {
+        System.out.println("=====| " + name + "|========");
+        System.out.println("Ka: " + Ka.x + ", " + Ka.y + ", " + Ka.z);
+        System.out.println("Kd: " + Kd.x + ", " + Kd.y + ", " + Kd.z);
+        System.out.println("Ks: " + Ks.x + ", " + Ks.y + ", " + Ks.z);
+        System.out.println("Ke: " + Ke.x + ", " + Ke.y + ", " + Ke.z);
+        System.out.println("Ns: " + Ns);
+        System.out.println("Ni: " + Ni);
+        System.out.println("d: " + d);
+        System.out.println("illum: " + illum);
     }
 }

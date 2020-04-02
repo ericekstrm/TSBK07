@@ -104,6 +104,9 @@ public class main
         shader.connectTextureUnits();
         shader.stop();
 
+        models.put("house", new Model(shader, Loader.loadObj("House.obj")));
+        models.get("house").setPosition(-20, 10, -20);
+        
         skybox = new Skybox(new ModelShader("skybox.vert", "skybox.frag"),
                             Loader.loadRawData("skybox.obj", "SkyBox512.tga"));
         skybox.setPosition(0, -3, 0);
@@ -125,9 +128,6 @@ public class main
         windmill = new Windmill(shader);
         windmill.setPosition(10, 0, -10);
         windmill.setRotation(0, 180, 0);
-        
-        models.put("house", new Model(shader, Loader.loadRawData("House.obj", "")));
-        models.get("house").setPosition(-20, 10, -20);
 
         //a bunch of trees
         RawData data = Loader.loadRawData("tree.obj", "green.jpg");
@@ -139,7 +139,7 @@ public class main
             tree.setPosition(x, terrain.getHeight(x, z), z);
             tree.setScale(0.3f, 0.3f, 0.3f);
             tree.setRotation(0, Util.rand(0, 360), 0);
-            models.put("tree" + i, tree);
+            //models.put("tree" + i, tree);
         }
 
         //a bunch of arrows

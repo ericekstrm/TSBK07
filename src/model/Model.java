@@ -51,6 +51,34 @@ public class Model extends Movable
         }
     }
 
+    public Model(Shader shader, List<RawData> data)
+    {
+        for (int i = 0; i < data.size(); i++)
+        {
+            //add new vao to list
+            int vaoID = GL30.glGenVertexArrays();
+            GL30.glBindVertexArray(vaoID);
+            activeVAOs.add(vaoID);
+
+            //add data that is the same for all vaos (this is where there is a lot of memory waste.)
+            activeVBOs.add(ModelLoader.loadVertexVBO(data.get(i).vertices));
+            activeVBOs.add(ModelLoader.loadTextureVBO(data.get(i).textureCoords));
+            activeVBOs.add(ModelLoader.loadNormalsVBO(data.get(i).normals));
+
+            //add data that is specific to that vao
+            activeVBOs.add(ModelLoader.loadIndicesVBO(data.get(i).indices));
+            nrOfIndices.add(data.get(i).indices.length);
+
+            //materials
+            matProperties.add(data.get(i).material);
+
+            //texture binding
+            textureIDs.add(data.get(i).textures);
+
+            GL30.glBindVertexArray(0);
+        }
+    }
+
     public void render(ModelShader shader)
     {
         for (int i = 0; i < activeVAOs.size(); i++)
@@ -63,10 +91,13 @@ public class Model extends Movable
             shader.loadModelToWorldMatrix(getModelToViewMatrix());
             shader.loadMaterialLightingProperties(matProperties.get(i));
             //textures
-            for (int j = 0; j < textureIDs.get(i).size(); j++)
+            if (textureIDs.get(i) != null)
             {
-                glActiveTexture(GL_TEXTURE0 + j);
-                glBindTexture(GL_TEXTURE_2D, textureIDs.get(i).get(j));
+                for (int j = 0; j < textureIDs.get(i).size(); j++)
+                {
+                    glActiveTexture(GL_TEXTURE0 + j);
+                    glBindTexture(GL_TEXTURE_2D, textureIDs.get(i).get(j));
+                }
             }
 
             //draw!

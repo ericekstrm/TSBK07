@@ -21,7 +21,7 @@ public class Loader
         BufferedReader br = null;
         try
         {
-            br = new BufferedReader(new FileReader("res/" + filename));
+            br = new BufferedReader(new FileReader("res/objects/" + filename));
             System.out.println("Loading file: " + filename);
         } catch (FileNotFoundException ex)
         {
@@ -33,7 +33,6 @@ public class Loader
         List<Vector2f> textures = new ArrayList<>();
         List<Vector3f> normals = new ArrayList<>();
 
-        List<Map<Integer, String>> allIndices = new ArrayList<>();
         Map<Integer, String> indices = new HashMap<>();
         Map<String, Material> materials = new HashMap<>();
 
@@ -181,7 +180,7 @@ public class Loader
         BufferedReader br = null;
         try
         {
-            br = new BufferedReader(new FileReader("res/" + filename));
+            br = new BufferedReader(new FileReader("res/objects/" + filename));
             System.out.println("Loading file: " + filename);
         } catch (FileNotFoundException ex)
         {
@@ -264,7 +263,7 @@ public class Loader
                     t = textures.get(Integer.parseInt(vertex[1]) - 1);
                 }
                 textureArray[i * 2] = t.x;
-                textureArray[i * 2 + 1] = t.y;
+                textureArray[i * 2 + 1] = -t.y; //negative on the y coordinate for the texture coordinate. why is it needed?
 
                 Vector3f n = normals.get(Integer.parseInt(vertex[2]) - 1);
                 normalsArray[i * 3] = n.x;

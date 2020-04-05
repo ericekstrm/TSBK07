@@ -12,9 +12,9 @@ public class RigidSphere extends RigidBody
     float I = 2f / 5f * mass * r * r;//moment of inertia (how easy it is to rotate the body)
     Matrix3f Ibody = new Matrix3f().multiply(I);
 
-    public RigidSphere(Shader shader, RawData data)
+    public RigidSphere(RawData data)
     {
-        super(shader, data);
+        super(data);
     }
 
     @Override

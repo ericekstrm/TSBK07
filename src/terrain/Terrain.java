@@ -4,7 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
-import model.Model;
+import model.TextureModel;
 import org.lwjgl.opengl.GL11;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glBindTexture;
@@ -15,7 +15,7 @@ import org.lwjgl.opengl.GL30;
 import shader.Shader;
 import shader.TerrainShader;
 
-public class Terrain extends Model
+public class Terrain extends TextureModel
 {
 
     public static final float SIZE = 400;

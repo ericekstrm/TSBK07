@@ -11,7 +11,7 @@ import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
 import shader.ModelShader;
 import util.Matrix4f;
 
-public class Skybox extends Model
+public class Skybox extends TextureModel
 {
 
     ModelShader skyboxShader;

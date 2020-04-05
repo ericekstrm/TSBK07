@@ -2,12 +2,13 @@ package terrain;
 
 import java.util.HashMap;
 import java.util.Map;
-import light.Lights;
+import light.LightHandler;
 import main.Camera;
 import shader.TerrainShader;
 import util.Matrix4f;
 import util.Vector2f;
 import util.Vector3f;
+import util.Vector4f;
 
 public class TerrainHandler
 {
@@ -47,11 +48,12 @@ public class TerrainHandler
         }
     }
 
-    public void render(Camera camera, Lights lights)
+    public void render(Camera camera, LightHandler lights, Vector4f clippingPlane)
     {
         terrainShader.start();
         terrainShader.loadLights(lights.getPointLights(), lights.getDirLights());
         terrainShader.loadWorldToViewMatrix(camera);
+        terrainShader.loadClippingPlane(clippingPlane);
 
         for (Map.Entry<Vector2f, Terrain> t : terrainTiles.entrySet())
         {

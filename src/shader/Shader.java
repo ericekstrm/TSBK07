@@ -12,6 +12,7 @@ import static org.lwjgl.opengl.GL20.glUniform3fv;
 import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
 import util.Matrix4f;
 import util.Vector3f;
+import util.Vector4f;
 
 public abstract class Shader
 {
@@ -108,6 +109,13 @@ public abstract class Shader
         vector.toBuffer(buffer);
         GL20.glUniform3fv(location, buffer);
     }
+    
+    protected void loadVector(int location, Vector4f vector)
+    {
+        FloatBuffer buffer = BufferUtils.createFloatBuffer(4);
+        vector.toBuffer(buffer);
+        GL20.glUniform4fv(location, buffer);
+    }
 
     protected void loadMatrix(int location, Matrix4f matrix)
     {
@@ -133,7 +141,7 @@ public abstract class Shader
         StringBuilder shaderSource = new StringBuilder();
         try
         {
-            BufferedReader reader = new BufferedReader(new FileReader("src/shader/" + file_name));
+            BufferedReader reader = new BufferedReader(new FileReader("src/shaderfiles/" + file_name));
             String line;
             while ((line = reader.readLine()) != null)
             {

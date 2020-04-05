@@ -4,7 +4,7 @@ import loader.RawData;
 import shader.Shader;
 import util.Vector3f;
 
-public abstract class RigidBody extends Model
+public abstract class RigidBody extends ColorModel
 {
 
     float mass = 1; //mass of the sphere
@@ -17,9 +17,9 @@ public abstract class RigidBody extends Model
     Vector3f force = new Vector3f(0, -3.82f, 0); //gravity!
     Vector3f torque = new Vector3f(); //"rotational force"
 
-    public RigidBody(Shader shader, RawData data)
+    public RigidBody(RawData data)
     {
-        super(shader, data);
+        super(data);
     }
 
     public abstract void update(float deltaTime);

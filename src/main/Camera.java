@@ -129,14 +129,22 @@ public class Camera implements GLFWScrollCallbackI
     @Override
     public void invoke(long window, double xoffset, double yoffset)
     {
-        speed += yoffset / 2;
-        if (speed < 0.5f)
+        if (yoffset < 0)
         {
-            speed = 0.5f;
+            speed /= 2;
+        } else
+        {
+            speed *= 2;
         }
-        if (speed > 10)
+
+        //limit speed to interval [0.1, 10]
+        if (speed < 0.0625f)
         {
-            speed = 10;
+            speed = 0.0625f;
+        }
+        if (speed > 16)
+        {
+            speed = 16;
         }
         System.out.println("Camera speed: " + speed);
     }

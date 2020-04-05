@@ -1,11 +1,12 @@
 package main;
 
-import water.Water;
+import water.WaterTile;
 import loader.RawData;
 import loader.Loader;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import light.Lights;
+import light.LightHandler;
 import loader.Material;
 import model.*;
 import org.lwjgl.opengl.*;
@@ -15,12 +16,13 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.system.MemoryUtil.*;
-import shader.ModelShader;
-import water.WaterShader;
+import shader.TextureModelShader;
 import terrain.TerrainHandler;
 import util.Matrix4f;
-import util.Util;
 import util.Vector3f;
+import util.Vector4f;
+import water.WaterFrameBuffer;
+import water.WaterHandler;
 
 public class main
 {
@@ -33,14 +35,15 @@ public class main
 
     long window;
 
-    Map<String, Model> models = new HashMap<>();
-    Windmill windmill;
+    ModelHandler models;
     TerrainHandler terrain;
     Skybox skybox;
-    Water water;
-    Lights lights;
 
-    ModelShader shader;
+    WaterHandler water;
+    WaterFrameBuffer waterFrameBuffer;
+    Vector4f clippingPlane = new Vector4f(0, -1, 0, 8);
+
+    LightHandler lights;
 
     Camera camera;
 
@@ -74,8 +77,8 @@ public class main
         glEnable(GL_CULL_FACE);
 
         //for transparency
-        //glEnable(GL_BLEND);
-        //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
     public void destroyOpenGL()
@@ -86,105 +89,45 @@ public class main
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
 
-        for (Map.Entry<String, Model> m : models.entrySet())
-        {
-            m.getValue().destroy();
-        }
+        models.destroy();
         glfwDestroyWindow(window);
         glfwTerminate();
     }
 
     public void initModel()
     {
-        camera = new Camera(new Vector3f(2, 1, 2), new Vector3f(3, 3, 0), window);
+        camera = new Camera(new Vector3f(10, 10, 10), new Vector3f(-20, 0, -20), window);
 
-        shader = new ModelShader();
-        shader.start();
-        shader.loadProjectionMatrix(Matrix4f.frustum_new());
-        shader.connectTextureUnits();
-        shader.stop();
-
-        models.put("house", new Model(shader, Loader.loadObj("House.obj")));
-        models.get("house").setPosition(-20, 10, -20);
-        
-        skybox = new Skybox(new ModelShader("skybox.vert", "skybox.frag"),
+        skybox = new Skybox(new TextureModelShader("skybox.vert", "skybox.frag"),
                             Loader.loadRawData("skybox.obj", "SkyBox512.tga"));
         skybox.setPosition(0, -3, 0);
+
         terrain = new TerrainHandler();
+        models = new ModelHandler();
+        models.init(terrain);
 
-        water = new Water(new WaterShader());
-        water.setPosition(200, -5, 200);
-        water.setScale(3, 3, 3);
+        water = new WaterHandler();
+        waterFrameBuffer = new WaterFrameBuffer();
 
-        lights = new Lights();
+        //lights
+        lights = new LightHandler();
         lights.addPosLight(new Vector3f(15.0f, 3.0f, 0.0f), new Vector3f(1.0f, 0.0f, 0.0f));
         lights.addPosLight(new Vector3f(9.0f, 7.0f, 0.0f), new Vector3f(0.0f, 1.0f, 0.0f));
         lights.addDirLight(new Vector3f(0.0f, 1.0f, 0.5f), new Vector3f(0.5f, 0.5f, 0.5f));
-
-        models.put("bunny", new Model(shader, Loader.loadRawData("bunnyplus.obj", "tex2.jpg")));
-        models.get("bunny").setPosition(1, 0, 1);
-        models.get("bunny").setMaterialProperties(0, new Material());
-
-        windmill = new Windmill(shader);
-        windmill.setPosition(10, 0, -10);
-        windmill.setRotation(0, 180, 0);
-
-        //a bunch of trees
-        RawData data = Loader.loadRawData("tree.obj", "green.jpg");
-        for (int i = 0; i < 20; i++)
-        {
-            Model tree = new Model(shader, data);
-            float x = (float) Util.randu(800);
-            float z = (float) Util.randu(800);
-            tree.setPosition(x, terrain.getHeight(x, z), z);
-            tree.setScale(0.3f, 0.3f, 0.3f);
-            tree.setRotation(0, Util.rand(0, 360), 0);
-            //models.put("tree" + i, tree);
-        }
-
-        //a bunch of arrows
-        /*data = Loader.loadRawData("arrow.obj", "green.jpg");
-        for (int i = 0; i < 1000; i++)
-        {
-            Model tree = new Model(shader, data);
-            float x = (float) Util.randu(100);
-            float z = (float) Util.randu(100);
-            tree.setPosition(x, terrain.getHeight(x, z), z);
-            tree.setScale(0.3f, 0.3f, 0.3f);
-            Vector3f rotationaxis = new Vector3f(0, 1, 0).cross(terrain.getNormal(x, z));
-            if (rotationaxis.length() == 0) {
-				rotationaxis = new Vector3f(0,1,0);
-			}
-            float angle = (float) Math.acos(terrain.getNormal(x, z).dot(new Vector3f(0, 1, 0))) / (2 * (float) Math.PI) * 360;
-
-            tree.setRotation(Matrix4f.rotate(angle, rotationaxis).toMatrix3f());
-            models.put("arrow" + i, tree);
-        }*/
-        /*data = Loader.loadRawData("ball.obj", "green.jpg");
-        for (int i = 0; i < 50; i++)
-        {
-            for (int j = 0; j < 50; j++)
-            {
-                RigidSphere ball = new RigidSphere(shader, data);
-                ball.setPosition(-50 - i, 10, 50 + j);
-                ball.setScale(0.5f, 0.5f, 0.5f);
-                models.put("ball" + i + "" + j, ball);
-            }
-        }*/
-
+        lights.addDirLight(new Vector3f(0.0f, 1.0f, -0.5f), new Vector3f(0.5f, 0.5f, 0.5f));
+        
+        //light for lamp post
+        lights.addPosLight(new Vector3f(-50, 3.65f, -50), new Vector3f(0.97f, 0.84f, 0.11f), 0.7f);
+        
+        
     }
-
-    long time = 0;
 
     public void update(float deltaTime)
     {
         //convert to seconds
         deltaTime /= 1000;
-
-        windmill.update(time);
-
-        time = System.currentTimeMillis() % 36000;
-        models.get("bunny").setRotation(0, time / 100, 0);
+        
+        water.update(deltaTime);
 
         lights.moveLight(0, Matrix4f.rotate(0, 2, 0));
 
@@ -207,7 +150,7 @@ public class main
 
     long prevTime;
 
-    void loop()
+    void mainLoop()
     {
         prevTime = System.currentTimeMillis();
         while (!glfwWindowShouldClose(window))
@@ -216,7 +159,7 @@ public class main
             update(System.currentTimeMillis() - prevTime);
             prevTime = currentTime;
 
-            render();
+            masterRender();
 
             glfwPollEvents();
             checkInput();
@@ -225,7 +168,31 @@ public class main
         glfwTerminate();
     }
 
-    public void render()
+    public void masterRender()
+    {
+        GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
+
+        waterFrameBuffer.bindRefractionFrameBuffer();
+        render(new Vector4f(0, -1, 0, water.getHeight()+1f));
+
+        //move camera under water to create reflection texture
+        float distance = 2 * (camera.position.y - water.getHeight());
+        camera.position.y -= distance;
+        camera.direction.y *= -1;
+
+        waterFrameBuffer.bindReflectionFrameBuffer();
+        render(new Vector4f(0, 1, 0, -water.getHeight()+0.1f));
+        camera.position.y += distance;
+        camera.direction.y *= -1;
+        waterFrameBuffer.unbindCurrentFrameBuffer();
+        GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
+        render(new Vector4f(0, 0, 0, 0));
+        water.render(camera, lights, waterFrameBuffer);
+
+        glfwSwapBuffers(window);
+    }
+
+    public void render(Vector4f clippingPlane)
     {
         //prepare
         glClear(GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
@@ -237,25 +204,9 @@ public class main
         lights.render(camera);
 
         //render terrain
-        terrain.render(camera, lights);
+        terrain.render(camera, lights, clippingPlane);
 
-        //render water
-        water.render(camera);
-
-        //render objects
-        shader.start();
-        shader.loadLights(lights.getPointLights(), lights.getDirLights());
-        shader.loadWorldToViewMatrix(camera);
-        //render
-        for (Map.Entry<String, Model> m : models.entrySet())
-        {
-            m.getValue().render(shader);
-        }
-        windmill.render(shader);
-
-        shader.stop();
-
-        glfwSwapBuffers(window);
+        models.render(camera, lights, clippingPlane);
     }
 
     public void checkInput()
@@ -284,7 +235,7 @@ public class main
         main m = new main();
         m.initOpenGL();
         m.initModel();
-        m.loop();
+        m.mainLoop();
         m.destroyOpenGL();
     }
 }

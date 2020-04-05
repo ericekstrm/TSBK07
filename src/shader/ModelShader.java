@@ -7,46 +7,52 @@ import loader.Material;
 import main.Camera;
 import util.Matrix4f;
 import util.Vector3f;
+import util.Vector4f;
 
-public class ModelShader extends Shader
+public abstract class ModelShader extends Shader
 {
-    private static final int MAX_LIGHTS = 4;
-    
-    private static final String VERTEX_FILE = "test.vert";
-    private static final String FRAGMENT_FILE = "test.frag";
+
+    protected static final int MAX_LIGHTS = 4;
+
+    private static final String VERTEX_FILE = "model.vert";
+    private static final String FRAGMENT_FILE = "model.frag";
 
     //transforms
-    private int location_modelToWorld;
-    private int location_worldToView;
-    private int location_projection;
+    protected int location_modelToWorld;
+    protected int location_worldToView;
+    protected int location_projection;
 
     //lighting coefficients
-    private int location_pointLightPosArr[];
-    private int location_pointLightColorArr[];
-    private int location_Kc;
-    private int location_Kl;
-    private int location_Kq;
-    private int location_dirLightDirArr[];
-    private int location_dirLightColorArr[];
+    protected int location_pointLightPosArr[];
+    protected int location_pointLightColorArr[];
+    protected int location_Kc;
+    protected int location_Kl;
+    protected int location_Kq;
+    protected int location_dirLightDirArr[];
+    protected int location_dirLightColorArr[];
 
     //material properties
-    private int location_Ka;
-    private int location_Kd;
-    private int location_Ks;
-    private int location_specularExponent;
+    protected int location_Ka;
+    protected int location_Kd;
+    protected int location_Ks;
+    protected int location_specularExponent;
 
-    private int location_viewPos;
+    //clipping plane for water reflections
+    protected int location_clippingPlane;
 
-    //textures
-    private int location_texUnit;
+    protected int location_viewPos;
 
     public ModelShader()
     {
         super(VERTEX_FILE, FRAGMENT_FILE);
-        
+
         getAllUniformLocations();
+
+        start();
+        loadProjectionMatrix(Matrix4f.frustum_new());
+        stop();
     }
-    
+
     public ModelShader(String vertexFile, String fragmentFile)
     {
         super(vertexFile, fragmentFile);
@@ -65,15 +71,16 @@ public class ModelShader extends Shader
         location_Kd = getUniformLocation("Kd");
         location_Ks = getUniformLocation("Ks");
         location_specularExponent = getUniformLocation("specularExponent");
+        location_clippingPlane = getUniformLocation("clippingPlane");
         location_viewPos = getUniformLocation("viewPos");
-        location_texUnit = getUniformLocation("texUnit");
-        
+
         location_pointLightPosArr = new int[MAX_LIGHTS];
         location_pointLightColorArr = new int[MAX_LIGHTS];
         location_dirLightDirArr = new int[MAX_LIGHTS];
         location_dirLightColorArr = new int[MAX_LIGHTS];
 
-        for (int i = 0; i < MAX_LIGHTS; i++) {
+        for (int i = 0; i < MAX_LIGHTS; i++)
+        {
             location_pointLightPosArr[i] = super.getUniformLocation("pointLightPosArr[" + i + "]");
             location_pointLightColorArr[i] = super.getUniformLocation("pointLightColorArr[" + i + "]");
             location_dirLightDirArr[i] = super.getUniformLocation("dirLightDirArr[" + i + "]");
@@ -88,11 +95,7 @@ public class ModelShader extends Shader
         bindAttribute(TEX_ATTRIB, "in_Texture");
         bindAttribute(NORMAL_ATTRIB, "in_Normal");
     }
-    
-    public void connectTextureUnits() {
-        loadInt(location_texUnit, 0);
-    }
-    
+
     public void loadModelToWorldMatrix(Matrix4f modelToWorldMatrix)
     {
         loadMatrix(location_modelToWorld, modelToWorldMatrix);
@@ -103,11 +106,11 @@ public class ModelShader extends Shader
         loadMatrix(location_worldToView, camera.getWorldtoViewMatrix());
         loadVector(location_viewPos, camera.getPosition());
     }
-    
+
     public void loadProjectionMatrix(Matrix4f projection)
     {
         loadMatrix(location_projection, projection);
-    }   
+    }
 
     public void loadMaterialLightingProperties(Material mat)
     {
@@ -116,7 +119,7 @@ public class ModelShader extends Shader
         loadVector(location_Ks, mat.Ks);
         loadFloat(location_specularExponent, mat.Ns);
     }
-    
+
     public void loadLights(List<PositionalLight> pointLights, List<DirectionalLight> dirLights)
     {
         for (int i = 0; i < MAX_LIGHTS; i++)
@@ -127,8 +130,8 @@ public class ModelShader extends Shader
                 loadVector(location_pointLightColorArr[i], pointLights.get(i).getColor());
             } else
             {
-                loadVector(location_pointLightPosArr[i], new Vector3f(0,0,0));
-                loadVector(location_pointLightColorArr[i], new Vector3f(0,0,0));
+                loadVector(location_pointLightPosArr[i], new Vector3f(0, 0, 0));
+                loadVector(location_pointLightColorArr[i], new Vector3f(0, 0, 0));
             }
             if (i < dirLights.size())
             {
@@ -136,13 +139,18 @@ public class ModelShader extends Shader
                 loadVector(location_dirLightColorArr[i], dirLights.get(i).getColor());
             } else
             {
-                loadVector(location_dirLightDirArr[i], new Vector3f(0,0,0));
-                loadVector(location_dirLightColorArr[i], new Vector3f(0,0,0));
+                loadVector(location_dirLightDirArr[i], new Vector3f(0, 0, 0));
+                loadVector(location_dirLightColorArr[i], new Vector3f(0, 0, 0));
             }
         }
-        
+
         loadFloat(location_Kc, 1);
         loadFloat(location_Kl, 0.045f);
         loadFloat(location_Kq, 0.0075f);
+    }
+
+    public void loadClippingPlane(Vector4f plane)
+    {
+        loadVector(location_clippingPlane, plane);
     }
 }

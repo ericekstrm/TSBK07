@@ -19,12 +19,20 @@ public class PositionalLight
     int activeVAO;
     List<Integer> activeVBOs = new ArrayList<>();
     int nrIndices = 0;
-    
+
     Vector3f position;
     Vector3f color;
     float intensity = 1; //value between 0 and 1
     float radius = 10; // value to decide an attenuation
 
+    Vector3f modelScale = new Vector3f(0.1f, 0.1f, 0.1f); //scale for drawing the square light model.
+
+    public PositionalLight(Vector3f position, Vector3f color, float scale)
+    {
+        this(position, color);
+        setModelScale(scale);
+    }
+    
     public PositionalLight(Vector3f position, Vector3f color)
     {
         this.position = position;
@@ -48,7 +56,7 @@ public class PositionalLight
 
         shader.loadModelToWorldMatrix(getModelToWorldMatrix());
         shader.loadColor(color);
-        
+
         //draw!
         GL11.glDrawElements(GL11.GL_TRIANGLES, nrIndices, GL11.GL_UNSIGNED_INT, 0);
         deactivate();
@@ -70,13 +78,18 @@ public class PositionalLight
         }
         GL30.glDeleteVertexArrays(activeVAO);
     }
-    
+
     public Matrix4f getModelToWorldMatrix()
     {
-        Matrix4f scale = Matrix4f.scale(0.1f, 0.1f, 0.1f);
+        Matrix4f scale = Matrix4f.scale(modelScale.x, modelScale.y, modelScale.z);
         Matrix4f translate = Matrix4f.translate(position.x, position.y, position.z);
 
         return translate.multiply(scale);
+    }
+
+    public void setModelScale(float scale)
+    {
+        modelScale = new Vector3f(scale * 0.1f, scale * 0.1f, scale * 0.1f);
     }
 
     public Vector3f getPosition()
@@ -94,11 +107,13 @@ public class PositionalLight
         position = new_position;
     }
 
-	public float getR() {
-		return radius;
-	}
+    public float getR()
+    {
+        return radius;
+    }
 
-	public float getIntensity() {
-		return intensity;
-	}
+    public float getIntensity()
+    {
+        return intensity;
+    }
 }

@@ -11,13 +11,13 @@ import shader.Shader;
 public class MultiPartModel extends Movable
 {
 
-    protected List<Model> models = new ArrayList<>();
+    protected List<ColorModel> models = new ArrayList<>();
 
     public MultiPartModel(ModelShader shader, RawData... datas)
     {
         for (RawData data : datas)
         {
-            models.add(new Model(shader, data));
+            models.add(new ColorModel(data));
         }
     }
 
@@ -27,7 +27,7 @@ public class MultiPartModel extends Movable
         {
             //TODO: needs to be moves to the position of the Multipartobject as well.
             // now it only has the internal positions.
-            Model m = models.get(i);
+            ColorModel m = models.get(i);
             m.render(shader);
         }
     }
@@ -43,7 +43,7 @@ public class MultiPartModel extends Movable
 
     public void destroy()
     {
-        for (Model m : models)
+        for (ColorModel m : models)
         {
             m.destroy();
         }

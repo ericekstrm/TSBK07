@@ -2,22 +2,12 @@ package water;
 
 import java.nio.ByteBuffer;
 import main.main;
-import static org.lwjgl.glfw.GLFW.glfwGetPrimaryMonitor;
-import static org.lwjgl.glfw.GLFW.glfwGetVideoMode;
-import org.lwjgl.glfw.GLFWVidMode;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GL32;
 
-/**
- *
- *
- *
- * Code by Thinmatrix from: https://www.youtube.com/watch?v=21UsMuFTN0k&t=
- *
- */
 public class WaterFrameBuffer
 {
 
@@ -69,7 +59,6 @@ public class WaterFrameBuffer
     {
          //call to switch to default frame buffer
         GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
-        GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
         GL11.glViewport(0, 0, main.WIDTH, main.HEIGHT);
     }
 

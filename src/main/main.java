@@ -96,9 +96,9 @@ public class main
 
     public void initModel()
     {
-        
+
         camera = new FreeCamera(new Vector3f(10, 10, 10), new Vector3f(-20, 0, -20), window);
-        player = new Player(new Vector3f(0,0,0), window);
+        player = new Player(new Vector3f(0, 0, 0), window);
 
         skybox = new Skybox(new TextureModelShader("skybox.vert", "skybox.frag"),
                             Loader.loadRawData("skybox.obj", "SkyBox512.tga"));
@@ -170,9 +170,9 @@ public class main
             long currentTime = System.currentTimeMillis();
             update(System.currentTimeMillis() - prevTime);
             prevTime = currentTime;
-
             
             masterRender(player.getCamera());
+            
 
             long renderTime = System.currentTimeMillis() - prevTime;
             currentFPS = (int) (1000 / (renderTime));
@@ -231,7 +231,7 @@ public class main
     	 *      F : toggle flying mode for camera
     	 * scroll : change movement speed
          */
-        
+
         //camera.checkInput(window);
         player.checkInput(window, terrain);
 

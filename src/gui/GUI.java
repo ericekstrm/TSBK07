@@ -105,6 +105,11 @@ public class GUI
     {
         images.add(new GUIImage(Texture.load(texture), new Vector2f(x, -y), new Vector2f(width, height)));
     }
+    
+    public void addImageNormalized(int textureID, float x, float y, float width, float height)
+    {
+        images.add(new GUIImage(textureID, new Vector2f(x, -y), new Vector2f(width, height)));
+    }
 
     public void render()
     {

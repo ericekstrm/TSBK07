@@ -1,7 +1,8 @@
 package shader;
 
+import camera.Camera;
 import light.PositionalLight;
-import main.Camera;
+import camera.FreeCamera;
 import util.Matrix4f;
 
 public class WaterShader extends Shader

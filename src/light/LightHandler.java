@@ -1,8 +1,9 @@
 package light;
 
+import camera.Camera;
 import java.util.ArrayList;
 import java.util.List;
-import main.Camera;
+import camera.FreeCamera;
 import shader.LightShader;
 import util.Matrix4f;
 import util.Vector3f;

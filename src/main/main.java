@@ -1,5 +1,7 @@
 package main;
 
+import camera.Camera;
+import camera.FreeCamera;
 import gui.GUI;
 import loader.Loader;
 import light.LightHandler;
@@ -42,9 +44,7 @@ public class main
 
     GUI gui;
 
-    Camera camera;
-    Camera camera2;
-    Camera currCam;
+    FreeCamera camera;
     Player player;
 
     void initOpenGL()
@@ -96,10 +96,8 @@ public class main
 
     public void initModel()
     {
-        camera = new Camera(new Vector3f(10, 10, 10), new Vector3f(-20, 0, -20), window);
-        camera2 = new Camera(new Vector3f(10, 10, 10), new Vector3f(-20, 0, -20), window);
-        currCam = camera;
         
+        camera = new FreeCamera(new Vector3f(10, 10, 10), new Vector3f(-20, 0, -20), window);
         player = new Player(new Vector3f(0,0,0), window);
 
         skybox = new Skybox(new TextureModelShader("skybox.vert", "skybox.frag"),
@@ -173,7 +171,8 @@ public class main
             update(System.currentTimeMillis() - prevTime);
             prevTime = currentTime;
 
-            masterRender();
+            
+            masterRender(player.getCamera());
 
             long renderTime = System.currentTimeMillis() - prevTime;
             currentFPS = (int) (1000 / (renderTime));
@@ -185,43 +184,42 @@ public class main
         glfwTerminate();
     }
 
-    public void masterRender()
+    public void masterRender(Camera camera)
     {
-        camera = player.camera;
         GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
 
         waterFrameBuffer.bindRefractionFrameBuffer();
-        render(new Vector4f(0, -1, 0, water.getHeight() + 1f));
+        render(new Vector4f(0, -1, 0, water.getHeight() + 1f), camera);
 
         //move camera under water to create reflection texture
-        float distance = 2 * (currCam.position.y - water.getHeight());
-        currCam.position.y -= distance;
-        currCam.direction.y *= -1;
+        float distance = 2 * (camera.position.y - water.getHeight());
+        camera.position.y -= distance;
+        camera.direction.y *= -1;
 
         waterFrameBuffer.bindReflectionFrameBuffer();
-        render(new Vector4f(0, 1, 0, -water.getHeight() + 0.1f));
-        currCam.position.y += distance;
-        currCam.direction.y *= -1;
+        render(new Vector4f(0, 1, 0, -water.getHeight() + 0.1f), camera);
+        camera.position.y += distance;
+        camera.direction.y *= -1;
         waterFrameBuffer.unbindCurrentFrameBuffer();
         GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
-        render(new Vector4f(0, 0, 0, 0));
-        water.render(currCam, lights, waterFrameBuffer);
+        render(new Vector4f(0, 0, 0, 0), camera);
+        water.render(camera, lights, waterFrameBuffer);
 
         gui.render();
 
         glfwSwapBuffers(window);
     }
 
-    public void render(Vector4f clippingPlane)
+    public void render(Vector4f clippingPlane, Camera camera)
     {
         //prepare
         glClear(GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
-        skybox.render(currCam);
-        lights.render(currCam);
-        terrain.render(currCam, lights, clippingPlane);
-        models.render(currCam, lights, clippingPlane);
-        player.render(lights, clippingPlane);
+        skybox.render(camera);
+        lights.render(camera);
+        terrain.render(camera, lights, clippingPlane);
+        models.render(camera, lights, clippingPlane);
+        player.render(camera, lights, clippingPlane);
     }
 
     public void checkInput()
@@ -234,13 +232,8 @@ public class main
     	 * scroll : change movement speed
          */
         
-        if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS)
-        {
-            currCam = camera2;
-        }
-
+        //camera.checkInput(window);
         player.checkInput(window, terrain);
-        camera.checkInput(window);
 
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         {

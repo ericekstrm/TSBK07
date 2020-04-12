@@ -1,10 +1,12 @@
 package shader;
 
+import camera.Camera;
 import java.util.List;
 import light.DirectionalLight;
 import light.PositionalLight;
 import loader.Material;
-import main.Camera;
+import camera.FreeCamera;
+import main.Player;
 import util.Matrix4f;
 import util.Vector3f;
 import util.Vector4f;

@@ -1,5 +1,6 @@
 package model;
 
+import camera.Camera;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -7,7 +8,7 @@ import light.LightHandler;
 import loader.Loader;
 import loader.Material;
 import loader.RawData;
-import main.Camera;
+import camera.FreeCamera;
 import shader.ColorModelShader;
 import shader.TextureModelShader;
 import terrain.TerrainHandler;

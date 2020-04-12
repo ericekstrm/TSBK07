@@ -1,6 +1,7 @@
 package shader;
 
-import main.Camera;
+import camera.Camera;
+import camera.FreeCamera;
 import util.Matrix4f;
 import util.Vector3f;
 

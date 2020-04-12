@@ -1,8 +1,8 @@
 package model;
 
+import camera.Camera;
 import loader.RawData;
 import java.nio.FloatBuffer;
-import main.Camera;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import static org.lwjgl.opengl.GL11.*;

@@ -1,9 +1,10 @@
 package terrain;
 
+import camera.Camera;
 import java.util.HashMap;
 import java.util.Map;
 import light.LightHandler;
-import main.Camera;
+import camera.FreeCamera;
 import shader.TerrainShader;
 import util.Matrix4f;
 import util.Vector2f;

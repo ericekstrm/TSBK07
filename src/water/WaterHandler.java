@@ -1,11 +1,12 @@
 package water;
 
+import camera.Camera;
 import shader.WaterShader;
 import java.util.ArrayList;
 import java.util.List;
 import light.LightHandler;
 import loader.Texture;
-import main.Camera;
+import camera.FreeCamera;
 import util.Matrix4f;
 
 public class WaterHandler

@@ -183,4 +183,12 @@ public class Vector2f
         buffer.put(x).put(y);
         buffer.flip();
     }
+
+    @Override
+    public String toString()
+    {
+        return x + " " + y;
+    }
+    
+    
 }

@@ -4,24 +4,26 @@ import util.Matrix4f;
 
 public class TextureModelShader extends ModelShader
 {
-    
+
     private static final String VERTEX_FILE = "model.vert";
     private static final String FRAGMENT_FILE = "model.frag";
 
     //textures
     private int location_texUnit;
+    private int location_normalMap;
 
     public TextureModelShader()
     {
         super(VERTEX_FILE, FRAGMENT_FILE);
-        
+
         getAllUniformLocations();
-        
+
         start();
         loadProjectionMatrix(Matrix4f.frustum_new());
+        connectTextureUnits();
         stop();
     }
-    
+
     public TextureModelShader(String vertexFile, String fragmentFile)
     {
         super(vertexFile, fragmentFile);
@@ -32,6 +34,7 @@ public class TextureModelShader extends ModelShader
     {
         super.getAllUniformLocations();
         location_texUnit = getUniformLocation("texUnit");
+        location_normalMap = getUniformLocation("normalMap");
     }
 
     @Override
@@ -41,8 +44,10 @@ public class TextureModelShader extends ModelShader
         bindAttribute(TEX_ATTRIB, "in_Texture");
         bindAttribute(NORMAL_ATTRIB, "in_Normal");
     }
-    
-    public void connectTextureUnits() {
+
+    public void connectTextureUnits()
+    {
         loadInt(location_texUnit, 0);
+        loadInt(location_normalMap, 1);
     }
 }

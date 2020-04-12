@@ -19,7 +19,7 @@ public class Skybox extends TextureModel
 
     public Skybox(ModelShader skyboxShader, RawData data)
     {
-        super(skyboxShader, data);
+        super(data);
         this.skyboxShader = skyboxShader;
     }
 

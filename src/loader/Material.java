@@ -29,7 +29,7 @@ public class Material
         BufferedReader br = null;
         try
         {
-            System.out.println("Loading file: " + mtlfile);
+            System.out.println("Loading material: " + mtlfile);
             br = new BufferedReader(new FileReader("res/materials/" + mtlfile));
         } catch (FileNotFoundException ex)
         {

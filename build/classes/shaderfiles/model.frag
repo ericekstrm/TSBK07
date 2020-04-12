@@ -1,11 +1,12 @@
 #version 400 core
 
 in vec2 texCoord;
-in vec3 normal;
+in vec3 varying_normal;
 in vec3 fragPos;
 in vec4 viewSpace;
 
 uniform sampler2D texUnit;
+uniform sampler2D normalMap;
 
 //light properties
 uniform vec3 pointLightPosArr[4];
@@ -35,6 +36,8 @@ void main()
         discard;
     }
 
+    vec3 normal = normalize(varying_normal);
+
     vec3 ambientLight = vec3(0.1,0.1,0.1);
     vec3 diffuseLight = vec3(0,0,0);
     vec3 specularLight = vec3(0,0,0);
@@ -51,12 +54,12 @@ void main()
     	//diffuse lighting
         vec3 lightDir = normalize(pointLightPosArr[i] - fragPos);
         
-        float diff = max(0.0, dot(normalize(normal), lightDir));
+        float diff = max(0.0, dot(normal, lightDir));
         diffuseLight += attenuation * Kd * diff * pointLightColorArr[i];
 
         //specular lighting
         vec3 viewDir = normalize(viewPos - fragPos);
-        vec3 reflectDir = reflect(-lightDir, normalize(normal));
+        vec3 reflectDir = reflect(-lightDir, normal);
 
         float spec = pow(max(0.0, dot(viewDir, reflectDir)), specularExponent);
         specularLight += attenuation * Ks * spec * pointLightColorArr[i];
@@ -69,7 +72,7 @@ void main()
         vec3 lightDir = dirLightDirArr[i];
         
         //diffuse lighting
-        float diff = max(0.0, dot(normalize(normal), lightDir));
+        float diff = max(0.0, dot(normal, lightDir));
         diffuseLight += Kd * diff * dirLightColorArr[i];
     }
     

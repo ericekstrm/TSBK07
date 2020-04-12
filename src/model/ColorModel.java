@@ -57,6 +57,7 @@ public class ColorModel extends Model
         }
     }
 
+    @Override
     public void render(ModelShader shader)
     {
         for (int i = 0; i < activeVAOs.size(); i++)

@@ -53,12 +53,10 @@ public abstract class Shader
         GL20.glUseProgram(programID);
 
         //projection matrix
+        //borde flyttas till construktorn!
         FloatBuffer projection = BufferUtils.createFloatBuffer(16);
         projectionMatrix.toBuffer(projection);
         glUniformMatrix4fv(glGetUniformLocation(getProgramID(), "projection"), false, projection);
-
-        glUniform1i(glGetUniformLocation(getProgramID(), "texUnit0"), 0);
-        glUniform1i(glGetUniformLocation(getProgramID(), "texUnit1"), 1);
     }
 
     public void stop()

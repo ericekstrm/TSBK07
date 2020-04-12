@@ -17,6 +17,13 @@ public class Movable
         this.position.y = y;
         this.position.z = z;
     }
+    
+    public void setPosition(Vector3f pos)
+    {
+        this.position.x = pos.x;
+        this.position.y = pos.y;
+        this.position.z = pos.z;
+    }
 
     public void setScale(float scaleX, float scaleY, float scaleZ)
     {

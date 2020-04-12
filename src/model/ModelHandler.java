@@ -31,7 +31,7 @@ public class ModelHandler {
     public void init(TerrainHandler terrain)
     {
         //models
-        models.put("bunny", new TextureModel(shader, Loader.loadRawData("bunnyplus.obj", "tex2.jpg")));
+        models.put("bunny", new TextureModel(Loader.loadRawData("bunnyplus.obj", "tex2.jpg")));
         models.get("bunny").setPosition(1, 0, 1);
         models.get("bunny").setMaterialProperties(0, new Material());
 
@@ -48,16 +48,16 @@ public class ModelHandler {
         models.put("forrest", new ColorModel(Loader.loadObj("forrest.obj")));
         models.get("forrest").setPosition(-30, 0, -30);
 
-        models.put("pine", new TextureModel(shader, Loader.loadRawData("pine.obj", "pine.png")));
+        models.put("pine", new TextureModel(Loader.loadRawData("pine.obj", "pine.png")));
         models.get("pine").setPosition(-35, 0, -30);
         
-        models.put("boulder", new TextureModel(shader, Loader.loadRawData("boulder.obj", "boulder.png")));
+        models.put("boulder", new TextureModel(Loader.loadRawData("boulder.obj", "boulder.png", "boulderNormal.png")));
         models.get("boulder").setPosition(-100, 10, -100);
         
-        models.put("barrel", new TextureModel(shader, Loader.loadRawData("barrel.obj", "barrel.png")));
+        models.put("barrel", new TextureModel(Loader.loadRawData("barrel.obj", "barrel.png", "barrelNormal.png")));
         models.get("barrel").setPosition(-100, 10, -115);
         
-        models.put("crate", new TextureModel(shader, Loader.loadRawData("crate.obj", "crate.png")));
+        models.put("crate", new TextureModel(Loader.loadRawData("crate.obj", "crate.png", "crateNormal.png")));
         models.get("crate").setPosition(-115, 10, -100);
         models.get("crate").setScale(0.01f, 0.01f, 0.01f);
 

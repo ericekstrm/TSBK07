@@ -1,6 +1,5 @@
 package model;
 
-import loader.Material;
 import loader.RawData;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +17,9 @@ public class TextureModel extends Model
 {
 
     protected List<Texture> textureIDs = new ArrayList<>();
+    Texture normalMap;
 
-    public TextureModel(Shader shader, RawData... data)
+    public TextureModel(RawData... data)
     {
         for (int i = 0; i < data.length; i++)
         {
@@ -47,7 +47,7 @@ public class TextureModel extends Model
         }
     }
 
-    public TextureModel(Shader shader, List<RawData> data)
+    public TextureModel(List<RawData> data)
     {
         for (int i = 0; i < data.size(); i++)
         {
@@ -75,6 +75,7 @@ public class TextureModel extends Model
         }
     }
 
+    @Override
     public void render(ModelShader shader)
     {
         for (int i = 0; i < activeVAOs.size(); i++)
@@ -106,7 +107,7 @@ public class TextureModel extends Model
     public void destroy()
     {
         super.destroy();
-        
+
         //TODO: remove textures
     }
 

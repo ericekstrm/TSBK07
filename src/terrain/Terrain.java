@@ -24,9 +24,9 @@ public class Terrain extends TextureModel
 
     public float[][] heightData;
 
-    public Terrain(TerrainShader shader, String heightMap, String... textures)
+    public Terrain(String heightMap, String... textures)
     {
-        super(shader, TerrainGeneration.generateTerrain(heightMap, textures));
+        super(TerrainGeneration.generateTerrain(heightMap, textures));
         heightData = getHeightData(heightMap);
     }
     

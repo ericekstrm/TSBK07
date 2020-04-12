@@ -42,7 +42,7 @@ public class TerrainHandler
     {
         if (!terrainTiles.containsKey(new Vector2f(i, j)))
         {
-            Terrain t = new Terrain(terrainShader, heightmap, rTextures, gTexture, bTexture, blendmap);
+            Terrain t = new Terrain(heightmap, rTextures, gTexture, bTexture, blendmap);
             t.setPosition(i * Terrain.SIZE, 0, j * Terrain.SIZE);
             terrainTiles.put(new Vector2f(i, j), t);
         }

@@ -27,6 +27,11 @@ public class Camera implements GLFWScrollCallbackI
 
         glfwSetScrollCallback(window, this);
     }
+    
+    public void setLookAt(Vector3f lookAt)
+    {
+        this.direction = lookAt.subtract(position).normalize();
+    }
 
     double prevX = 200;
     double prevY = 200;

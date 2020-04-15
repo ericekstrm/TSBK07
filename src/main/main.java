@@ -2,6 +2,7 @@ package main;
 
 import camera.Camera;
 import camera.FreeCamera;
+import camera.RayCaster;
 import gui.GUI;
 import loader.Loader;
 import light.LightHandler;
@@ -24,8 +25,6 @@ import water.WaterHandler;
 public class main
 {
 
-    public static Matrix4f projectionMatrix = Matrix4f.frustum_new();
-
     //window size
     public static final int WIDTH = 1000;
     public static final int HEIGHT = 1000;
@@ -46,6 +45,7 @@ public class main
 
     FreeCamera camera;
     Player player;
+    RayCaster rayCaster;
 
     void initOpenGL()
     {
@@ -69,7 +69,7 @@ public class main
         glfwSetWindowPos(window, (vidmode.width() - WIDTH) / 2, (vidmode.height() - HEIGHT) / 2);
         glfwShowWindow(window);
 
-        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
         GL.createCapabilities();
         glClearColor(91.0f / 255.0f, 142f / 255.0f, 194.0f / 255.0f, 1);
@@ -96,31 +96,31 @@ public class main
 
     public void initModel()
     {
+        terrain = new TerrainHandler();
+        
+        models = new ModelHandler();
+        models.init(terrain);
 
-        camera = new FreeCamera(new Vector3f(10, 10, 10), new Vector3f(-20, 0, -20), window);
-        player = new Player(new Vector3f(0, 0, 0), window);
+        camera = new FreeCamera(new Vector3f(-50, 50, -50), new Vector3f(-20, 0, -20), window);
+        player = new Player(new Vector3f(0, 0, 0), window, models);
+        rayCaster = new RayCaster(player.getCamera());
 
         skybox = new Skybox(new TextureModelShader("skybox.vert", "skybox.frag"),
                             Loader.loadRawData("skybox.obj", "SkyBox512.tga"));
         skybox.setPosition(0, -3, 0);
-
-        terrain = new TerrainHandler();
-
-        models = new ModelHandler();
-        models.init(terrain);
 
         water = new WaterHandler();
         waterFrameBuffer = new WaterFrameBuffer();
 
         //lights
         lights = new LightHandler();
-        lights.addPosLight(new Vector3f(15.0f, 3.0f, 0.0f), new Vector3f(1.0f, 0.0f, 0.0f));
-        lights.addPosLight(new Vector3f(9.0f, 7.0f, 0.0f), new Vector3f(0.0f, 1.0f, 0.0f));
-        lights.addDirLight(new Vector3f(0.0f, 1.0f, 0.5f), new Vector3f(0.5f, 0.5f, 0.5f));
-        lights.addDirLight(new Vector3f(0.0f, 1.0f, -0.5f), new Vector3f(0.5f, 0.5f, 0.5f));
+        lights.addPosLight(new Vector3f(60.0f, 7.0f, 60.0f), new Vector3f(1.0f, 0.3f, 0.3f));
+        //lights.addPosLight(new Vector3f(9.0f, 7.0f, 0.0f), new Vector3f(0.0f, 1.0f, 0.0f));
+        lights.addDirLight(new Vector3f(0.0f, 1.0f, 0.0f), new Vector3f(1f, 1f, 1f));
+        //lights.addDirLight(new Vector3f(0.0f, 1.0f, -0.5f), new Vector3f(0.5f, 0.5f, 0.5f));
 
         //light for lamp post
-        lights.addPosLight(new Vector3f(-50, 3.65f, -50), new Vector3f(0.97f, 0.84f, 0.11f), 0.7f);
+        //lights.addPosLight(new Vector3f(-50, 3.65f, -50), new Vector3f(0.97f, 0.84f, 0.11f), 0.7f);
 
         gui = new GUI();
         gui.addText("" + currentFPS, "fps", -1, -0.95f);
@@ -136,12 +136,15 @@ public class main
 
         water.update(deltaTime);
 
-        lights.moveLight(0, Matrix4f.rotate(0, 2, 0));
-
         if (counter % 20 == 0)
         {
             gui.setTextString("fps", "" + currentFPS);
         }
+        
+        lights.rotateDirLight(0, Matrix4f.rotate(0.3f, new Vector3f(0,0,1)));
+        
+        //rayCaster.update(window);
+        //rayCaster.useRay(models, terrain);
 
         /*for (int i = 0; i < 50; i++)
         {

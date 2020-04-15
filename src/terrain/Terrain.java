@@ -61,7 +61,7 @@ public class Terrain extends TextureModel
         BufferedImage image = null;
         try
         {
-            image = ImageIO.read(new File("res/textures/" + heightMap));
+            image = ImageIO.read(new File("res/heightmaps/" + heightMap));
         } catch (IOException e)
         {
             e.printStackTrace();

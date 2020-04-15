@@ -1,6 +1,6 @@
 # Blender v2.82 (sub 7) OBJ File: ''
 # www.blender.org
-mtllib Lowpoly_tree_sample.mtl
+mtllib tree1.mtl
 o Tree_lp_11
 v 0.786882 2.829260 -1.292080
 v 0.634320 3.398030 -0.788072

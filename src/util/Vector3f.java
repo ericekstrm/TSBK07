@@ -185,8 +185,9 @@ public class Vector3f
         buffer.flip();
     }
 
-    public void print()
+    @Override
+    public String toString()
     {
-        System.out.println(x + ", " + y + ", " + z);
+        return x + " " + y + " " + z;
     }
 }

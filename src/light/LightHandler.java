@@ -3,7 +3,6 @@ package light;
 import camera.Camera;
 import java.util.ArrayList;
 import java.util.List;
-import camera.FreeCamera;
 import shader.LightShader;
 import util.Matrix4f;
 import util.Vector3f;
@@ -53,6 +52,11 @@ public class LightHandler {
     public void moveLight(int index, Matrix4f transform)
     {
         pointLights.get(index).setPosition(transform.multiply(pointLights.get(index).getPosition()));
+    }
+    
+    public void rotateDirLight(int index, Matrix4f rotationMatrix)
+    {
+        dirLights.get(index).setDirection(rotationMatrix.multiply(dirLights.get(index).getDirection()));
     }
     
     public List<PositionalLight> getPointLights()

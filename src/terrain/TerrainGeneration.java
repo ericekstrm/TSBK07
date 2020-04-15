@@ -21,9 +21,10 @@ public class TerrainGeneration
         BufferedImage image = null;
         try
         {
-            image = ImageIO.read(new File("res/textures/" + heightMap));
+            image = ImageIO.read(new File("res/heightmaps/" + heightMap));
         } catch (IOException e)
         {
+            System.out.println("cant read file: " + heightMap);
             e.printStackTrace();
         }
 
@@ -97,6 +98,6 @@ public class TerrainGeneration
         float heightU = getHeight(x, z - 1, image);
         float heightD = getHeight(x, z + 1, image);
 
-        return new Vector3f(heightL - heightR, 2f, heightD - heightU).normalize();
+        return new Vector3f(heightL - heightR, 2f, heightU - heightD).normalize();
     }
 }

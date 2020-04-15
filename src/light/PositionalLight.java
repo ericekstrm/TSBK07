@@ -22,8 +22,8 @@ public class PositionalLight
 
     Vector3f position;
     Vector3f color;
-    float intensity = 1; //value between 0 and 1
-    float radius = 10; // value to decide an attenuation
+    float intensity = 2;
+    float radius = 100;
 
     Vector3f modelScale = new Vector3f(0.1f, 0.1f, 0.1f); //scale for drawing the square light model.
 

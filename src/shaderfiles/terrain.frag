@@ -31,7 +31,7 @@ out vec4 outColor;
 
 void main()
 {
-    vec3 ambientLight = vec3(0,0,0);
+    vec3 ambientLight = vec3(0.1,0.1,0.1);
     vec3 diffuseLight = vec3(0,0,0);
     vec3 specularLight = vec3(0,0,0);
     
@@ -39,9 +39,6 @@ void main()
     //Point lights
     for(int i = 0; i < pointLightPosArr.length(); i++)
     {
-        //float Kc = 1;
-        //float Kl = 0.045;
-        //float Kq = 0.0075;
     	float Kc = 1;
 	float Kl = 2 / r[i];
     	float Kq = 1 / (r[i] * r[i]);
@@ -49,7 +46,7 @@ void main()
         float attenuation = intensity[i] / (Kc + Kl * distance + Kq * (distance * distance));
 
         //ambient light
-        ambientLight += attenuation * Ka * pointLightColorArr[i];
+        //ambientLight += attenuation * Ka * pointLightColorArr[i];
 
     	//diffuse lighting
         vec3 lightDir = normalize(pointLightPosArr[i] - fragPos);

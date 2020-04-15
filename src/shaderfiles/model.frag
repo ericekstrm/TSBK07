@@ -11,9 +11,8 @@ uniform sampler2D normalMap;
 //light properties
 uniform vec3 pointLightPosArr[4];
 uniform vec3 pointLightColorArr[4];
-uniform float Kc;
-uniform float Kl;
-uniform float Kq;
+uniform float r[4];
+uniform float intensity[4];
 
 uniform vec3 dirLightDirArr[4];
 uniform vec3 dirLightColorArr[4];
@@ -38,7 +37,7 @@ void main()
 
     vec3 normal = normalize(varying_normal);
 
-    vec3 ambientLight = vec3(0.1,0.1,0.1);
+    vec3 ambientLight = textureColor.xyz * vec3(0.1,0.1,0.1);
     vec3 diffuseLight = vec3(0,0,0);
     vec3 specularLight = vec3(0,0,0);
     
@@ -46,6 +45,10 @@ void main()
     //Point lights
     for(int i = 0; i < pointLightPosArr.length(); i++)
     {
+        float Kc = 1;
+	float Kl = 2 / r[i];
+    	float Kq = 1 / (r[i] * r[i]);
+
         float distance = length(pointLightPosArr[i] - fragPos);
         float attenuation = 1 / (Kc + Kl * distance + Kq * (distance * distance));
 

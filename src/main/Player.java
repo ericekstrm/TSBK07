@@ -5,6 +5,7 @@ import java.nio.DoubleBuffer;
 import light.LightHandler;
 import loader.Loader;
 import model.ColorModel;
+import model.ModelHandler;
 import org.lwjgl.BufferUtils;
 import static org.lwjgl.glfw.GLFW.*;
 import shader.ColorModelShader;
@@ -27,10 +28,10 @@ public class Player
     ColorModel model;
     ColorModelShader shader;
 
-    public Player(Vector3f pos, long window)
+    public Player(Vector3f pos, long window, ModelHandler models)
     {
         this.position = pos;
-        camera = new Camera(new Vector3f(20, 20, 20), pos, window);
+        camera = new Camera(new Vector3f(-30, 30, -30), pos, window);
 
         model = new ColorModel(Loader.loadObj("character.obj"));
         model.setPosition(position);
@@ -75,27 +76,26 @@ public class Player
     }
 
     boolean rotating = false;
+    Vector2f prevCursor = new Vector2f();
 
     public void rotateCamera(long window)
     {
-        Vector2f screenCenter = new Vector2f(main.WIDTH, main.HEIGHT);
+        DoubleBuffer xBuffer = BufferUtils.createDoubleBuffer(1);
+        DoubleBuffer yBuffer = BufferUtils.createDoubleBuffer(1);
+        glfwGetCursorPos(window, xBuffer, yBuffer);
+        float x = (float) xBuffer.get(0);
+        float y = (float) yBuffer.get(0);
 
-        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
+        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
         {
             if (!rotating)
             {
                 rotating = true;
-                glfwSetCursorPos(window, screenCenter.x, screenCenter.y);
+                prevCursor = new Vector2f(x, y);
             }
 
-            DoubleBuffer xBuffer = BufferUtils.createDoubleBuffer(1);
-            DoubleBuffer yBuffer = BufferUtils.createDoubleBuffer(1);
-            glfwGetCursorPos(window, xBuffer, yBuffer);
-            float x = (float) xBuffer.get(0);
-            float y = (float) yBuffer.get(0);
-
-            float diffX = (screenCenter.x - x) / 10;
-            float diffY = -(screenCenter.y - y) / 10;
+            float diffX = (prevCursor.x - x) / 5;
+            float diffY = -(prevCursor.y - y) / 5;
 
             camera.position = camera.position.subtract(position);
 
@@ -105,7 +105,8 @@ public class Player
 
             camera.position = camera.position.add(position);
 
-            glfwSetCursorPos(window, screenCenter.x, screenCenter.y);
+            //glfwSetCursorPos(window, screenCenter.x, screenCenter.y);
+            prevCursor = new Vector2f(x, y);
         } else
         {
             rotating = false;

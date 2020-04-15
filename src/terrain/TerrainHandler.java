@@ -35,8 +35,8 @@ public class TerrainHandler
                 }
             }
         }
-        addTerrain(0, 0, "height_map_lake.png", "grass.jpg", "dirt.jpg", "cobblestone.jpg", "blendmap.jpg");
-        addTerrain(-1, -1, "height_map_forrest.png", "grass.jpg", "dirt.jpg", "cobblestone_new.jpg", "blendmap_forrest2.jpg");
+        addTerrain(0, 0, "pond.png", "grass.jpg", "dirt.jpg", "cobblestone.jpg", "pond_blendmap.png");
+        addTerrain(-1, -1, "height_map_lake.png", "grass.jpg", "dirt.jpg", "cobblestone_new.jpg", "blendmap_forrest2.jpg");
     }
 
     public void addTerrain(int i, int j, String heightmap, String rTextures, String gTexture, String bTexture, String blendmap)

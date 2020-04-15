@@ -17,6 +17,11 @@ public class DirectionalLight {
     {
         return direction;
     }
+    
+    public void setDirection(Vector3f dir)
+    {
+        this.direction = dir;
+    }
 
     public Vector3f getColor()
     {

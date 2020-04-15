@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import light.LightHandler;
 import loader.Texture;
-import camera.FreeCamera;
 import util.Matrix4f;
 
 public class WaterHandler
@@ -23,7 +22,7 @@ public class WaterHandler
     List<WaterTile> waterTiles = new ArrayList<>();
 
     float moveFactor = 0;
-    float height = -5;
+    float height = -3;
     
     public WaterHandler()
     {

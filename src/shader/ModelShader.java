@@ -5,8 +5,6 @@ import java.util.List;
 import light.DirectionalLight;
 import light.PositionalLight;
 import loader.Material;
-import camera.FreeCamera;
-import main.Player;
 import util.Matrix4f;
 import util.Vector3f;
 import util.Vector4f;
@@ -27,9 +25,8 @@ public abstract class ModelShader extends Shader
     //lighting coefficients
     protected int location_pointLightPosArr[];
     protected int location_pointLightColorArr[];
-    protected int location_Kc;
-    protected int location_Kl;
-    protected int location_Kq;
+    private int location_r[];
+    private int location_intensity[];
     protected int location_dirLightDirArr[];
     protected int location_dirLightColorArr[];
 
@@ -66,9 +63,6 @@ public abstract class ModelShader extends Shader
         location_modelToWorld = getUniformLocation("modelToWorld");
         location_worldToView = getUniformLocation("worldToView");
         location_projection = getUniformLocation("projection");
-        location_Kc = getUniformLocation("Kc");
-        location_Kl = getUniformLocation("Kl");
-        location_Kq = getUniformLocation("Kq");
         location_Ka = getUniformLocation("Ka");
         location_Kd = getUniformLocation("Kd");
         location_Ks = getUniformLocation("Ks");
@@ -80,6 +74,8 @@ public abstract class ModelShader extends Shader
         location_pointLightColorArr = new int[MAX_LIGHTS];
         location_dirLightDirArr = new int[MAX_LIGHTS];
         location_dirLightColorArr = new int[MAX_LIGHTS];
+        location_r = new int[MAX_LIGHTS];
+        location_intensity = new int[MAX_LIGHTS];
 
         for (int i = 0; i < MAX_LIGHTS; i++)
         {
@@ -87,6 +83,9 @@ public abstract class ModelShader extends Shader
             location_pointLightColorArr[i] = super.getUniformLocation("pointLightColorArr[" + i + "]");
             location_dirLightDirArr[i] = super.getUniformLocation("dirLightDirArr[" + i + "]");
             location_dirLightColorArr[i] = super.getUniformLocation("dirLightColorArr[" + i + "]");
+            
+            location_r[i] = getUniformLocation("r[" + i + "]");
+            location_intensity[i] = getUniformLocation("intensity[" + i + "]");
         }
     }
 
@@ -121,7 +120,7 @@ public abstract class ModelShader extends Shader
         loadVector(location_Ks, mat.Ks);
         loadFloat(location_specularExponent, mat.Ns);
     }
-
+    
     public void loadLights(List<PositionalLight> pointLights, List<DirectionalLight> dirLights)
     {
         for (int i = 0; i < MAX_LIGHTS; i++)
@@ -130,10 +129,14 @@ public abstract class ModelShader extends Shader
             {
                 loadVector(location_pointLightPosArr[i], pointLights.get(i).getPosition());
                 loadVector(location_pointLightColorArr[i], pointLights.get(i).getColor());
+                loadFloat(location_r[i], pointLights.get(i).getR());
+                loadFloat(location_intensity[i], pointLights.get(i).getIntensity());
             } else
             {
                 loadVector(location_pointLightPosArr[i], new Vector3f(0, 0, 0));
                 loadVector(location_pointLightColorArr[i], new Vector3f(0, 0, 0));
+                loadFloat(location_r[i], 0);
+                loadFloat(location_intensity[i], 0);
             }
             if (i < dirLights.size())
             {
@@ -145,10 +148,6 @@ public abstract class ModelShader extends Shader
                 loadVector(location_dirLightColorArr[i], new Vector3f(0, 0, 0));
             }
         }
-
-        loadFloat(location_Kc, 1);
-        loadFloat(location_Kl, 0.045f);
-        loadFloat(location_Kq, 0.0075f);
     }
 
     public void loadClippingPlane(Vector4f plane)

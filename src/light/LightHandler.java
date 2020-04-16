@@ -14,9 +14,9 @@ public class LightHandler {
     List<PositionalLight> pointLights = new ArrayList<>();
     List<DirectionalLight> dirLights = new ArrayList<>();
 
-    public LightHandler()
+    public LightHandler(Matrix4f projectionMatrix)
     {
-        lightShader = new LightShader(Matrix4f.frustum_new());
+        lightShader = new LightShader(projectionMatrix);
     }
     
     public void addPosLight(Vector3f pos, Vector3f color)

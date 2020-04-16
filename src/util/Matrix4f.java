@@ -378,41 +378,14 @@ public class Matrix4f
      *
      * @return Perspective matrix
      */
-    public static Matrix4f frustum(float left, float right, float bottom, float top, float near, float far)
+    public static Matrix4f frustum_new(float near, float far, float right, float left, float top, float bottom)
     {
-        Matrix4f frustum = new Matrix4f();
-
-        float a = (right + left) / (right - left);
-        float b = (top + bottom) / (top - bottom);
-        float c = -(far + near) / (far - near);
-        float d = -(2f * far * near) / (far - near);
-
-        frustum.m00 = (2f * near) / (right - left);
-        frustum.m11 = (2f * near) / (top - bottom);
-        frustum.m02 = a;
-        frustum.m12 = b;
-        frustum.m22 = c;
-        frustum.m32 = -1f;
-        frustum.m23 = d;
-        frustum.m33 = 0f;
-
-        return frustum;
-    }
-
-    /**
-     * Creates a perspective projection matrix. Similar to
-     * <code>glFrustum(left, right, bottom, top, near, far)</code>.
-     *
-     * @return Perspective matrix
-     */
-    public static Matrix4f frustum_new()
-    {
-        float near = 1f;
+        /*float near = 1f;
         float far = 1000.0f;
         float right = 0.5f;
         float left = -0.5f;
         float top = 0.5f;
-        float bottom = -0.5f;
+        float bottom = -0.5f;*/
 
         Matrix4f frustum = new Matrix4f();
 

@@ -17,11 +17,11 @@ public class TerrainHandler
     Map<Vector2f, Terrain> terrainTiles = new HashMap<>();
     TerrainShader terrainShader;
 
-    public TerrainHandler()
+    public TerrainHandler(Matrix4f projectionMatrix)
     {
         terrainShader = new TerrainShader();
         terrainShader.start();
-        terrainShader.loadProjectionMatrix(Matrix4f.frustum_new());
+        terrainShader.loadProjectionMatrix(projectionMatrix);
         terrainShader.connectTextureUnits();
         terrainShader.stop();
 

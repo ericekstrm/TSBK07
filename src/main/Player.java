@@ -21,22 +21,25 @@ public class Player
     Vector3f position;
     Vector3f direction;
 
-    Camera camera;
+    Camera thirdPersonCamera;
+    Camera firstPersonCamera;
 
     float playerSpeed = 1;
 
     ColorModel model;
     ColorModelShader shader;
 
-    public Player(Vector3f pos, long window, ModelHandler models)
+    public Player(Vector3f pos, long window, ModelHandler models, Matrix4f projectionMatrix)
     {
         this.position = pos;
-        camera = new Camera(new Vector3f(-30, 30, -30), pos, window);
+        thirdPersonCamera = new Camera(new Vector3f(-30, 30, -30), pos, window);
+        setDirection();
+        firstPersonCamera = new Camera(pos.add(new Vector3f(0,3,0)), pos.add(direction), window);
 
         model = new ColorModel(Loader.loadObj("character.obj"));
         model.setPosition(position);
 
-        shader = new ColorModelShader();
+        shader = new ColorModelShader(projectionMatrix);
     }
 
     public void checkInput(long window, TerrainHandler terrain)
@@ -46,32 +49,35 @@ public class Player
         if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
         {
             position = position.add(direction).scale(playerSpeed);
-            camera.position = camera.position.add(direction).scale(playerSpeed);
+            thirdPersonCamera.position = thirdPersonCamera.position.add(direction).scale(playerSpeed);
         }
         if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
         {
             position = position.subtract(direction).scale(playerSpeed);
-            camera.position = camera.position.subtract(direction).scale(playerSpeed);
+            thirdPersonCamera.position = thirdPersonCamera.position.subtract(direction).scale(playerSpeed);
         }
         if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
         {
             Vector3f moveDir = direction.cross(new Vector3f(0, 1, 0));
             position = position.subtract(moveDir).scale(playerSpeed);
-            camera.position = camera.position.subtract(moveDir).scale(playerSpeed);
+            thirdPersonCamera.position = thirdPersonCamera.position.subtract(moveDir).scale(playerSpeed);
         }
         if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
         {
             Vector3f moveDir = direction.cross(new Vector3f(0, 1, 0));
             position = position.add(moveDir).scale(playerSpeed);
-            camera.position = camera.position.add(moveDir).scale(playerSpeed);
+            thirdPersonCamera.position = thirdPersonCamera.position.add(moveDir).scale(playerSpeed);
         }
+        
         float terrainHeight = terrain.getHeight(position.x, position.z);
         float heightDiff = terrainHeight - position.y;
         position.y = terrainHeight;
+        firstPersonCamera.position = position.add(new Vector3f(0,2.5f,0));
         setDirection();
 
-        camera.position.y += heightDiff;
-        camera.setLookAt(position);
+        thirdPersonCamera.position.y += heightDiff;
+        thirdPersonCamera.setLookAt(position);
+        firstPersonCamera.direction = thirdPersonCamera.direction;
         model.setPosition(position);
     }
 
@@ -97,13 +103,13 @@ public class Player
             float diffX = (prevCursor.x - x) / 5;
             float diffY = -(prevCursor.y - y) / 5;
 
-            camera.position = camera.position.subtract(position);
+            thirdPersonCamera.position = thirdPersonCamera.position.subtract(position);
 
-            camera.position = Matrix4f.rotate(0, (float) diffX, 0).multiply(camera.position);
-            Vector3f dir = camera.position.cross(camera.upVector);
-            camera.position = Matrix4f.rotate((float) diffY, dir).multiply(camera.position);
+            thirdPersonCamera.position = Matrix4f.rotate(0, (float) diffX, 0).multiply(thirdPersonCamera.position);
+            Vector3f dir = thirdPersonCamera.position.cross(thirdPersonCamera.upVector);
+            thirdPersonCamera.position = Matrix4f.rotate((float) diffY, dir).multiply(thirdPersonCamera.position);
 
-            camera.position = camera.position.add(position);
+            thirdPersonCamera.position = thirdPersonCamera.position.add(position);
 
             //glfwSetCursorPos(window, screenCenter.x, screenCenter.y);
             prevCursor = new Vector2f(x, y);
@@ -132,13 +138,13 @@ public class Player
 
     public void setDirection()
     {
-        direction = camera.direction;
+        direction = thirdPersonCamera.direction;
         direction.y = 0;
         direction = direction.normalize();
     }
 
     public Camera getCamera()
     {
-        return camera;
+        return thirdPersonCamera;
     }
 }

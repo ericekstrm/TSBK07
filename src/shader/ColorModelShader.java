@@ -9,14 +9,14 @@ public class ColorModelShader extends ModelShader{
     private static final String VERTEX_FILE = "colormodel.vert";
     private static final String FRAGMENT_FILE = "colormodel.frag";
 
-    public ColorModelShader()
+    public ColorModelShader(Matrix4f projectionMatrix)
     {
         super(VERTEX_FILE, FRAGMENT_FILE);
         
         getAllUniformLocations();
         
         start();
-        loadProjectionMatrix(Matrix4f.frustum_new());
+        loadProjectionMatrix(projectionMatrix);
         stop();
     }
     

@@ -7,10 +7,13 @@ import java.util.Map;
 import light.LightHandler;
 import loader.Loader;
 import loader.RawData;
+import main.main;
 import shader.ColorModelShader;
 import shader.TextureModelShader;
 import terrain.TerrainHandler;
+import util.Matrix4f;
 import util.Util;
+import util.Vector3f;
 import util.Vector4f;
 
 public class ModelHandler
@@ -22,10 +25,10 @@ public class ModelHandler
     TextureModelShader shader;
     ColorModelShader colorModelShader;
 
-    public ModelHandler()
+    public ModelHandler(Matrix4f projectionMatrix)
     {
-        shader = new TextureModelShader();
-        colorModelShader = new ColorModelShader();
+        shader = new TextureModelShader(projectionMatrix);
+        colorModelShader = new ColorModelShader(projectionMatrix);
     }
 
     public void init(TerrainHandler terrain)
@@ -46,14 +49,14 @@ public class ModelHandler
         for (int i = 0; i < 10; i++)
         {
             Model fence = new ColorModel(data);
-            fence.setPosition(70 + 1*i, -1, 140 + 5.2f* i);
+            fence.setPosition(70 + 1 * i, -1, 140 + 5.2f * i);
 
             models.put("fence" + i, fence);
         }
 
         //a bunch of trees
         data = Loader.loadObj("tree1.obj");
-        for (int i = 0; i < 200; i++)
+        for (int i = 0; i < 20; i++)
         {
             Model tree = new ColorModel(data);
             float x = 0;
@@ -61,8 +64,8 @@ public class ModelHandler
             float y = 0;
             do
             {
-                x = (float) Util.rand(0, 400);
-                z = (float) Util.rand(0, 400);
+                x = (float) Util.rand(0, 200);
+                z = (float) Util.rand(0, 200);
                 y = terrain.getHeight(x, z);
             } while (y < -0.5f);
             tree.setPosition(x, y, z);
@@ -91,20 +94,23 @@ public class ModelHandler
         //render
         for (Model m : models.values())
         {
-            if (m instanceof ColorModel)
+            if (!frustumCulled(m, camera))
             {
-                colorModelShader.start();
-                m.render(colorModelShader);
-                colorModelShader.stop();
-            } else if (m instanceof TextureModel)
-            {
-                shader.start();
-                m.render(shader);
-                shader.stop();
+                if (m instanceof ColorModel)
+                {
+                    colorModelShader.start();
+                    m.render(colorModelShader);
+                    colorModelShader.stop();
+                } else if (m instanceof TextureModel)
+                {
+                    shader.start();
+                    m.render(shader);
+                    shader.stop();
+                }
             }
         }
     }
-    
+
     public Model get(String name)
     {
         return models.get(name);
@@ -114,12 +120,38 @@ public class ModelHandler
     {
         models.put(name, model);
     }
-    
+
     public void destroy()
     {
         for (Model m : models.values())
         {
             m.destroy();
         }
+    }
+
+    /**
+     * 
+     * @param m - model to be tested
+     * @param c - the current camera
+     * @return true if the models should be removed
+     */
+    public boolean frustumCulled(Model m, Camera c)
+    {
+        Vector3f cameraDir = c.direction.normalize();
+        Vector3f positionDir = m.position.subtract(c.position);
+        
+        if (positionDir.normalize().dot(cameraDir) < 0.70)
+        {
+            return true;
+        } else if (positionDir.length() > main.farPlane)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public Map<String, Model> getModels()
+    {
+        return models;
     }
 }

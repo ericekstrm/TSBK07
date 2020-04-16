@@ -38,12 +38,22 @@ public class ModelLoader {
         return colorVBO;
     }
 
-    public static int loadTextureVBO(float[] colors) {
+    public static int loadTextureVBO(float[] textureCoords) {
         int textureVBO = GL15.glGenBuffers();
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, textureVBO);
-        FloatBuffer colorBuffer = createFloatBuffer(colors);
+        FloatBuffer colorBuffer = createFloatBuffer(textureCoords);
         GL15.glBufferData(GL15.GL_ARRAY_BUFFER, colorBuffer, GL15.GL_STATIC_DRAW);
         GL20.glVertexAttribPointer(Shader.TEX_ATTRIB, 2, GL_FLOAT, false, 0, 0);
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+        return textureVBO;
+    }
+    
+    public static int loadCubeMapTextureVBO(float[] textureCoords) {
+        int textureVBO = GL15.glGenBuffers();
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, textureVBO);
+        FloatBuffer colorBuffer = createFloatBuffer(textureCoords);
+        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, colorBuffer, GL15.GL_STATIC_DRAW);
+        GL20.glVertexAttribPointer(Shader.TEX_ATTRIB, 3, GL_FLOAT, false, 0, 0);
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
         return textureVBO;
     }

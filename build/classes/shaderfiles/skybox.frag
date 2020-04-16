@@ -1,8 +1,8 @@
 #version 330 core
 
-in vec2 TexCoords;
+in vec3 TexCoords;
 
-uniform sampler2D texUnit;
+uniform samplerCube texUnit;
 
 out vec4 outColor;
 

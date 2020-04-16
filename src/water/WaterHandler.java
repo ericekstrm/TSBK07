@@ -24,11 +24,11 @@ public class WaterHandler
     float moveFactor = 0;
     float height = -3;
     
-    public WaterHandler()
+    public WaterHandler(Matrix4f projectionMatrix)
     {
         shader = new WaterShader();
         shader.start();
-        shader.loadProjectionMatrix(Matrix4f.frustum_new());
+        shader.loadProjectionMatrix(projectionMatrix);
         shader.connectTextureUnits();
         shader.stop();
         

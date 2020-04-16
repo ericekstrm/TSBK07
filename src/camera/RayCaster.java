@@ -15,13 +15,15 @@ public class RayCaster
 {
 
     Vector3f ray;
-
+    Matrix4f projectionMatrixInverse;
+    
     Camera camera;
 
-    public RayCaster(Camera camera)
+    public RayCaster(Camera camera, Matrix4f projectionMatrix)
     {
         this.camera = camera;
-    }
+        projectionMatrixInverse = projectionMatrix.inverse();
+        }
 
     public void update(long window)
     {
@@ -37,7 +39,7 @@ public class RayCaster
         Vector4f ray_clip = new Vector4f(x, y, 1, 1);
         ray_clip = ray_clip.normalize();
 
-        Vector4f ray_eye = Matrix4f.frustum_new().inverse().multiply(ray_clip);
+        Vector4f ray_eye = projectionMatrixInverse.multiply(ray_clip);
         Vector4f ray_world = camera.getWorldtoViewMatrix().inverse().multiply(ray_eye);
         ray = new Vector3f(ray_world.x, ray_world.y, ray_world.z).normalize();
     }

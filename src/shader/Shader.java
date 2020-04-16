@@ -6,8 +6,6 @@ import java.nio.FloatBuffer;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
-import static org.lwjgl.opengl.GL20.glGetUniformLocation;
-import static org.lwjgl.opengl.GL20.glUniform1i;
 import static org.lwjgl.opengl.GL20.glUniform3fv;
 import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
 import util.Matrix4f;
@@ -26,8 +24,6 @@ public abstract class Shader
     public static final int NORMAL_ATTRIB = 2;
     public static final int COLOR_ATTRIB = 2;
 
-    Matrix4f projectionMatrix = Matrix4f.frustum_new();
-
     public Shader(String vertexFile, String fragmentFile)
     {
         vertexID = loadShader(vertexFile, GL20.GL_VERTEX_SHADER);
@@ -45,18 +41,12 @@ public abstract class Shader
     {
         return GL20.glGetUniformLocation(programID, uniformName);
     }
-    
+
     protected abstract void getAllUniformLocations();
 
     public void start()
     {
         GL20.glUseProgram(programID);
-
-        //projection matrix
-        //borde flyttas till construktorn!
-        FloatBuffer projection = BufferUtils.createFloatBuffer(16);
-        projectionMatrix.toBuffer(projection);
-        glUniformMatrix4fv(glGetUniformLocation(getProgramID(), "projection"), false, projection);
     }
 
     public void stop()
@@ -95,7 +85,7 @@ public abstract class Shader
     {
         GL20.glUniform1i(location, value);
     }
-    
+
     protected void loadFloat(int location, float value)
     {
         GL20.glUniform1f(location, value);
@@ -107,7 +97,7 @@ public abstract class Shader
         vector.toBuffer(buffer);
         GL20.glUniform3fv(location, buffer);
     }
-    
+
     protected void loadVector(int location, Vector4f vector)
     {
         FloatBuffer buffer = BufferUtils.createFloatBuffer(4);
@@ -122,7 +112,7 @@ public abstract class Shader
         //translation.flip();
         glUniformMatrix4fv(location, false, translation);
     }
-    
+
     protected void loadList3f(int location, float[] list)
     {
         FloatBuffer buffer = BufferUtils.createFloatBuffer(list.length);

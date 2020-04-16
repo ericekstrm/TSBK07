@@ -41,14 +41,14 @@ public abstract class ModelShader extends Shader
 
     protected int location_viewPos;
 
-    public ModelShader()
+    public ModelShader(Matrix4f projectionMatrix)
     {
         super(VERTEX_FILE, FRAGMENT_FILE);
 
         getAllUniformLocations();
 
         start();
-        loadProjectionMatrix(Matrix4f.frustum_new());
+        loadProjectionMatrix(projectionMatrix);
         stop();
     }
 

@@ -12,14 +12,14 @@ public class TextureModelShader extends ModelShader
     private int location_texUnit;
     private int location_normalMap;
 
-    public TextureModelShader()
+    public TextureModelShader(Matrix4f projectionMatrix)
     {
         super(VERTEX_FILE, FRAGMENT_FILE);
 
         getAllUniformLocations();
 
         start();
-        loadProjectionMatrix(Matrix4f.frustum_new());
+        loadProjectionMatrix(projectionMatrix);
         connectTextureUnits();
         stop();
     }

@@ -1,9 +1,9 @@
 #version 330 core
 
 in vec3 in_Position;
-in vec2 texCoord;
+in vec3 texCoord;
 
-out vec2 TexCoords;
+out vec3 TexCoords;
 
 uniform mat4 worldToView;
 uniform mat4 projection;

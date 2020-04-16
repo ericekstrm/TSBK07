@@ -7,7 +7,7 @@ import java.util.Map;
 import light.LightHandler;
 import loader.Loader;
 import loader.RawData;
-import main.main;
+import main.main_old;
 import shader.ColorModelShader;
 import shader.TextureModelShader;
 import terrain.TerrainHandler;
@@ -143,7 +143,7 @@ public class ModelHandler
         if (positionDir.normalize().dot(cameraDir) < 0.70)
         {
             return true;
-        } else if (positionDir.length() > main.farPlane)
+        } else if (positionDir.length() > main_old.farPlane)
         {
             return true;
         }

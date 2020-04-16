@@ -1,7 +1,7 @@
 package camera;
 
 import java.nio.DoubleBuffer;
-import main.main;
+import main.main_old;
 import model.Model;
 import model.ModelHandler;
 import org.lwjgl.BufferUtils;
@@ -34,8 +34,8 @@ public class RayCaster
         float ypos = (float) yBuffer.get(0);
 
         //noramlize coordinates
-        float x = (2.0f * (float) xpos) / main.WIDTH - 1.0f;
-        float y = 1.0f - (2.0f * (float) ypos) / main.HEIGHT;
+        float x = (2.0f * (float) xpos) / main_old.WIDTH - 1.0f;
+        float y = 1.0f - (2.0f * (float) ypos) / main_old.HEIGHT;
         Vector4f ray_clip = new Vector4f(x, y, 1, 1);
         ray_clip = ray_clip.normalize();
 

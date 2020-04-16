@@ -16,11 +16,9 @@ public class FreeCamera extends Camera implements GLFWScrollCallbackI
     boolean flying = true;
     boolean keyPressedLastTime = false;
 
-    public FreeCamera(Vector3f position, Vector3f lookAt, long window)
+    public FreeCamera(Vector3f position, Vector3f lookAt)
     {
-        super(position, lookAt, window);
-
-        glfwSetScrollCallback(window, this);
+        super(position, lookAt);
     }
 
     double prevX = 200;

@@ -63,6 +63,6 @@ public class FrameBuffer
     {
         //call to switch to default frame buffer
         GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
-        GL11.glViewport(0, 0, main.WIDTH, main.HEIGHT);
+        GL11.glViewport(0, 0, main_old.WIDTH, main_old.HEIGHT);
     }
 }

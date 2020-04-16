@@ -9,7 +9,7 @@ public class Camera {
     public Vector3f direction;
     public Vector3f upVector = new Vector3f(0, 1, 0);
     
-    public Camera(Vector3f position, Vector3f lookAt, long window)
+    public Camera(Vector3f position, Vector3f lookAt)
     {
         this.position = position;
         this.direction = lookAt.subtract(position).normalize();

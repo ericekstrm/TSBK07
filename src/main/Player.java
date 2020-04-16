@@ -21,20 +21,20 @@ public class Player
     Vector3f position;
     Vector3f direction;
 
-    Camera thirdPersonCamera;
-    Camera firstPersonCamera;
+    public Camera thirdPersonCamera;
+    public Camera firstPersonCamera;
 
     float playerSpeed = 1;
 
     ColorModel model;
     ColorModelShader shader;
 
-    public Player(Vector3f pos, long window, ModelHandler models, Matrix4f projectionMatrix)
+    public Player(Vector3f pos, ModelHandler models, Matrix4f projectionMatrix)
     {
         this.position = pos;
-        thirdPersonCamera = new Camera(new Vector3f(-30, 30, -30), pos, window);
+        thirdPersonCamera = new Camera(new Vector3f(-30, 30, -30), pos);
         setDirection();
-        firstPersonCamera = new Camera(pos.add(new Vector3f(0,3,0)), pos.add(direction), window);
+        firstPersonCamera = new Camera(pos.add(new Vector3f(0,3,0)), pos.add(direction));
 
         model = new ColorModel(Loader.loadObj("character.obj"));
         model.setPosition(position);

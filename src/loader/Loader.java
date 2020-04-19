@@ -74,13 +74,30 @@ public class Loader
                     normals.add(normal);
                 } else if (line.startsWith("f "))
                 {
-                    String[] face = line.split(" ");
-                    indices.put(indiceIndex, face[1]);
-                    indiceIndex++;
-                    indices.put(indiceIndex, face[2]);
-                    indiceIndex++;
-                    indices.put(indiceIndex, face[3]);
-                    indiceIndex++;
+                    if (currentLine.length == 4)
+                    {
+                        indices.put(indiceIndex, currentLine[1]);
+                        indiceIndex++;
+                        indices.put(indiceIndex, currentLine[2]);
+                        indiceIndex++;
+                        indices.put(indiceIndex, currentLine[3]);
+                        indiceIndex++;
+                    } else if (currentLine.length == 5)
+                    {
+                        indices.put(indiceIndex, currentLine[1]);
+                        indiceIndex++;
+                        indices.put(indiceIndex, currentLine[2]);
+                        indiceIndex++;
+                        indices.put(indiceIndex, currentLine[3]);
+                        indiceIndex++;
+                        indices.put(indiceIndex, currentLine[1]);
+                        indiceIndex++;
+                        indices.put(indiceIndex, currentLine[3]);
+                        indiceIndex++;
+                        indices.put(indiceIndex, currentLine[4]);
+                        indiceIndex++;
+                    }
+
                 } else if (line.startsWith("usemtl"))
                 {
                     // 'usemtl' indicates a shift to another material, which needs to be

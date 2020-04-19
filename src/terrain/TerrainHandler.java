@@ -36,7 +36,8 @@ public class TerrainHandler
             }
         }
         addTerrain(0, 0, "pond.png", "grass.jpg", "dirt.jpg", "cobblestone.jpg", "pond_blendmap.png");
-        addTerrain(-1, -1, "height_map_lake.png", "grass.jpg", "dirt.jpg", "cobblestone_new.jpg", "blendmap_forrest2.jpg");
+        //addTerrain(-1, -1, "height_map_lake.png", "grass.jpg", "dirt.jpg", "cobblestone_new.jpg", "blendmap_forrest2.jpg");
+        addTerrainFFT(-1, -1, "grass.jpg", "dirt.jpg", "cobblestone_new.jpg", "blendmap_forrest2.jpg");
     }
 
     public void addTerrain(int i, int j, String heightmap, String rTextures, String gTexture, String bTexture, String blendmap)
@@ -44,6 +45,17 @@ public class TerrainHandler
         if (!terrainTiles.containsKey(new Vector2f(i, j)))
         {
             Terrain t = new Terrain(heightmap, rTextures, gTexture, bTexture, blendmap);
+            t.setPosition(i * Terrain.SIZE, 0, j * Terrain.SIZE);
+            terrainTiles.put(new Vector2f(i, j), t);
+        }
+    }
+
+    public void addTerrainFFT(int i, int j, String rTextures, String gTexture, String bTexture, String blendmap)
+    {
+        if (!terrainTiles.containsKey(new Vector2f(i, j)))
+        {
+            float[][] heightMap = TerrainGeneration.getFFTHeightMap(64, 64);
+            Terrain t = new Terrain(heightMap, rTextures, gTexture, bTexture, blendmap);
             t.setPosition(i * Terrain.SIZE, 0, j * Terrain.SIZE);
             terrainTiles.put(new Vector2f(i, j), t);
         }

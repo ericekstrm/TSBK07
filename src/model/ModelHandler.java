@@ -45,6 +45,14 @@ public class ModelHandler
         models.put("tree2", new TextureModel(Loader.loadObj("tree2.obj")));
         models.get("tree2").setPosition(40, 0, 20);
 
+        models.put("test", new ColorModel(Loader.loadObj("Medieval_Inn.obj")));
+        models.get("test").setPosition(10, 5, 10);
+        models.get("test").setScale(10, 10, 10);
+
+        models.put("sponza", new ColorModel(Loader.loadObj("sponza/sponza.obj")));
+        models.get("sponza").setPosition(-40, 0, -40);
+        models.get("sponza").setScale(0.01f, 0.01f, 0.01f);
+
         List<RawData> data = Loader.loadObj("wooden_fence.obj");
         for (int i = 0; i < 10; i++)
         {
@@ -72,7 +80,7 @@ public class ModelHandler
             float scale = Util.rand(2, 3) * 0.3f;
             tree.setScale(scale, scale, scale);
             tree.setRotation(0, Util.rand(0, 360), 0);
-            models.put("tree" + i, tree);
+            //models.put("tree" + i, tree);
         }
     }
 
@@ -130,16 +138,17 @@ public class ModelHandler
     }
 
     /**
-     * 
+     *
      * @param m - model to be tested
      * @param c - the current camera
      * @return true if the models should be removed
      */
     public boolean frustumCulled(Model m, Camera c)
     {
-        Vector3f cameraDir = c.direction.normalize();
+        return false;
+        /*Vector3f cameraDir = c.direction.normalize();
         Vector3f positionDir = m.position.subtract(c.position);
-        
+
         if (positionDir.normalize().dot(cameraDir) < 0.70)
         {
             return true;
@@ -147,7 +156,7 @@ public class ModelHandler
         {
             return true;
         }
-        return false;
+        return false;*/
     }
 
     public Map<String, Model> getModels()

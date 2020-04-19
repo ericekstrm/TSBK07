@@ -30,6 +30,12 @@ public class Terrain extends TextureModel
         heightData = getHeightData(heightMap);
     }
     
+    public Terrain(float[][] heightMap, String... textures)
+    {
+        super(TerrainGeneration.perlinTerrain(heightMap, textures));
+        heightData = new float[64][64]; //heightMap;
+    }
+    
     public void render(TerrainShader shader)
     {
         for (int i = 0; i < activeVAOs.size(); i++)

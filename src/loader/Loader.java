@@ -33,7 +33,7 @@ public class Loader
         List<Vector2f> textures = new ArrayList<>();
         List<Vector3f> normals = new ArrayList<>();
 
-        Map<Integer, String> indices = new HashMap<>();
+        List<String> indices = new ArrayList<>();
         Map<String, Material> materials = new HashMap<>();
 
         List<RawData> rawdatas = new ArrayList<>();
@@ -42,7 +42,6 @@ public class Loader
         {
             //loop trough all coordinates and add them to the right list
             String line = br.readLine();
-            int indiceIndex = 0;
             String currentMaterialName = "";
             while (line != null)
             {
@@ -76,26 +75,17 @@ public class Loader
                 {
                     if (currentLine.length == 4)
                     {
-                        indices.put(indiceIndex, currentLine[1]);
-                        indiceIndex++;
-                        indices.put(indiceIndex, currentLine[2]);
-                        indiceIndex++;
-                        indices.put(indiceIndex, currentLine[3]);
-                        indiceIndex++;
+                        indices.add( currentLine[1]);
+                        indices.add( currentLine[2]);
+                        indices.add( currentLine[3]);
                     } else if (currentLine.length == 5)
                     {
-                        indices.put(indiceIndex, currentLine[1]);
-                        indiceIndex++;
-                        indices.put(indiceIndex, currentLine[2]);
-                        indiceIndex++;
-                        indices.put(indiceIndex, currentLine[3]);
-                        indiceIndex++;
-                        indices.put(indiceIndex, currentLine[1]);
-                        indiceIndex++;
-                        indices.put(indiceIndex, currentLine[3]);
-                        indiceIndex++;
-                        indices.put(indiceIndex, currentLine[4]);
-                        indiceIndex++;
+                        indices.add( currentLine[1]);
+                        indices.add( currentLine[2]);
+                        indices.add( currentLine[3]);
+                        indices.add( currentLine[1]);
+                        indices.add( currentLine[3]);
+                        indices.add(currentLine[4]);
                     }
 
                 } else if (line.startsWith("usemtl"))
@@ -131,7 +121,7 @@ public class Loader
     }
 
     private static RawData packageData(List<Vector3f> vertices, List<Vector2f> textures,
-                                       List<Vector3f> normals, Map<Integer, String> indices,
+                                       List<Vector3f> normals, List<String> indices,
                                        Material material)
     {
 
@@ -142,7 +132,7 @@ public class Loader
 
         //loop through indices
         int i = 0;
-        for (String str : indices.values())
+        for (String str : indices)
         {
             String[] vertex = str.split("/");
 
@@ -166,11 +156,9 @@ public class Loader
             i++;
         }
 
-        i = 0;
-        for (int key : indices.keySet())
+        for (int ix = 0; ix < indices.size(); ix++)
         {
-            indicesArray[i] = i;
-            i++;
+            indicesArray[ix] = ix;
         }
 
         RawData data = new RawData(verticesArray, normalsArray, textureArray, indicesArray, material);
@@ -323,7 +311,7 @@ public class Loader
 
         List<String> indices = new ArrayList<>();
         List<Material> materials = new ArrayList<>();
-
+        
         try
         {
             //loop trough all coordinates and add them to the right list
@@ -358,10 +346,20 @@ public class Loader
                     normals.add(normal);
                 } else if (line.startsWith("f "))
                 {
-                    String[] face = line.split(" ");
-                    indices.add(face[1]);
-                    indices.add(face[2]);
-                    indices.add(face[3]);
+                    if (currentLine.length == 4)
+                    {
+                        indices.add( currentLine[1]);
+                        indices.add( currentLine[2]);
+                        indices.add( currentLine[3]);
+                    } else if (currentLine.length == 5)
+                    {
+                        indices.add( currentLine[1]);
+                        indices.add( currentLine[2]);
+                        indices.add( currentLine[3]);
+                        indices.add( currentLine[1]);
+                        indices.add( currentLine[3]);
+                        indices.add(currentLine[4]);
+                    }
                 } else if (line.startsWith("usemtl"))
                 {
                     //what happens here?

@@ -7,7 +7,6 @@ import java.util.Map;
 import light.LightHandler;
 import loader.Loader;
 import loader.RawData;
-import main.main_old;
 import shader.ColorModelShader;
 import shader.TextureModelShader;
 import terrain.TerrainHandler;
@@ -45,13 +44,9 @@ public class ModelHandler
         models.put("tree2", new TextureModel(Loader.loadObj("tree2.obj")));
         models.get("tree2").setPosition(40, 0, 20);
 
-        models.put("test", new ColorModel(Loader.loadObj("Medieval_Inn.obj")));
-        models.get("test").setPosition(10, 5, 10);
-        models.get("test").setScale(10, 10, 10);
-
         models.put("sponza", new ColorModel(Loader.loadObj("sponza/sponza.obj")));
-        models.get("sponza").setPosition(-40, 0, -40);
-        models.get("sponza").setScale(0.01f, 0.01f, 0.01f);
+        models.get("sponza").setPosition(-100, 0, -0);
+        models.get("sponza").setScale(0.02f, 0.02f, 0.02f);
 
         List<RawData> data = Loader.loadObj("wooden_fence.obj");
         for (int i = 0; i < 10; i++)

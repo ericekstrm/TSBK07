@@ -6,7 +6,6 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import loader.Material;
 import loader.RawData;
-import loader.Texture;
 import static terrain.Terrain.MAX_HEIGHT;
 import static terrain.Terrain.MAX_PIXEL_COLOR;
 import static terrain.Terrain.SIZE;
@@ -16,12 +15,12 @@ import util.Vector3f;
 public class TerrainGeneration
 {
 
-    public static RawData generateTerrain(String heightMap, String... textureFileNames)
+    public static RawData generateTerrain(String heightMap)
     {
         BufferedImage image = null;
         try
         {
-            image = ImageIO.read(new File("res/heightmaps/" + heightMap));
+            image = ImageIO.read(new File("res/terrain/heightmaps/" + heightMap));
         } catch (IOException e)
         {
             System.out.println("cant read file: " + heightMap);
@@ -74,7 +73,7 @@ public class TerrainGeneration
             }
         }
 
-        RawData data = new RawData(verticesArray, normalsArray, textureArray, indicesArray, new Texture(textureFileNames), new Material());
+        RawData data = new RawData(verticesArray, normalsArray, textureArray, indicesArray, new Material());
         return data;
     }
 
@@ -101,7 +100,7 @@ public class TerrainGeneration
         return new Vector3f(heightL - heightR, 2f, heightU - heightD).normalize();
     }
 
-    public static RawData perlinTerrain(float[][] heightMap, String... textureFileNames)
+    public static RawData perlinTerrain(float[][] heightMap)
     {
         int vertexCount = 64;
 
@@ -118,7 +117,7 @@ public class TerrainGeneration
                 verticesArray[v * 3 + 1] = 0; //heightMap[i][j];
                 verticesArray[v * 3 + 2] = SIZE / (vertexCount - 1) * j;
 
-                Vector3f n = new Vector3f(0,1,0); //getPerlinNormal(i, j, heightMap);
+                Vector3f n = new Vector3f(0, 1, 0); //getPerlinNormal(i, j, heightMap);
                 normalsArray[v * 3] = n.x;
                 normalsArray[v * 3 + 1] = n.y;
                 normalsArray[v * 3 + 2] = n.z;
@@ -149,7 +148,7 @@ public class TerrainGeneration
             }
         }
 
-        RawData data = new RawData(verticesArray, normalsArray, textureArray, indicesArray, new Texture(textureFileNames), new Material());
+        RawData data = new RawData(verticesArray, normalsArray, textureArray, indicesArray, new Material());
         return data;
     }
 
@@ -161,7 +160,6 @@ public class TerrainGeneration
         {
             for (int j = 0; j < height; j++)
             {
-                System.out.println((float) Math.sqrt(i * i + j * j));
                 frequencies[i][j] = 100 * Util.rand(0, 5) / ((float) Math.sqrt(i * i + j * j) + 1);
             }
         }

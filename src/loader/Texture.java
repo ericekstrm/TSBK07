@@ -27,6 +27,14 @@ public class Texture
             textureIDs.add(load(texturename));
         }
     }
+    
+    public Texture(int... textureNames)
+    {
+        for (int texturename : textureNames)
+        {
+            textureIDs.add(texturename);
+        }
+    }
 
     public int size()
     {
@@ -108,7 +116,7 @@ public class Texture
             IntBuffer h = stack.mallocInt(1);
             IntBuffer channels = stack.mallocInt(1);
 
-            File file = new File("res/textures/" + textureFile);
+            File file = new File("res/" + textureFile);
             String filePath = file.getAbsolutePath();
             buffer = STBImage.stbi_load(filePath, w, h, channels, 4);
             if (buffer == null)

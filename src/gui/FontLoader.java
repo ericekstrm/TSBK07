@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 import loader.Texture;
 import util.Vector2f;
-import util.Vector3f;
 
 public class FontLoader
 {
@@ -64,7 +63,7 @@ public class FontLoader
             }
 
             Font f = new Font(characters);
-            f.setTextureID(Texture.load("../fonts/" + fontName + ".png"));
+            f.setTextureID(Texture.load("fonts/" + fontName + ".png"));
             f.spaceLength = spaceLength;
 
             return f;

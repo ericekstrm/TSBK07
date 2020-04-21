@@ -12,14 +12,12 @@ import shader.TextureModelShader;
 import terrain.TerrainHandler;
 import util.Matrix4f;
 import util.Util;
-import util.Vector3f;
 import util.Vector4f;
 
 public class ModelHandler
 {
 
     Map<String, Model> models = new HashMap<>();
-    Windmill windmill;
 
     TextureModelShader shader;
     ColorModelShader colorModelShader;
@@ -32,23 +30,21 @@ public class ModelHandler
 
     public void init(TerrainHandler terrain)
     {
-        //models
-
         models.put("lamp_post", new ColorModel(Loader.loadObj("Lamp.obj")));
         models.get("lamp_post").setPosition(60, 0, 60);
         models.get("lamp_post").setScale(2, 2, 2);
 
-        models.put("pine", new TextureModel(Loader.loadRawData("pine.obj", "pine.png")));
+        models.put("pine", new TextureModel(Loader.loadObj("pine")));
         models.get("pine").setPosition(30, 0, 20);
 
         models.put("tree2", new TextureModel(Loader.loadObj("tree2.obj")));
         models.get("tree2").setPosition(40, 0, 20);
 
-        models.put("sponza", new ColorModel(Loader.loadObj("sponza/sponza.obj")));
-        models.get("sponza").setPosition(-100, 0, -0);
+        models.put("sponza", new TextureModel(Loader.loadObj("sponza")));
+        models.get("sponza").setPosition(-100, 1, -10);
         models.get("sponza").setScale(0.02f, 0.02f, 0.02f);
 
-        List<RawData> data = Loader.loadObj("wooden_fence.obj");
+        RawData[] data = Loader.loadObj("wooden_fence");
         for (int i = 0; i < 10; i++)
         {
             Model fence = new ColorModel(data);

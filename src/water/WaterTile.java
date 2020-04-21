@@ -14,7 +14,7 @@ public class WaterTile extends ColorModel
 {
     public WaterTile()
     {
-        super(Loader.loadObj("water.obj"));
+        super(Loader.loadObj("water"));
     }
 
     public void render(WaterShader shader, WaterFrameBuffer waterFrameBuffer, Texture dudvMap, Texture normalMap)

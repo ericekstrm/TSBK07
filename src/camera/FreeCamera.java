@@ -13,7 +13,6 @@ public class FreeCamera extends Camera implements GLFWScrollCallbackI
 
     float speed = 1f;
 
-    boolean flying = true;
     boolean keyPressedLastTime = false;
 
     public FreeCamera(Vector3f position, Vector3f lookAt)
@@ -51,38 +50,6 @@ public class FreeCamera extends Camera implements GLFWScrollCallbackI
         }
     }
 
-    public void checkInputWaking(long window)
-    {
-        position.y = 2;
-        if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
-        {
-
-            Vector3f movement = direction.scale(speed);
-            movement.y = 0;
-            position = position.add(movement);
-        }
-        if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-        {
-            Vector3f movement = direction.scale(-speed);
-            movement.y = 0;
-            position = position.add(movement);
-        }
-        if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
-        {
-            Vector3f direction = this.direction.cross(upVector);
-            Vector3f movement = direction.scale(-speed);
-            movement.y = 0;
-            position = position.add(movement);
-        }
-        if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-        {
-            Vector3f direction = this.direction.cross(upVector);
-            Vector3f movement = direction.scale(speed);
-            movement.y = 0;
-            position = position.add(movement);
-        }
-    }
-
     public void checkInput(long window)
     {
         //rotation camera
@@ -102,20 +69,7 @@ public class FreeCamera extends Camera implements GLFWScrollCallbackI
         }
         glfwSetCursorPos(window, prevX, prevY);
 
-        //toggle flying
-        if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS && !keyPressedLastTime)
-        {
-            flying = !flying;
-        }
-        keyPressedLastTime = glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS;
-
-        if (flying)
-        {
-            checkInputFlying(window);
-        } else
-        {
-            checkInputWaking(window);
-        }
+        checkInputFlying(window);
     }
 
     //callback for scroll wheel

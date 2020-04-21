@@ -37,7 +37,7 @@ public class PositionalLight
     {
         this.position = position;
         this.color = color;
-        RawData data = Loader.loadRawData("light.obj", "");
+        RawData data = Loader.loadObj("light.obj")[0];
         activeVAO = GL30.glGenVertexArrays();
         GL30.glBindVertexArray(activeVAO);
 

@@ -66,40 +66,40 @@ public class Skybox extends TextureModel
 
     public static final String[] textureFiles =
     {
-        "skybox/violentdays_rt.tga",
-        "skybox/violentdays_lf.tga",
-        "skybox/violentdays_up.tga",
-        "skybox/violentdays_dn.tga",
-        "skybox/violentdays_bk.tga",
-        "skybox/violentdays_ft.tga"
+        "objects/skybox/violentdays_rt.tga",
+        "objects/skybox/violentdays_lf.tga",
+        "objects/skybox/violentdays_up.tga",
+        "objects/skybox/violentdays_dn.tga",
+        "objects/skybox/violentdays_bk.tga",
+        "objects/skybox/violentdays_ft.tga"
     };
 
     public static final String[] textureFiles2 =
     {
-        "skybox/grimmnight_rt.tga",
-        "skybox/grimmnight_lf.tga",
-        "skybox/grimmnight_up.tga",
-        "skybox/grimmnight_dn.tga",
-        "skybox/grimmnight_bk.tga",
-        "skybox/grimmnight_ft.tga"
+        "objects/skybox/grimmnight_rt.tga",
+        "objects/skybox/grimmnight_lf.tga",
+        "objects/skybox/grimmnight_up.tga",
+        "objects/skybox/grimmnight_dn.tga",
+        "objects/skybox/grimmnight_bk.tga",
+        "objects/skybox/grimmnight_ft.tga"
     };
 
     public static final String[] textureFiles3 =
     {
-        "skybox/thinmatrix/right.png",
-        "skybox/thinmatrix/left.png",
-        "skybox/thinmatrix/top.png",
-        "skybox/thinmatrix/bottom.png",
-        "skybox/thinmatrix/back.png",
-        "skybox/thinmatrix/front.png"
+        "objects/skybox/thinmatrix/right.png",
+        "objects/skybox/thinmatrix/left.png",
+        "objects/skybox/thinmatrix/top.png",
+        "objects/skybox/thinmatrix/bottom.png",
+        "objects/skybox/thinmatrix/back.png",
+        "objects/skybox/thinmatrix/front.png"
     };
 
     ModelShader skyboxShader;
     int texID;
-
+    
     public Skybox()
     {
-        RawData data = Loader.loadRawData("skybox.obj", "skybox/SkyBox512.tga");
+        RawData data = Loader.loadRawData("skybox/skybox.obj", "skybox/SkyBox512.tga");
         this.skyboxShader = new TextureModelShader("skybox.vert", "skybox.frag"); //change to its own shader.
 
         //add new vao to list
@@ -111,6 +111,11 @@ public class Skybox extends TextureModel
         activeVBOs.add(ModelLoader.loadCubeMapTextureVBO(VERTICES));
 
         //add data that is specific to that vao
+        int[] indices = new int[VERTICES.length];
+        for (int i = 0; i < VERTICES.length; i++)
+        {
+            indices[i] = i;
+        }
         activeVBOs.add(ModelLoader.loadIndicesVBO(data.indices));
         nrOfIndices.add(data.indices.length);
 

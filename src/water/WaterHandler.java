@@ -10,8 +10,8 @@ import util.Matrix4f;
 
 public class WaterHandler
 {
-    private static final String DUDV_file = "water/dudvmap.png";
-    private static final String NORMAL_file = "water/normalmap.png";
+    private static final String DUDV_file = "objects/water/dudvmap.png";
+    private static final String NORMAL_file = "objects/water/normalmap.png";
     
     private static final float WAVE_SPEED = 0.03f;
     

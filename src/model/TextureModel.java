@@ -17,7 +17,7 @@ public class TextureModel extends Model
 {
 
     protected List<Texture> textureIDs = new ArrayList<>();
-    Texture normalMap;
+    protected List<Texture> bumpmapIDs = new ArrayList<>();
 
     public TextureModel(RawData... data)
     {
@@ -41,39 +41,14 @@ public class TextureModel extends Model
             matProperties.add(data[i].material);
 
             //texture binding
-            textureIDs.add(data[i].textures);
+            textureIDs.add(new Texture(data[i].material.Ka_map));
+            bumpmapIDs.add(new Texture(data[i].material.bump_map));
 
             GL30.glBindVertexArray(0);
         }
     }
 
-    public TextureModel(List<RawData> data)
-    {
-        for (int i = 0; i < data.size(); i++)
-        {
-            //add new vao to list
-            int vaoID = GL30.glGenVertexArrays();
-            GL30.glBindVertexArray(vaoID);
-            activeVAOs.add(vaoID);
-
-            //add data that is the same for all vaos (this is where there is a lot of memory waste.)
-            activeVBOs.add(ModelLoader.loadVertexVBO(data.get(i).vertices));
-            activeVBOs.add(ModelLoader.loadTextureVBO(data.get(i).textureCoords));
-            activeVBOs.add(ModelLoader.loadNormalsVBO(data.get(i).normals));
-
-            //add data that is specific to that vao
-            activeVBOs.add(ModelLoader.loadIndicesVBO(data.get(i).indices));
-            nrOfIndices.add(data.get(i).indices.length);
-
-            //materials
-            matProperties.add(data.get(i).material);
-
-            //texture binding
-            textureIDs.add(data.get(i).textures);
-
-            GL30.glBindVertexArray(0);
-        }
-    }
+    
 
     @Override
     public void render(ModelShader shader)

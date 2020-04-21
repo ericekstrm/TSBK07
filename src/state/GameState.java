@@ -71,9 +71,9 @@ public class GameState extends State
         //lights
         lights = new LightHandler(projectionMatrix);
 
-        //lights.addPosLight(new Vector3f(9.0f, 7.0f, 0.0f), new Vector3f(0.0f, 1.0f, 0.0f));
+        lights.addPosLight(new Vector3f(-100, 4, -10), new Vector3f(0.0f, 1.0f, 0.0f));
         lights.addDirLight(new Vector3f(0.0f, 1.0f, 0.0f), new Vector3f(1f, 1f, 1f));
-        //lights.addDirLight(new Vector3f(0.0f, 1.0f, -0.5f), new Vector3f(0.5f, 0.5f, 0.5f));
+        lights.addPosLight(new Vector3f(0.0f, 1.0f, 0.0f), new Vector3f(0.5f, 0.5f, 0.5f));
 
         //light for lamp post
         lights.addPosLight(new Vector3f(60.0f, 7.0f, 60.0f), new Vector3f(1.0f, 0.3f, 0.3f));
@@ -99,7 +99,7 @@ public class GameState extends State
         }
 
         //rotating sun around origin
-        lights.rotateDirLight(0, Matrix4f.rotate(0.005f, new Vector3f(0, 0, 1)));
+        //lights.rotateDirLight(0, Matrix4f.rotate(0.005f, new Vector3f(0, 0, 1)));
     }
 
     @Override
@@ -189,15 +189,20 @@ public class GameState extends State
             renderWater = false;
         }
 
-        //camera.checkInput(window);
-        player.checkInput(window, terrain);
+        if (currentCamera == player.firstPersonCamera
+                || currentCamera == player.thirdPersonCamera)
+        {
+            player.checkInput(window, terrain);
+        } else if (currentCamera == birdCamera)
+        {
+            birdCamera.checkInput(window);
+        }
 
+        //save and exit
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         {
             glfwSetWindowShouldClose(window, true);
-        }
-
-        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        } else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
         {
             SceneSaver.saveScene("test", models, terrain, lights, water);
             glfwSetWindowShouldClose(window, true);

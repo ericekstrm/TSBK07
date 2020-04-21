@@ -105,7 +105,7 @@ public abstract class ModelShader extends Shader
     public void loadWorldToViewMatrix(Camera camera)
     {
         loadMatrix(location_worldToView, camera.getWorldtoViewMatrix());
-        loadVector(location_viewPos, camera.getPosition());
+        loadVector(location_viewPos, camera.position);
     }
 
     public void loadProjectionMatrix(Matrix4f projection)

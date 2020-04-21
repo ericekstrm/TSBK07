@@ -14,10 +14,10 @@ import util.Vector4f;
 public class RayCaster
 {
 
-    Vector3f ray;
-    Matrix4f projectionMatrixInverse;
+    private Vector3f ray;
+    private Matrix4f projectionMatrixInverse;
     
-    Camera camera;
+    private Camera camera;
 
     public RayCaster(Camera camera, Matrix4f projectionMatrix)
     {

@@ -1,5 +1,8 @@
 # Blender v2.67 (sub 0) OBJ File: 'Wooden Barrel.blend'
 # www.blender.org
+mtllib barrel.mtl
+usemtl material
+
 o Mesh_Mesh_Cylinder.001
 v -0.787850 -6.030530 -3.960651
 v -1.545395 -6.030530 -3.730846

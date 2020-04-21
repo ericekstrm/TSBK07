@@ -19,41 +19,25 @@ public class ColorModel extends Model
             int vaoID = GL30.glGenVertexArrays();
             GL30.glBindVertexArray(vaoID);
             activeVAOs.add(vaoID);
+
             //add data that is the same for all vaos (this is where there is a lot of memory waste.)
             activeVBOs.add(ModelLoader.loadVertexVBO(d.vertices));
             activeVBOs.add(ModelLoader.loadTextureVBO(d.textureCoords));
             activeVBOs.add(ModelLoader.loadNormalsVBO(d.normals));
+
             //add data that is specific to that vao
             activeVBOs.add(ModelLoader.loadIndicesVBO(d.indices));
             nrOfIndices.add(d.indices.length);
+
             //materials
             matProperties.add(d.material);
             GL30.glBindVertexArray(0);
-        }
-    }
 
-    public ColorModel(List<RawData> data)
-    {
-        for (int i = 0; i < data.size(); i++)
-        {
-            //add new vao to list
-            int vaoID = GL30.glGenVertexArrays();
-            GL30.glBindVertexArray(vaoID);
-            activeVAOs.add(vaoID);
-
-            //add data that is the same for all vaos (this is where there is a lot of memory waste.)
-            activeVBOs.add(ModelLoader.loadVertexVBO(data.get(i).vertices));
-            activeVBOs.add(ModelLoader.loadTextureVBO(data.get(i).textureCoords));
-            activeVBOs.add(ModelLoader.loadNormalsVBO(data.get(i).normals));
-
-            //add data that is specific to that vao
-            activeVBOs.add(ModelLoader.loadIndicesVBO(data.get(i).indices));
-            nrOfIndices.add(data.get(i).indices.length);
-
-            //materials
-            matProperties.add(data.get(i).material);
-
-            GL30.glBindVertexArray(0);
+            //find the maximum height of the model.
+            if (d.maxHeight > maxHeight)
+            {
+                maxHeight = d.maxHeight;
+            }
         }
     }
 

@@ -11,9 +11,9 @@ import util.Vector3f;
 public class FreeCamera extends Camera implements GLFWScrollCallbackI
 {
 
-    float speed = 1f;
+    private float speed = 1f;
 
-    boolean keyPressedLastTime = false;
+    private boolean keyPressedLastTime = false;
 
     public FreeCamera(Vector3f position, Vector3f lookAt)
     {

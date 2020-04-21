@@ -25,7 +25,7 @@ public class Loader
             {
                 br = new BufferedReader(new FileReader("res/objects/" + filename));
                 System.out.println("Loading object: " + filename);
-            } else 
+            } else
             {
                 //if no dot is present, it is a folder instead
                 folder = filename + "/";
@@ -46,6 +46,8 @@ public class Loader
         List<String> indices = new ArrayList<>();
         Map<String, Material> materials = new HashMap<>();
         List<String> loadedMaterialFiles = new ArrayList<>();
+
+        float maxHeight = 0;
 
         List<RawData> rawdatas = new ArrayList<>();
 
@@ -68,16 +70,21 @@ public class Loader
                     }
                 } else if (line.startsWith("v "))
                 {
+                    float height = Float.parseFloat(currentLine[2]);
+                    if (height > maxHeight)
+                    {
+                        maxHeight = height;
+                    }
                     Vector3f vertex = new Vector3f(
                             Float.parseFloat(currentLine[1]),
-                            Float.parseFloat(currentLine[2]),
+                            height,
                             Float.parseFloat(currentLine[3]));
                     vertices.add(vertex);
                 } else if (line.startsWith("vt "))
                 {
                     Vector2f texture = new Vector2f(
                             Float.parseFloat(currentLine[1]),
-                            Float.parseFloat(currentLine[2]));
+                            -Float.parseFloat(currentLine[2]));
                     textures.add(texture);
                 } else if (line.startsWith("vn "))
                 {
@@ -116,7 +123,10 @@ public class Loader
                             {
                                 System.out.println("no material named: " + currentMaterialName);
                             }
-                            rawdatas.add(packageData(vertices, textures, normals, indices, currentMaterial));
+                            RawData data = packageData(vertices, textures, normals, indices, currentMaterial);
+                            data.maxHeight = maxHeight;
+                            System.out.println(data.maxHeight);
+                            rawdatas.add(data);
                             indices.clear();
                         }
                     }
@@ -124,7 +134,10 @@ public class Loader
                 }
                 line = br.readLine();
             }
-            rawdatas.add(packageData(vertices, textures, normals, indices, materials.get(currentMaterialName)));
+            RawData data = packageData(vertices, textures, normals, indices, materials.get(currentMaterialName));
+            data.maxHeight = maxHeight;
+            System.out.println(data.maxHeight);
+            rawdatas.add(data);
 
             return rawdatas.toArray(new RawData[0]);
 
@@ -151,7 +164,15 @@ public class Loader
         {
             String[] vertex = str.split("/");
 
-            Vector3f v = vertices.get(Integer.parseInt(vertex[0]) - 1);
+            int index = Integer.parseInt(vertex[0]);
+            if (index < 0)
+            {
+                index = vertices.size() + index;
+            } else
+            {
+                index--;
+            }
+            Vector3f v = vertices.get(index);
             verticesArray[i * 3] = v.x;
             verticesArray[i * 3 + 1] = v.y;
             verticesArray[i * 3 + 2] = v.z;
@@ -159,12 +180,28 @@ public class Loader
             Vector2f t = new Vector2f(0, 0);
             if (!vertex[1].equals(""))
             {
-                t = textures.get(Integer.parseInt(vertex[1]) - 1);
+                index = Integer.parseInt(vertex[1]);
+                if (index < 0)
+                {
+                    index = textures.size() + index;
+                } else
+                {
+                    index--;
+                }
+                t = textures.get(index);
             }
             textureArray[i * 2] = t.x;
             textureArray[i * 2 + 1] = t.y;
 
-            Vector3f n = normals.get(Integer.parseInt(vertex[2]) - 1);
+            index = Integer.parseInt(vertex[2]);
+            if (index < 0)
+            {
+                index = normals.size() + index;
+            } else
+            {
+                index--;
+            }
+            Vector3f n = normals.get(index);
             normalsArray[i * 3] = n.x;
             normalsArray[i * 3 + 1] = n.y;
             normalsArray[i * 3 + 2] = n.z;

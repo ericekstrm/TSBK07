@@ -10,6 +10,8 @@ public class RawData
     public int[] indices;
     public Material material;
     
+    public float maxHeight;
+    
     public RawData(float[] vertices, float[] normals, float[] textureCoords, int[] indices, Material material)
     {
         this.vertices = vertices;

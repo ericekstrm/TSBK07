@@ -96,7 +96,6 @@ public class Material
                     currentMaterial.illum = Float.parseFloat(currentLine[1]);
                 } else if (line.startsWith("map_Ka"))
                 {
-                    System.out.println("ka");
                     currentMaterial.Ka_map = Texture.load(folder + currentLine[1]);
                 } else if (line.startsWith("map_Kd"))
                 {

@@ -21,34 +21,38 @@ public class TextureModel extends Model
 
     public TextureModel(RawData... data)
     {
-        for (int i = 0; i < data.length; i++)
+        for (RawData d : data)
         {
             //add new vao to list
             int vaoID = GL30.glGenVertexArrays();
             GL30.glBindVertexArray(vaoID);
             activeVAOs.add(vaoID);
-
+            
             //add data that is the same for all vaos (this is where there is a lot of memory waste.)
-            activeVBOs.add(ModelLoader.loadVertexVBO(data[i].vertices));
-            activeVBOs.add(ModelLoader.loadTextureVBO(data[i].textureCoords));
-            activeVBOs.add(ModelLoader.loadNormalsVBO(data[i].normals));
-
+            activeVBOs.add(ModelLoader.loadVertexVBO(d.vertices));
+            activeVBOs.add(ModelLoader.loadTextureVBO(d.textureCoords));
+            activeVBOs.add(ModelLoader.loadNormalsVBO(d.normals));
+            
             //add data that is specific to that vao
-            activeVBOs.add(ModelLoader.loadIndicesVBO(data[i].indices));
-            nrOfIndices.add(data[i].indices.length);
-
+            activeVBOs.add(ModelLoader.loadIndicesVBO(d.indices));
+            nrOfIndices.add(d.indices.length);
+            
             //materials
-            matProperties.add(data[i].material);
-
+            matProperties.add(d.material);
+            
             //texture binding
-            textureIDs.add(new Texture(data[i].material.Ka_map));
-            bumpmapIDs.add(new Texture(data[i].material.bump_map));
-
+            textureIDs.add(new Texture(d.material.Kd_map));
+            bumpmapIDs.add(new Texture(d.material.bump_map));
+            
             GL30.glBindVertexArray(0);
+            
+            //find the maximum height of the model.
+            if (d.maxHeight > maxHeight)
+            {
+                maxHeight = d.maxHeight;
+            }
         }
     }
-
-    
 
     @Override
     public void render(ModelShader shader)

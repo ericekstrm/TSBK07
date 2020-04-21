@@ -1,0 +1,10 @@
+newmtl Sewer_with_bricks_LOW_POLY:Sewer_with_bricks_LOW_POLY
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd Sewerwithbricks_LOWPOLY_COLOR.jpg
+bump Sewerwithbricks_LOWPOLY_NRM.jpg
+Ni 1.00
+Ks 0.17 0.17 0.17
+Ns 18.00

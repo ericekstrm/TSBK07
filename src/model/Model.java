@@ -16,8 +16,10 @@ public abstract class Model extends Movable
     protected List<Integer> nrOfIndices = new ArrayList<>();
     protected List<Material> matProperties = new ArrayList<>();
 
+    float maxHeight = 0;
+
     public abstract void render(ModelShader shader);
-    
+
     public void deactivate()
     {
         GL30.glBindVertexArray(0);
@@ -41,9 +43,15 @@ public abstract class Model extends Movable
 
         //TODO: remove textures
     }
-    
+
     public void setMaterialProperties(int index, Material matProp)
     {
         matProperties.set(index, matProp);
+    }
+
+    void normalizeHeight()
+    {
+        float scale = 4 / maxHeight;
+        setScale(scale, scale, scale);
     }
 }

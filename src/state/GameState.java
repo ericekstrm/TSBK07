@@ -40,7 +40,7 @@ public class GameState extends State
     WaterHandler water;
     WaterFrameBuffer waterFrameBuffer;
     Vector4f clippingPlane = new Vector4f(0, -1, 0, 8);
-    boolean renderWater = true;
+    boolean renderWater = false;
 
     GUI gui;
 

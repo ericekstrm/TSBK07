@@ -8,6 +8,10 @@ import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import shader.Shader;
 
+/**
+ * functions for loading a model to the graphics unit.
+ * @author Eric
+ */
 public class ModelLoader {
 
     public static int loadVertexVBO(float[] vertices) {

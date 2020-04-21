@@ -96,11 +96,10 @@ public class Skybox extends TextureModel
 
     ModelShader skyboxShader;
     int texID;
-    
-    public Skybox()
+
+    public Skybox(Matrix4f projectionMatrix)
     {
-        RawData data = Loader.loadRawData("skybox/skybox.obj", "skybox/SkyBox512.tga");
-        this.skyboxShader = new TextureModelShader("skybox.vert", "skybox.frag"); //change to its own shader.
+        this.skyboxShader = new TextureModelShader("skybox.vert", "skybox.frag", projectionMatrix); //change to its own shader.
 
         //add new vao to list
         int vaoID = GL30.glGenVertexArrays();
@@ -116,11 +115,9 @@ public class Skybox extends TextureModel
         {
             indices[i] = i;
         }
-        activeVBOs.add(ModelLoader.loadIndicesVBO(data.indices));
-        nrOfIndices.add(data.indices.length);
+        activeVBOs.add(ModelLoader.loadIndicesVBO(indices));
+        nrOfIndices.add(indices.length);
 
-        //materials
-        matProperties.add(data.material);
 
         //texture binding
         texID = Texture.loadCubeMap(textureFiles3);

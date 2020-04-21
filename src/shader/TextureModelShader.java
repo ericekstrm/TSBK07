@@ -24,9 +24,13 @@ public class TextureModelShader extends ModelShader
         stop();
     }
 
-    public TextureModelShader(String vertexFile, String fragmentFile)
+    public TextureModelShader(String vertexFile, String fragmentFile, Matrix4f projectionMatrix)
     {
         super(vertexFile, fragmentFile);
+        start();
+        loadProjectionMatrix(projectionMatrix);
+        connectTextureUnits();
+        stop();
     }
 
     @Override

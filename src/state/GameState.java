@@ -63,7 +63,7 @@ public class GameState extends State
         currentCamera = player.thirdPersonCamera;
         rayCaster = new RayCaster(player.getCamera(), projectionMatrix);
 
-        skybox = new Skybox();
+        skybox = new Skybox(projectionMatrix);
 
         water = new WaterHandler(projectionMatrix);
         waterFrameBuffer = new WaterFrameBuffer();

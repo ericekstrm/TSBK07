@@ -9,7 +9,7 @@ uniform mat4 worldToView;
 uniform mat4 projection;
 
 out vec2 texCoord;
-out vec3 normal;
+out vec3 inNormal;
 out vec3 fragPos;
 out vec4 viewSpace;
 
@@ -17,7 +17,7 @@ uniform vec4 clippingPlane;
 
 void main()
 {
-    normal = mat3(transpose(inverse(modelToWorld))) * in_Normal;
+    inNormal = mat3(transpose(inverse(modelToWorld))) * in_Normal;
     fragPos = vec3(modelToWorld * vec4(in_Position, 1.0));
     viewSpace = worldToView * modelToWorld * vec4(in_Position,1);
 

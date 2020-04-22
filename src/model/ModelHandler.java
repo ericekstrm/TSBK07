@@ -38,7 +38,7 @@ public class ModelHandler
         models.get("boulder").normalizeHeight();
 
         models.put("crate", new TextureModel(Loader.loadObj("crate")));
-        models.get("crate").setPosition(-10, 0, -30);
+        models.get("crate").setPosition(-80, -4, -30);
         models.get("crate").normalizeHeight();
 
         /*models.put("fir", new TextureModel(Loader.loadObj("fir")));

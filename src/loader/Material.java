@@ -12,12 +12,11 @@ import util.Vector3f;
 
 public class Material
 {
-    
 
     public String name = "";
     public Vector3f Ka = new Vector3f(0.2f, 0.2f, 0.2f);
     public Vector3f Kd = new Vector3f(1, 1, 1);
-    public Vector3f Ks = new Vector3f();
+    public Vector3f Ks = new Vector3f(0,0,0);
     public Vector3f Ke = new Vector3f();
     public float Ns = 1;
     public float Ni = 0;

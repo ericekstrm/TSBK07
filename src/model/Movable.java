@@ -7,9 +7,9 @@ import util.Vector3f;
 public class Movable
 {
 
-    Vector3f position = new Vector3f(0, 0, 0); //should be moved to rigidBody class
-    Matrix3f orientation = new Matrix3f();
-    float scaleX = 1f, scaleY = 1f, scaleZ = 1f;
+    protected Vector3f position = new Vector3f(0, 0, 0); //should be moved to rigidBody class
+    protected Matrix3f orientation = new Matrix3f();
+    protected float scaleX = 1f, scaleY = 1f, scaleZ = 1f;
 
     public void setPosition(float x, float y, float z)
     {

@@ -56,6 +56,11 @@ public class LightShader extends Shader
         loadMatrix(location_worldToView, camera.getWorldtoViewMatrix());
     }
     
+    public void loadWorldToViewMatrixNoTranslation(Camera camera)
+    {
+        loadMatrix(location_worldToView, Matrix4f.remove_translation(camera.getWorldtoViewMatrix()));
+    }
+    
     public void loadProjectionMatrix(Matrix4f projection)
     {
         loadMatrix(location_projection, projection);

@@ -125,7 +125,6 @@ public class Loader
                             }
                             RawData data = packageData(vertices, textures, normals, indices, currentMaterial);
                             data.maxHeight = maxHeight;
-                            System.out.println(data.maxHeight);
                             rawdatas.add(data);
                             indices.clear();
                         }
@@ -136,7 +135,6 @@ public class Loader
             }
             RawData data = packageData(vertices, textures, normals, indices, materials.get(currentMaterialName));
             data.maxHeight = maxHeight;
-            System.out.println(data.maxHeight);
             rawdatas.add(data);
 
             return rawdatas.toArray(new RawData[0]);

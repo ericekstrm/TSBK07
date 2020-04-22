@@ -14,10 +14,12 @@ public class LightHandler
 
     private List<PositionalLight> pointLights = new ArrayList<>();
     private List<DirectionalLight> dirLights = new ArrayList<>();
+    private Sun sun;
 
     public LightHandler(Matrix4f projectionMatrix)
     {
         lightShader = new LightShader(projectionMatrix);
+        sun = new Sun(new Vector3f(20,20,20), projectionMatrix);
     }
 
     public void addPosLight(Vector3f pos, Vector3f color)
@@ -32,6 +34,7 @@ public class LightHandler
 
     public void render(Camera camera)
     {
+        sun.render(camera);
         lightShader.start();
         lightShader.loadWorldToViewMatrix(camera);
 
@@ -60,6 +63,8 @@ public class LightHandler
 
     public List<DirectionalLight> getDirLights()
     {
-        return dirLights;
+        List<DirectionalLight> lights = new ArrayList(dirLights);
+        lights.add(sun.getDirLight());
+        return lights;
     }
 }

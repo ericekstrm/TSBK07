@@ -229,7 +229,7 @@ public class main_old
         //prepare
         glClear(GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
-        skybox.render(camera);
+        skybox.render(camera, new Vector3f());
         lights.render(camera);
         terrain.render(camera, lights, clippingPlane);
         models.render(camera, lights, clippingPlane);

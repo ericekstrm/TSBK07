@@ -5,6 +5,7 @@ import camera.FreeCamera;
 import camera.RayCaster;
 import gui.GUI;
 import light.LightHandler;
+import light.Sun;
 import main.Player;
 import main.SceneSaver;
 import model.ModelHandler;
@@ -72,11 +73,11 @@ public class GameState extends State
         lights = new LightHandler(projectionMatrix);
 
         lights.addPosLight(new Vector3f(-100, 4, -10), new Vector3f(0.0f, 1.0f, 0.0f));
-        //lights.addDirLight(new Vector3f(0.0f, 1.0f, 0.0f), new Vector3f(1f, 1f, 1f));
-        lights.addPosLight(new Vector3f(0.0f, 5.0f, 0.0f), new Vector3f(1f, 1f, 1f));
+        //lights.addDirLight(new Vector3f(1.0f, -1.0f, 1.0f), new Vector3f(1f, 1f, 1f));
+        //lights.addPosLight(new Vector3f(0.0f, 5.0f, 0.0f), new Vector3f(1f, 1f, 1f));
 
         //light for lamp post
-        lights.addPosLight(new Vector3f(60.0f, 7.0f, 60.0f), new Vector3f(1.0f, 0.3f, 0.3f));
+        //lights.addPosLight(new Vector3f(60.0f, 7.0f, 60.0f), new Vector3f(1.0f, 0.3f, 0.3f));
 
         gui = new GUI();
         gui.addText("" + currentFPS, "fps", -1, -0.95f);
@@ -134,6 +135,8 @@ public class GameState extends State
         glfwSwapBuffers(window);
 
     }
+    
+    Vector3f fogColor = new Vector3f(0.5f,0.6f,0.7f);
 
     /**
      * Renders all objects in the scene. Skybox, lights, terrain, models and
@@ -148,7 +151,7 @@ public class GameState extends State
         //prepare
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
-        skybox.render(camera);
+        skybox.render(camera, fogColor);
         lights.render(camera);
         terrain.render(camera, lights, clippingPlane);
         models.render(camera, lights, clippingPlane);

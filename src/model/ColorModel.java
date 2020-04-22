@@ -51,7 +51,7 @@ public class ColorModel extends Model
             GL20.glEnableVertexAttribArray(Shader.TEX_ATTRIB);
             GL20.glEnableVertexAttribArray(Shader.NORMAL_ATTRIB);
 
-            shader.loadModelToWorldMatrix(getModelToViewMatrix());
+            shader.loadModelToWorldMatrix(getModelToWorldMatrix());
             shader.loadMaterialLightingProperties(matProperties.get(i));
 
             //draw!

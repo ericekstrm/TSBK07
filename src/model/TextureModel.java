@@ -64,7 +64,7 @@ public class TextureModel extends Model
             GL20.glEnableVertexAttribArray(Shader.TEX_ATTRIB);
             GL20.glEnableVertexAttribArray(Shader.NORMAL_ATTRIB);
 
-            shader.loadModelToWorldMatrix(getModelToViewMatrix());
+            shader.loadModelToWorldMatrix(getModelToWorldMatrix());
             shader.loadMaterialLightingProperties(matProperties.get(i));
             //textures
             if (textureIDs.get(i) != null)

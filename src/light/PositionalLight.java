@@ -9,33 +9,25 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import shader.Shader;
 import loader.Loader;
+import model.Movable;
 import shader.LightShader;
-import util.Matrix4f;
 import util.Vector3f;
 
-public class PositionalLight
+public class PositionalLight extends Movable
 {
 
-    int activeVAO;
-    List<Integer> activeVBOs = new ArrayList<>();
-    int nrIndices = 0;
+    private int activeVAO;
+    private List<Integer> activeVBOs = new ArrayList<>();
+    private int nrIndices = 0;
 
-    Vector3f position;
-    Vector3f color;
-    float intensity = 2;
-    float radius = 100;
-
-    Vector3f modelScale = new Vector3f(0.1f, 0.1f, 0.1f); //scale for drawing the square light model.
-
-    public PositionalLight(Vector3f position, Vector3f color, float scale)
-    {
-        this(position, color);
-        setModelScale(scale);
-    }
+    private Vector3f color;
+    private float intensity = 1;
+    private float radius = 100;
     
     public PositionalLight(Vector3f position, Vector3f color)
     {
-        this.position = position;
+        setPosition(position);
+        setScale(radius, radius, radius);
         this.color = color;
         RawData data = Loader.loadObj("light.obj")[0];
         activeVAO = GL30.glGenVertexArrays();
@@ -78,33 +70,10 @@ public class PositionalLight
         }
         GL30.glDeleteVertexArrays(activeVAO);
     }
-
-    public Matrix4f getModelToWorldMatrix()
-    {
-        Matrix4f scale = Matrix4f.scale(modelScale.x, modelScale.y, modelScale.z);
-        Matrix4f translate = Matrix4f.translate(position.x, position.y, position.z);
-
-        return translate.multiply(scale);
-    }
-
-    public void setModelScale(float scale)
-    {
-        modelScale = new Vector3f(scale * 0.1f, scale * 0.1f, scale * 0.1f);
-    }
-
-    public Vector3f getPosition()
-    {
-        return position;
-    }
-
+    
     public Vector3f getColor()
     {
         return color;
-    }
-
-    public void setPosition(Vector3f new_position)
-    {
-        position = new_position;
     }
 
     public float getR()

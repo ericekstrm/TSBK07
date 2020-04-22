@@ -41,7 +41,7 @@ public class ModelHandler
         models.get("crate").setPosition(-10, 0, -30);
         models.get("crate").normalizeHeight();
 
-        models.put("fir", new TextureModel(Loader.loadObj("fir")));
+        /*models.put("fir", new TextureModel(Loader.loadObj("fir")));
         models.get("fir").setPosition(-10, 0, -40);
         models.get("fir").normalizeHeight();
 
@@ -156,6 +156,14 @@ public class ModelHandler
         models.put("street_plant", new TextureModel(Loader.loadObj("street_plant")));
         models.get("street_plant").setPosition(-40, 0, -20);
         models.get("street_plant").normalizeHeight();
+        
+        models.put("bamboo", new TextureModel(Loader.loadObj("bamboo")));
+        models.get("bamboo").setPosition(-40, 0, -30);
+        models.get("bamboo").normalizeHeight();
+        
+        models.put("grass2", new TextureModel(Loader.loadObj("grass2")));
+        models.get("grass2").setPosition(-40, 0, -40);
+        models.get("grass2").normalizeHeight();*/
         
         //models.put("sponza", new TextureModel(Loader.loadObj("sponza")));
         //models.get("sponza").setPosition(-100, 1, -10);

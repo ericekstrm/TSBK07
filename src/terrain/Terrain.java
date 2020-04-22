@@ -64,7 +64,7 @@ public class Terrain extends TextureModel
             GL20.glEnableVertexAttribArray(Shader.TEX_ATTRIB);
             GL20.glEnableVertexAttribArray(Shader.NORMAL_ATTRIB);
 
-            shader.loadModelToWorldMatrix(getModelToViewMatrix());
+            shader.loadModelToWorldMatrix(getModelToWorldMatrix());
             shader.loadMaterialLightingProperties(matProperties.get(i));
             //textures
             /*for (int j = 0; j < textureIDs.get(i).size(); j++)

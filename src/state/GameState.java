@@ -72,8 +72,8 @@ public class GameState extends State
         lights = new LightHandler(projectionMatrix);
 
         lights.addPosLight(new Vector3f(-100, 4, -10), new Vector3f(0.0f, 1.0f, 0.0f));
-        lights.addDirLight(new Vector3f(0.0f, 1.0f, 0.0f), new Vector3f(1f, 1f, 1f));
-        lights.addPosLight(new Vector3f(0.0f, 1.0f, 0.0f), new Vector3f(0.5f, 0.5f, 0.5f));
+        //lights.addDirLight(new Vector3f(0.0f, 1.0f, 0.0f), new Vector3f(1f, 1f, 1f));
+        lights.addPosLight(new Vector3f(0.0f, 5.0f, 0.0f), new Vector3f(1f, 1f, 1f));
 
         //light for lamp post
         lights.addPosLight(new Vector3f(60.0f, 7.0f, 60.0f), new Vector3f(1.0f, 0.3f, 0.3f));

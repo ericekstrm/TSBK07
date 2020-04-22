@@ -4,8 +4,8 @@ import util.Vector3f;
 
 public class DirectionalLight {
     
-    Vector3f direction;
-    Vector3f color;
+    private Vector3f direction;
+    private Vector3f color;
 
     public DirectionalLight(Vector3f direction, Vector3f color)
     {

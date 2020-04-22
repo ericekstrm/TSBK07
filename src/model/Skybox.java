@@ -143,7 +143,7 @@ public class Skybox extends TextureModel
         mat.toBuffer(worldToView);
         glUniformMatrix4fv(glGetUniformLocation(skyboxShader.getProgramID(), "worldToView"), false, worldToView);
 
-        skyboxShader.loadModelToWorldMatrix(getModelToViewMatrix());
+        skyboxShader.loadModelToWorldMatrix(getModelToWorldMatrix());
 
         glActiveTexture(GL_TEXTURE0);
         GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, texID);

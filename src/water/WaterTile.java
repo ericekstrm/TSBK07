@@ -26,7 +26,7 @@ public class WaterTile extends ColorModel
             GL20.glEnableVertexAttribArray(Shader.TEX_ATTRIB);
             GL20.glEnableVertexAttribArray(Shader.NORMAL_ATTRIB);
 
-            shader.loadModelToWorldMatrix(getModelToViewMatrix());
+            shader.loadModelToWorldMatrix(getModelToWorldMatrix());
 
             GL13.glActiveTexture(GL13.GL_TEXTURE0);
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, waterFrameBuffer.getReflectionTexture());

@@ -13,7 +13,6 @@ uniform vec3 pointLightPosArr[4];
 uniform vec3 pointLightColorArr[4];
 uniform float r[4];
 uniform float intensity[4];
-
 uniform vec3 dirLightDirArr[4];
 uniform vec3 dirLightColorArr[4];
 

@@ -15,9 +15,13 @@ public class LightShader extends Shader
     private int location_worldToView;
     private int location_projection;
     
-    public LightShader(Matrix4f projection)
+    public LightShader(Matrix4f projectionMatrix)
     {
         super(VERTEX_FILE, FRAGMENT_FILE);
+        
+        start();
+        loadProjectionMatrix(projectionMatrix);
+        stop();
         
         getAllUniformLocations();
     }

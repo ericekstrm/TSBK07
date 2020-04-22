@@ -64,7 +64,7 @@ public class Movable
         return new Vector3f(scaleX, scaleY, scaleZ);
     }
 
-    public Matrix4f getModelToViewMatrix()
+    public Matrix4f getModelToWorldMatrix()
     {
         //Matrix4f rotate = Matrix4f.rotate(rotX, rotY, rotZ);
         Matrix4f scale = Matrix4f.scale(scaleX, scaleY, scaleZ);

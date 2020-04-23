@@ -19,7 +19,7 @@ public class LightHandler
     public LightHandler(Matrix4f projectionMatrix)
     {
         lightShader = new LightShader(projectionMatrix);
-        sun = new Sun(new Vector3f(20,20,20), projectionMatrix);
+        sun = new Sun(new Vector3f(3, 3, 3), projectionMatrix);
     }
 
     public void addPosLight(Vector3f pos, Vector3f color)
@@ -66,5 +66,11 @@ public class LightHandler
         List<DirectionalLight> lights = new ArrayList(dirLights);
         lights.add(sun.getDirLight());
         return lights;
+    }
+
+    public void update(float deltaTime)
+    {
+        //rotates the sun around the z-axis one lap every 6 minutes
+        sun.update(deltaTime);
     }
 }

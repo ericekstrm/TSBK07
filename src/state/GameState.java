@@ -93,6 +93,7 @@ public class GameState extends State
         deltaTime /= 1000;
 
         water.update(deltaTime);
+        lights.update(deltaTime);
 
         if (counter % 20 == 0)
         {

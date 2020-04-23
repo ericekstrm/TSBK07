@@ -16,7 +16,7 @@ import util.Vector3f;
 public class Skybox extends TextureModel
 {
 
-    public static final int SIZE = 2;
+    public static final int SIZE = 5;
 
     SkyBoxShader skyboxShader;
     int texID;
@@ -44,7 +44,7 @@ public class Skybox extends TextureModel
 
 
         //texture binding
-        texID = Texture.loadCubeMap(textureFiles3);
+        texID = Texture.loadCubeMap(grimmnight);
 
         GL30.glBindVertexArray(0);
     }
@@ -118,17 +118,7 @@ public class Skybox extends TextureModel
         SIZE, -SIZE, SIZE
     };
 
-    public static final String[] textureFiles =
-    {
-        "objects/skybox/violentdays_rt.tga",
-        "objects/skybox/violentdays_lf.tga",
-        "objects/skybox/violentdays_up.tga",
-        "objects/skybox/violentdays_dn.tga",
-        "objects/skybox/violentdays_bk.tga",
-        "objects/skybox/violentdays_ft.tga"
-    };
-
-    public static final String[] textureFiles2 =
+    public static final String[] grimmnight =
     {
         "objects/skybox/grimmnight_rt.tga",
         "objects/skybox/grimmnight_lf.tga",
@@ -137,14 +127,44 @@ public class Skybox extends TextureModel
         "objects/skybox/grimmnight_bk.tga",
         "objects/skybox/grimmnight_ft.tga"
     };
-
-    public static final String[] textureFiles3 =
+    
+    public static final String[] interstellar =
     {
-        "objects/skybox/thinmatrix/right.png",
-        "objects/skybox/thinmatrix/left.png",
-        "objects/skybox/thinmatrix/top.png",
-        "objects/skybox/thinmatrix/bottom.png",
-        "objects/skybox/thinmatrix/back.png",
-        "objects/skybox/thinmatrix/front.png"
+        "objects/skybox/interstellar_rt.tga",
+        "objects/skybox/interstellar_lf.tga",
+        "objects/skybox/interstellar_up.tga",
+        "objects/skybox/interstellar_dn.tga",
+        "objects/skybox/interstellar_bk.tga",
+        "objects/skybox/interstellar_ft.tga"
+    };
+    
+    public static final String[] miramar =
+    {
+        "objects/skybox/miramar_rt.tga",
+        "objects/skybox/miramar_lf.tga",
+        "objects/skybox/miramar_up.tga",
+        "objects/skybox/miramar_dn.tga",
+        "objects/skybox/miramar_bk.tga",
+        "objects/skybox/miramar_ft.tga"
+    };
+    
+    public static final String[] stormydays =
+    {
+        "objects/skybox/stormydays_rt.tga",
+        "objects/skybox/stormydays_lf.tga",
+        "objects/skybox/stormydays_up.tga",
+        "objects/skybox/stormydays_dn.tga",
+        "objects/skybox/stormydays_bk.tga",
+        "objects/skybox/stormydays_ft.tga"
+    };
+    
+    public static final String[] violentdays =
+    {
+        "objects/skybox/violentdays_rt.tga",
+        "objects/skybox/violentdays_lf.tga",
+        "objects/skybox/violentdays_up.tga",
+        "objects/skybox/violentdays_dn.tga",
+        "objects/skybox/violentdays_bk.tga",
+        "objects/skybox/violentdays_ft.tga"
     };
 }

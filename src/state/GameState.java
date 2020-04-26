@@ -3,9 +3,9 @@ package state;
 import camera.Camera;
 import camera.FreeCamera;
 import camera.RayCaster;
+import framebuffer.DepthFrameBuffer;
 import gui.GUI;
 import light.LightHandler;
-import light.Sun;
 import main.Player;
 import main.SceneSaver;
 import model.ModelHandler;
@@ -36,7 +36,11 @@ public class GameState extends State
     ModelHandler models;
     TerrainHandler terrain;
     Skybox skybox;
+    
     LightHandler lights;
+    DepthFrameBuffer shadowMap;
+    Matrix4f shadowProjectionMatrix = Matrix4f.shadowProjectionMatrix(30, nearPlane, farPlane);
+    Matrix4f lightSpaceMatrix;
 
     WaterHandler water;
     WaterFrameBuffer waterFrameBuffer;
@@ -71,6 +75,8 @@ public class GameState extends State
 
         //lights
         lights = new LightHandler(projectionMatrix);
+        shadowMap = new DepthFrameBuffer();
+        lightSpaceMatrix = shadowProjectionMatrix.multiply(lights.getSun().getSunCamera().getWorldtoViewMatrix());
 
         lights.addPosLight(new Vector3f(-100, 4, -10), new Vector3f(0.0f, 1.0f, 0.0f));
         //lights.addDirLight(new Vector3f(1.0f, -1.0f, 1.0f), new Vector3f(1f, 1f, 1f));
@@ -81,6 +87,7 @@ public class GameState extends State
 
         gui = new GUI();
         gui.addText("" + currentFPS, "fps", -1, -0.95f);
+        gui.addImageNormalized(shadowMap.getDepthMap(), 0.5f, -0.5f, 0.5f, -0.5f);
     }
 
     int counter = 0;
@@ -99,9 +106,8 @@ public class GameState extends State
         {
             gui.setTextString("fps", "" + currentFPS);
         }
-
-        //rotating sun around origin
-        //lights.rotateDirLight(0, Matrix4f.rotate(0.005f, new Vector3f(0, 0, 1)));
+        
+        
     }
 
     @Override
@@ -109,7 +115,7 @@ public class GameState extends State
     {
         GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
 
-        if (renderWater)
+        /*if (renderWater)
         {
             waterFrameBuffer.bindRefractionFrameBuffer();
             renderScene(new Vector4f(0, -1, 0, water.getHeight() + 1f), currentCamera);
@@ -125,20 +131,23 @@ public class GameState extends State
             currentCamera.direction.y *= -1;
             waterFrameBuffer.unbindCurrentFrameBuffer();
             GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
-        }
-
-        renderScene(new Vector4f(0, 0, 0, 0), currentCamera);
-
-        water.render(currentCamera, lights, waterFrameBuffer);
+        }*/
+        
+        shadowMap.bindFrameBuffer();
+        renderScene(new Vector4f(0, 0, 0, 0), lights.getSun().getSunCamera(), shadowProjectionMatrix);
+        shadowMap.unbindFrameBuffer();
+        
+        renderScene(new Vector4f(0, 0, 0, 0), currentCamera, projectionMatrix);
+        
+        //water.render(currentCamera, lights, waterFrameBuffer);
 
         gui.render();
 
         glfwSwapBuffers(window);
-
     }
     
     Vector3f fogColor = new Vector3f(0.5f,0.6f,0.7f);
-
+    
     /**
      * Renders all objects in the scene. Skybox, lights, terrain, models and
      * player are rendered.
@@ -147,16 +156,16 @@ public class GameState extends State
      * from rendering.
      * @param camera - The camera to use where rendering the scene.
      */
-    private void renderScene(Vector4f clippingPlane, Camera camera)
+    private void renderScene(Vector4f clippingPlane, Camera camera, Matrix4f projectionMatrix)
     {
         //prepare
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
         skybox.render(camera, fogColor);
         lights.render(camera);
-        terrain.render(camera, lights, clippingPlane);
-        models.render(camera, lights, clippingPlane);
-        player.render(camera, lights, clippingPlane);
+        terrain.render(camera, lights, clippingPlane, projectionMatrix, lightSpaceMatrix, shadowMap.getDepthMap());
+        models.render(camera, lights, clippingPlane, projectionMatrix);
+        player.render(camera, lights, clippingPlane, projectionMatrix);
     }
 
     @Override

@@ -40,6 +40,8 @@ public abstract class ModelShader extends Shader
     protected int location_clippingPlane;
 
     protected int location_viewPos;
+    
+    private int location_hasTexture;
 
     public ModelShader(Matrix4f projectionMatrix)
     {
@@ -87,6 +89,8 @@ public abstract class ModelShader extends Shader
             location_r[i] = getUniformLocation("r[" + i + "]");
             location_intensity[i] = getUniformLocation("intensity[" + i + "]");
         }
+        
+        location_hasTexture = getUniformLocation("hasTexture");
     }
 
     @Override
@@ -119,6 +123,11 @@ public abstract class ModelShader extends Shader
         loadVector(location_Kd, mat.Kd);
         loadVector(location_Ks, mat.Ks);
         loadFloat(location_specularExponent, mat.Ns);
+    }
+    
+    public void loadHasTexture(boolean b)
+    {
+        loadBoolean(location_hasTexture, b);
     }
     
     public void loadLights(List<PositionalLight> pointLights, List<DirectionalLight> dirLights)

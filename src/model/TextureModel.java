@@ -66,6 +66,7 @@ public class TextureModel extends Model
 
             shader.loadModelToWorldMatrix(getModelToWorldMatrix());
             shader.loadMaterialLightingProperties(matProperties.get(i));
+            shader.loadHasTexture(true);
             //textures
             if (textureIDs.get(i) != null)
             {

@@ -1,7 +1,7 @@
 package camera;
 
 import java.nio.DoubleBuffer;
-import main.main_old;
+import main.main;
 import model.Model;
 import model.ModelHandler;
 import org.lwjgl.BufferUtils;
@@ -16,16 +16,19 @@ public class RayCaster
 
     private Vector3f ray;
     private Matrix4f projectionMatrixInverse;
-    
-    private Camera camera;
 
     public RayCaster(Camera camera, Matrix4f projectionMatrix)
     {
-        this.camera = camera;
         projectionMatrixInverse = projectionMatrix.inverse();
         }
 
-    public void update(long window)
+    /**
+     * Uses the window and the camera to calculate a new ray.
+     * 
+     * @param window
+     * @param camera 
+     */
+    public void update(long window, Camera camera)
     {
         DoubleBuffer xBuffer = BufferUtils.createDoubleBuffer(1);
         DoubleBuffer yBuffer = BufferUtils.createDoubleBuffer(1);
@@ -34,17 +37,23 @@ public class RayCaster
         float ypos = (float) yBuffer.get(0);
 
         //noramlize coordinates
-        float x = (2.0f * (float) xpos) / main_old.WIDTH - 1.0f;
-        float y = 1.0f - (2.0f * (float) ypos) / main_old.HEIGHT;
+        float x = (2.0f * (float) xpos) / main.WIDTH - 1.0f;
+        float y = 1.0f - (2.0f * (float) ypos) / main.HEIGHT;
         Vector4f ray_clip = new Vector4f(x, y, 1, 1);
-        ray_clip = ray_clip.normalize();
+        //ray_clip = ray_clip.normalize();
 
         Vector4f ray_eye = projectionMatrixInverse.multiply(ray_clip);
         Vector4f ray_world = camera.getWorldtoViewMatrix().inverse().multiply(ray_eye);
         ray = new Vector3f(ray_world.x, ray_world.y, ray_world.z).normalize();
     }
 
-    public void useRay(ModelHandler models, TerrainHandler terrain)
+    /**
+     * 
+     * @param models
+     * @param terrain 
+     * @param camera 
+     */
+    public void useRay(ModelHandler models, TerrainHandler terrain, Camera camera)
     {
         double minDis = 0;
         double maxDis = 600;
@@ -67,10 +76,5 @@ public class RayCaster
         Model m = models.get("pine");
         m.setPosition(terrainPos);
         models.set("pine", m);
-    }
-
-    public void setCamera(Camera camera)
-    {
-        this.camera = camera;
     }
 }

@@ -52,6 +52,7 @@ public class ColorModel extends Model
 
             shader.loadModelToWorldMatrix(getModelToWorldMatrix());
             shader.loadMaterialLightingProperties(matProperties.get(i));
+            shader.loadHasTexture(false);
 
             //draw!
             GL11.glDrawElements(GL11.GL_TRIANGLES, nrOfIndices.get(i), GL11.GL_UNSIGNED_INT, 0);

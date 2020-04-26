@@ -18,7 +18,7 @@ public class main
 {
 
     public static final int WIDTH = 1000;
-    private static final int HEIGHT = 1000;
+    public static final int HEIGHT = 1000;
     private static long window;
 
     private static long prevTime = System.currentTimeMillis();

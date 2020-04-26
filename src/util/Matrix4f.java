@@ -1,6 +1,7 @@
 package util;
 
 import java.nio.FloatBuffer;
+import main.main;
 
 /**
  * This class represents a 4x4-Matrix. GLSL equivalent to mat4.
@@ -331,6 +332,23 @@ public class Matrix4f
         buffer.put(m02).put(m12).put(m22).put(m32);
         buffer.put(m03).put(m13).put(m23).put(m33);
         buffer.flip();
+    }
+    
+    public static Matrix4f shadowProjectionMatrix(float fov, float near, float far)
+    {
+        Matrix4f p = new Matrix4f();
+        float aspectRatio = main.WIDTH / main.HEIGHT;
+        float yScale = (float) (1 / Math.tan(Math.toRadians(fov / 2)));
+        float xScale = yScale / aspectRatio;
+        float frustumLength = far - near;
+        
+        p.m00 = xScale;
+        p.m11 = yScale;
+        p.m22 = -((far + near) / frustumLength);
+        p.m23 = -1;
+        p.m32 = -((2 * near * far) / frustumLength);
+        p.m33 = 0;
+        return p;
     }
 
     /**

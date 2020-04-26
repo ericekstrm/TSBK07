@@ -20,6 +20,7 @@ public class TextureModelShader extends ModelShader
 
         start();
         loadProjectionMatrix(projectionMatrix);
+        loadHasTexture(true);
         connectTextureUnits();
         stop();
     }
@@ -39,6 +40,7 @@ public class TextureModelShader extends ModelShader
         super.getAllUniformLocations();
         location_texUnit = getUniformLocation("texUnit");
         location_normalMap = getUniformLocation("normalMap");
+        
     }
 
     @Override

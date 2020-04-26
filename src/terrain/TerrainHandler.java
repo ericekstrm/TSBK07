@@ -4,7 +4,8 @@ import camera.Camera;
 import java.util.HashMap;
 import java.util.Map;
 import light.LightHandler;
-import camera.FreeCamera;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
 import shader.TerrainShader;
 import util.Matrix4f;
 import util.Vector2f;
@@ -37,7 +38,7 @@ public class TerrainHandler
         }
         addTerrain(0, 0, "pond.png", "grass.jpg", "dirt.jpg", "cobblestone.jpg", "pond_blendmap.png");
         //addTerrain(-1, -1, "height_map_lake.png", "grass.jpg", "dirt.jpg", "cobblestone_new.jpg", "blendmap_forrest2.jpg");
-        //addTerrainFFT(-1, -1, "grass.jpg", "dirt.jpg", "cobblestone_new.jpg", "blendmap_forrest2.jpg");
+        addTerrainFFT(-1, -1, "grass.jpg", "dirt.jpg", "cobblestone_new.jpg", "blendmap_forrest2.jpg");
     }
 
     public void addTerrain(int i, int j, String heightmap, String rTextures, String gTexture, String bTexture, String blendmap)
@@ -61,12 +62,18 @@ public class TerrainHandler
         }
     }
 
-    public void render(Camera camera, LightHandler lights, Vector4f clippingPlane)
+    public void render(Camera camera, LightHandler lights, Vector4f clippingPlane, Matrix4f projectionMatrix, Matrix4f lightSpaceMatrix, int shadowMap)
     {
         terrainShader.start();
-        terrainShader.loadLights(lights.getPointLights(), lights.getDirLights());
+        terrainShader.loadProjectionMatrix(projectionMatrix);
         terrainShader.loadWorldToViewMatrix(camera);
+        terrainShader.loadLights(lights.getPointLights(), lights.getDirLights());
         terrainShader.loadClippingPlane(clippingPlane);
+
+        //shadows
+        terrainShader.loadLightSpaceMatrix(lightSpaceMatrix);
+        GL13.glActiveTexture(GL13.GL_TEXTURE10);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, shadowMap);
 
         for (Map.Entry<Vector2f, Terrain> t : terrainTiles.entrySet())
         {

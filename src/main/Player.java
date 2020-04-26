@@ -8,7 +8,7 @@ import model.ColorModel;
 import model.ModelHandler;
 import org.lwjgl.BufferUtils;
 import static org.lwjgl.glfw.GLFW.*;
-import shader.ColorModelShader;
+import shader.TextureModelShader;
 import terrain.TerrainHandler;
 import util.Matrix4f;
 import util.Vector2f;
@@ -27,7 +27,7 @@ public class Player
     float playerSpeed = 1;
 
     ColorModel model;
-    ColorModelShader shader;
+    TextureModelShader shader;
 
     public Player(Vector3f pos, ModelHandler models, Matrix4f projectionMatrix)
     {
@@ -39,7 +39,7 @@ public class Player
         model = new ColorModel(Loader.loadObj("character.obj"));
         model.setPosition(position);
 
-        shader = new ColorModelShader(projectionMatrix);
+        shader = new TextureModelShader(projectionMatrix);
     }
 
     public void checkInput(long window, TerrainHandler terrain)
@@ -124,13 +124,14 @@ public class Player
 
     }
 
-    public void render(Camera camera, LightHandler lights, Vector4f clippingPlane)
+    public void render(Camera camera, LightHandler lights, Vector4f clippingPlane, Matrix4f projectionMatrix)
     {
         shader.start();
         shader.loadLights(lights.getPointLights(), lights.getDirLights());
         shader.loadWorldToViewMatrix(camera);
         shader.loadClippingPlane(clippingPlane);
-
+        shader.loadProjectionMatrix(projectionMatrix);
+        
         model.render(shader);
 
         shader.stop();

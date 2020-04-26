@@ -160,11 +160,12 @@ public class TerrainGeneration
         {
             for (int j = 0; j < height; j++)
             {
-                frequencies[i][j] = 100 * Util.rand(0, 5) / ((float) Math.sqrt(i * i + j * j) + 1);
+                frequencies[i][j] = 1; //00 * Util.rand(0, 5) / ((float) Math.sqrt(i * i + j * j) + 1);
             }
         }
-        float[][] ampitude = Util.fft2D(frequencies);
-        return ampitude;
+        //float[][] ampitude = Util.fft2D(frequencies);
+        //return ampitude;
+        return frequencies;
     }
 
     private static Vector3f getPerlinNormal(int x, int z, float[][] heightMap)

@@ -7,6 +7,7 @@ in vec4 viewSpace;
 
 uniform sampler2D texUnit;
 uniform sampler2D normalMap;
+uniform bool hasTexture;
 
 //light properties
 uniform vec3 pointLightPosArr[4];
@@ -34,29 +35,39 @@ void main()
 {
     vec3 normal = normalize(inNormal);
     vec3 viewDir = normalize(viewPos - fragPos);
-    vec3 matDiffuse = texture(texUnit, texCoord).xyz;
+
+
+    vec3 matAmbient = Ka;
+    vec3 matDiffuse = vec3(1,1,1);
     vec3 matSpecular = Ks;
 
+    if (hasTexture)
+    {
+        matAmbient = 0.2 * texture(texUnit, texCoord).xyz;
+        matDiffuse = texture(texUnit, texCoord).xyz;
+    }
 
     vec3 output = vec3(0, 0, 0);
 
     //ambient light
-    output += vec3(0.2,0.2,0.2) * matDiffuse;
+    output += matAmbient;
+
 
     //=====================================================
     //Directional lights
     for(int i = 0; i < dirLightDirArr.length(); i++)
     {
-        vec3 lightDir = dirLightDirArr[i];
+        vec3 lightDir = -dirLightDirArr[i];
 
         output += calcLight(matDiffuse, matSpecular, normal, lightDir, dirLightColorArr[i], viewDir);
+        
     }
 
     //=====================================================
     //Positional Lights
     for (int i = 0; i < pointLightPosArr.length(); i++)
     {
-        vec3 lightDir = normalize(fragPos - pointLightPosArr[i]);
+        vec3 lightDir = normalize(pointLightPosArr[i] - fragPos);
 
         float Kc = 1;
 	float Kl = 2 / r[i];
@@ -79,13 +90,13 @@ void main()
 vec3 calcLight(vec3 matDiffuse, vec3 matSpecular, vec3 normal, vec3 lightDir, vec3 lightColor, vec3 viewDir)
 {
     //diffuse lighting
-    float diff = max(0.0, dot(normal, -lightDir));
+    float diff = max(0.0, dot(normal, lightDir));
     
     //specular lighting
-    vec3 reflectDir = reflect(lightDir, normal);
+    vec3 reflectDir = reflect(-lightDir, normal);
     float spec = pow(max(0.0, dot(viewDir, reflectDir)), specularExponent);
 
-    vec3 diffuse = lightColor * diff * matDiffuse;
+    vec3 diffuse = lightColor * diff * matDiffuse * Kd;
     vec3 specular = lightColor * spec * matSpecular;
     return (diffuse + specular);
 }

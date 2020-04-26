@@ -185,5 +185,10 @@ public class Vector4f {
         buffer.put(x).put(y).put(z).put(w);
         buffer.flip();
     }
-
+    
+    @Override
+    public String toString()
+    {
+        return x + " " + y + " " + z + " " + w; 
+    }
 }

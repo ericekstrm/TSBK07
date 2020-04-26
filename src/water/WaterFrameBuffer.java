@@ -1,8 +1,7 @@
 package water;
 
 import java.nio.ByteBuffer;
-import main.main_old;
-
+import main.main;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL30;
@@ -59,7 +58,7 @@ public class WaterFrameBuffer
     {
          //call to switch to default frame buffer
         GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
-        GL11.glViewport(0, 0, main_old.WIDTH, main_old.HEIGHT);
+        GL11.glViewport(0, 0, main.WIDTH, main.HEIGHT);
     }
 
     public int getReflectionTexture()

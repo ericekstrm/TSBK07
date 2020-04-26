@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 import light.LightHandler;
 import loader.Loader;
-import shader.ColorModelShader;
 import shader.TextureModelShader;
 import terrain.TerrainHandler;
 import util.Matrix4f;
@@ -16,13 +15,11 @@ public class ModelHandler
 
     Map<String, Model> models = new HashMap<>();
 
-    TextureModelShader textureModelShader;
-    ColorModelShader colorModelShader;
+    TextureModelShader shader;
 
     public ModelHandler(Matrix4f projectionMatrix)
     {
-        textureModelShader = new TextureModelShader(projectionMatrix);
-        colorModelShader = new ColorModelShader(projectionMatrix);
+        shader = new TextureModelShader(projectionMatrix);
     }
 
     public void init(TerrainHandler terrain)
@@ -34,20 +31,19 @@ public class ModelHandler
 
         models.put("boulder", new TextureModel(Loader.loadObj("boulder")));
         models.get("boulder").setPosition(-10, 0, -20);
-        System.out.println(models.get("boulder").maxHeight);
         models.get("boulder").normalizeHeight();
 
         models.put("crate", new TextureModel(Loader.loadObj("crate")));
         models.get("crate").setPosition(-80, -4, -30);
         models.get("crate").normalizeHeight();
 
-        /*models.put("fir", new TextureModel(Loader.loadObj("fir")));
-        models.get("fir").setPosition(-10, 0, -40);
-        models.get("fir").normalizeHeight();
-
         models.put("pine", new TextureModel(Loader.loadObj("pine")));
         models.get("pine").setPosition(-10, 0, -50);
         models.get("pine").normalizeHeight();
+        
+        /*models.put("fir", new TextureModel(Loader.loadObj("fir")));
+        models.get("fir").setPosition(-10, 0, -40);
+        models.get("fir").normalizeHeight();
 
         models.put("Carrot", new ColorModel(Loader.loadObj("Carrot.obj")));
         models.get("Carrot").setPosition(-10, 0, -60);
@@ -165,6 +161,10 @@ public class ModelHandler
         models.get("grass2").setPosition(-40, 0, -40);
         models.get("grass2").normalizeHeight();*/
         
+        models.put("gold_monkey", new ColorModel(Loader.loadObj("gold_monkey")));
+        models.get("gold_monkey").setPosition(0, 10, 20);
+        models.get("gold_monkey").normalizeHeight();
+
         //models.put("sponza", new TextureModel(Loader.loadObj("sponza")));
         //models.get("sponza").setPosition(-100, 1, -10);
         //models.get("sponza").setScale(0.02f, 0.02f, 0.02f);
@@ -200,39 +200,25 @@ public class ModelHandler
         }*/
     }
 
-    public void render(Camera camera, LightHandler lights, Vector4f clippingPlane)
+    public void render(Camera camera, LightHandler lights, Vector4f clippingPlane, Matrix4f projectionMatrix)
     {
         //render objects
-        textureModelShader.start();
-        textureModelShader.loadLights(lights.getPointLights(), lights.getDirLights());
-        textureModelShader.loadWorldToViewMatrix(camera);
-        textureModelShader.loadClippingPlane(clippingPlane);
-        textureModelShader.stop();
-
-        colorModelShader.start();
-        colorModelShader.loadLights(lights.getPointLights(), lights.getDirLights());
-        colorModelShader.loadWorldToViewMatrix(camera);
-        colorModelShader.loadClippingPlane(clippingPlane);
-        colorModelShader.stop();
+        shader.start();
+        shader.loadLights(lights.getPointLights(), lights.getDirLights());
+        shader.loadProjectionMatrix(projectionMatrix);
+        shader.loadWorldToViewMatrix(camera);
+        shader.loadClippingPlane(clippingPlane);
 
         //render
         for (Model m : models.values())
         {
             if (!frustumCulled(m, camera))
             {
-                if (m instanceof ColorModel)
-                {
-                    colorModelShader.start();
-                    m.render(colorModelShader);
-                    colorModelShader.stop();
-                } else if (m instanceof TextureModel)
-                {
-                    textureModelShader.start();
-                    m.render(textureModelShader);
-                    textureModelShader.stop();
-                }
+                
+                m.render(shader);
             }
         }
+        shader.stop();
     }
 
     public Model get(String name)

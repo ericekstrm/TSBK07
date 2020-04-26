@@ -1,6 +1,7 @@
-package main;
+package framebuffer;
 
 import java.nio.ByteBuffer;
+import main.main;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GL32;
@@ -13,11 +14,12 @@ public class FrameBuffer
 
     private int frameBuffer;
     private int texture;
+    private int depthMap;
 
     public FrameBuffer()
     {
         createFrameBuffer();
-        texture = createTextureAttachment(WIDTH, HEIGHT);
+        createTextureAttachment(WIDTH, HEIGHT);
         unbindFrameBuffer();
     }
 
@@ -30,19 +32,19 @@ public class FrameBuffer
 
     private void createFrameBuffer()
     {
-        frameBuffer = GL30.glGenFramebuffers();
         //generate name for frame buffer
+        frameBuffer = GL30.glGenFramebuffers();
 
-        GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, frameBuffer);
         //create the framebuffer
+        GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, frameBuffer);
 
-        GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT0);
         //indicate that we will always render to color attachment 0
+        GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT0);
     }
 
-    private int createTextureAttachment(int width, int height)
+    private void createTextureAttachment(int width, int height)
     {
-        int texture = GL11.glGenTextures();
+        texture = GL11.glGenTextures();
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture);
         GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB, width, height,
                           0, GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, (ByteBuffer) null);
@@ -50,7 +52,6 @@ public class FrameBuffer
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
         GL32.glFramebufferTexture(GL30.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0,
                                   texture, 0);
-        return texture;
     }
 
     public int getTexture()
@@ -59,10 +60,15 @@ public class FrameBuffer
         return texture;
     }
 
+    public int getDepth()
+    {
+        return depthMap;
+    }
+
     public void unbindFrameBuffer()
     {
         //call to switch to default frame buffer
         GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
-        GL11.glViewport(0, 0, main_old.WIDTH, main_old.HEIGHT);
+        GL11.glViewport(0, 0, main.WIDTH, main.HEIGHT);
     }
 }

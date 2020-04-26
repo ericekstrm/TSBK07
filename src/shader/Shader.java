@@ -123,6 +123,11 @@ public abstract class Shader
         buffer.flip();
         glUniform3fv(location, buffer);
     }
+    
+    protected void loadBoolean(int location, boolean bool)
+    {
+        GL20.glUniform1i(location, bool ? 1 : 0);
+    }
 
     public static int loadShader(String file_name, int type)
     {

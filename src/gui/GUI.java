@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import loader.Texture;
-import main.main_old;
+import main.main;
 import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
 import static org.lwjgl.opengl.GL11.glDisable;
@@ -86,8 +86,8 @@ public class GUI
      */
     public void addImage(String texture, float x, float y, float width, float height)
     {
-        float screenWidth = main_old.WIDTH;
-        float screenHeight = main_old.HEIGHT;
+        float screenWidth = main.WIDTH;
+        float screenHeight = main.HEIGHT;
         addImageNormalized(texture, (x / screenWidth) * 2 - 1, (y / screenHeight) * 2 - 1, width / screenWidth * 2, height / screenHeight * 2);
     }
 

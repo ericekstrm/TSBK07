@@ -4,7 +4,6 @@ import camera.Camera;
 import loader.Loader;
 import loader.RawData;
 import loader.Texture;
-import model.ColorModel;
 import model.ModelLoader;
 import model.TextureModel;
 import org.lwjgl.opengl.GL11;
@@ -22,10 +21,7 @@ import util.Vector3f;
 public class Sun extends TextureModel
 {
 
-    private static final float[] VERTICES =
-    {
-        -0.5f, 0.5f, -0.5f, -0.5f, 0.5f, 0.5f, 0.5f, -0.5f
-    };
+    private float sunHeight = 200;
 
     int texID;
 
@@ -34,9 +30,10 @@ public class Sun extends TextureModel
     Vector3f rotationAxis;
     Vector3f color = new Vector3f(1, 0.8f, 0.8f);
 
-    public Sun(Vector3f position, Matrix4f projectionMatrix)
+    public Sun(Matrix4f projectionMatrix)
     {
-        RawData d = Loader.loadQuad(-0.5f, -0.5f, 1, 1);
+        this.position = new Vector3f(0, sunHeight, sunHeight);
+        RawData d = Loader.loadQuad(-sunHeight/10, -sunHeight/10, sunHeight/5, sunHeight/5);
         //add new vao to list
         int vaoID = GL30.glGenVertexArrays();
         GL30.glBindVertexArray(vaoID);
@@ -96,17 +93,17 @@ public class Sun extends TextureModel
     public void update(float deltaTime)
     {
         //rotation around world
-        setPosition(Matrix4f.rotate(deltaTime * 10, rotationAxis).multiply(position));
+        //setPosition(Matrix4f.rotate(deltaTime, rotationAxis).multiply(position));
 
         //update light color based on time of day (height of sun)
-        float sunFactor = position.y / 5;
-        System.out.println(sunFactor);
+        float sunFactor = position.y / sunHeight;
         if (sunFactor < 0)
         {
             color = new Vector3f();
         } else
         {
-            color = new Vector3f(1, sunFactor, sunFactor);
+            float c = 1 - (1 / (float) Math.exp(10 * sunFactor));
+            color = new Vector3f(c, c * 0.8f, c * 0.8f);
         }
     }
 
@@ -132,5 +129,16 @@ public class Sun extends TextureModel
         Matrix4f scale = Matrix4f.scale(scaleX, scaleY, scaleZ);
 
         return translate.multiply(orientation.toMatrix4f()).multiply(scale);
+    }
+
+    /**
+     * Returns a Camera positioned at the sun. Used for shadow depth map
+     * calculations.
+     *
+     * @return
+     */
+    public Camera getSunCamera()
+    {
+        return new Camera(position, new Vector3f(-20, 0, 0));
     }
 }

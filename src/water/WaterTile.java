@@ -3,18 +3,18 @@ package water;
 import shader.WaterShader;
 import loader.Loader;
 import loader.Texture;
-import model.ColorModel;
+import model.Model;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import shader.Shader;
 
-public class WaterTile extends ColorModel
+public class WaterTile extends Model
 {
     public WaterTile()
     {
-        super(Loader.loadObj("water"));
+        super("water");
     }
 
     public void render(WaterShader shader, WaterFrameBuffer waterFrameBuffer, Texture dudvMap, Texture normalMap)

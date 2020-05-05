@@ -102,4 +102,9 @@ public class GUIText
             }
         }
     }
+    
+    public String getString()
+    {
+        return textString;
+    }
 }

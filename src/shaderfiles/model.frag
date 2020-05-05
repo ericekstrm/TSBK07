@@ -36,15 +36,23 @@ void main()
     vec3 normal = normalize(inNormal);
     vec3 viewDir = normalize(viewPos - fragPos);
 
-
     vec3 matAmbient = Ka;
     vec3 matDiffuse = vec3(1,1,1);
     vec3 matSpecular = Ks;
 
     if (hasTexture)
     {
+        if (texture(texUnit, texCoord).a < 0.5)
+            discard;
+
         matAmbient = 0.2 * texture(texUnit, texCoord).xyz;
         matDiffuse = texture(texUnit, texCoord).xyz;
+    }
+
+    //special case for models that have not specified a ambient color.
+    if (matAmbient == vec3(1,1,1))
+    {
+        matAmbient *= 0.1;
     }
 
     vec3 output = vec3(0, 0, 0);

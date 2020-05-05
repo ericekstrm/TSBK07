@@ -23,6 +23,13 @@ public class Vector3f
         this.y = 0f;
         this.z = 0f;
     }
+    
+    public Vector3f(Vector3f v)
+    {
+        this.x = v.x;
+        this.y = v.y;
+        this.z = v.z;
+    }
 
     /**
      * Creates a 3-tuple vector with specified values.

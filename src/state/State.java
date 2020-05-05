@@ -4,7 +4,7 @@ public abstract class State
 {
     int x;
     
-    private String changeState = "";
+    protected String changeState = "";
 
     /**
      * Initializes the state
@@ -26,12 +26,27 @@ public abstract class State
     public abstract void render(long window);
 
     /**
-     * Checks the input from keyboard and mouse.
+     * Checks  input from keyboard and mouse. Does not support callback events yet.
      * 
-     * Does not support callback events yet.
-     * 
+     * @param window 
      */
     public abstract void checkInput(long window);
+    
+    /**
+     * Is called when the state is activated.
+     * 
+     * @param window
+     * @param t
+     */
+    public abstract void activateState(long window, TransitionInformation t);
+    
+    /**
+     * Is called when the state is deactivated.
+     * 
+     * @param window
+     * @return 
+     */
+    public abstract TransitionInformation deactivateState(long window);
     
     /**
      * 

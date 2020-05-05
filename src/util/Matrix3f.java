@@ -35,6 +35,19 @@ public class Matrix3f
         this.m21 = m21;
         this.m22 = m22;
     }
+    
+    public Matrix3f(Matrix3f m)
+    {
+        this.m00 = m.m00;
+        this.m01 = m.m01;
+        this.m02 = m.m02;
+        this.m10 = m.m10;
+        this.m11 = m.m11;
+        this.m12 = m.m12;
+        this.m20 = m.m20;
+        this.m21 = m.m21;
+        this.m22 = m.m22;
+    }
 
     /**
      * Creates a 4x4 matrix with specified columns.

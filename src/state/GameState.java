@@ -2,12 +2,12 @@ package state;
 
 import camera.Camera;
 import camera.FreeCamera;
+import camera.Player;
 import camera.RayCaster;
 import framebuffer.DepthFrameBuffer;
 import gui.GUI;
 import light.LightHandler;
-import main.Player;
-import main.SceneSaver;
+import loader.SceneSaver;
 import model.ModelHandler;
 import model.Skybox;
 import static org.lwjgl.glfw.GLFW.*;
@@ -66,7 +66,7 @@ public class GameState extends State
         birdCamera = new FreeCamera(new Vector3f(-100, 100, -100), new Vector3f(30, 20, 30));
         player = new Player(new Vector3f(0, 0, 0), models, projectionMatrix);
         currentCamera = player.thirdPersonCamera;
-        rayCaster = new RayCaster(player.getCamera(), projectionMatrix);
+        rayCaster = new RayCaster(projectionMatrix);
 
         skybox = new Skybox(projectionMatrix);
 
@@ -146,8 +146,6 @@ public class GameState extends State
         glfwSwapBuffers(window);
     }
     
-    Vector3f fogColor = new Vector3f(0.5f,0.6f,0.7f);
-    
     /**
      * Renders all objects in the scene. Skybox, lights, terrain, models and
      * player are rendered.
@@ -161,6 +159,7 @@ public class GameState extends State
         //prepare
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
+        Vector3f fogColor = new Vector3f(0.5f,0.6f,0.7f);
         skybox.render(camera, fogColor);
         lights.render(camera);
         terrain.render(camera, lights, clippingPlane, projectionMatrix, lightSpaceMatrix, shadowMap.getDepthMap());
@@ -214,12 +213,20 @@ public class GameState extends State
         //save and exit
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         {
-            glfwSetWindowShouldClose(window, true);
-        } else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        {
-            SceneSaver.saveScene("test", models, terrain, lights, water);
-            glfwSetWindowShouldClose(window, true);
+            changeState = "menu";
         }
+    }
+    
+    @Override
+    public void activateState(long window, TransitionInformation t)
+    {
+    }
+
+    @Override
+    public TransitionInformation deactivateState(long window)
+    {
+        
+        return new TransitionInformation(name());
     }
 
     @Override

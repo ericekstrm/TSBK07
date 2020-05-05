@@ -5,7 +5,7 @@ import loader.Loader;
 import loader.RawData;
 import loader.Texture;
 import model.ModelLoader;
-import model.TextureModel;
+import model.Model;
 import org.lwjgl.opengl.GL11;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glBindTexture;
@@ -18,7 +18,7 @@ import shader.Shader;
 import util.Matrix4f;
 import util.Vector3f;
 
-public class Sun extends TextureModel
+public class Sun extends Model
 {
 
     private float sunHeight = 200;

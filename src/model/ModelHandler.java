@@ -1,21 +1,24 @@
 package model;
 
 import camera.Camera;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import light.LightHandler;
-import loader.Loader;
+import shader.ModelShader;
 import shader.TextureModelShader;
 import terrain.TerrainHandler;
 import util.Matrix4f;
+import util.Vector3f;
 import util.Vector4f;
 
 public class ModelHandler
 {
 
-    Map<String, Model> models = new HashMap<>();
+    List<Model> models = new ArrayList<>();
 
-    TextureModelShader shader;
+    ModelShader shader;
 
     public ModelHandler(Matrix4f projectionMatrix)
     {
@@ -25,147 +28,161 @@ public class ModelHandler
     public void init(TerrainHandler terrain)
     {
 
-        models.put("barrel", new TextureModel(Loader.loadObj("barrel")));
-        models.get("barrel").setPosition(-10, 0, -10);
-        models.get("barrel").normalizeHeight();
+        addNormalized(new Model("barrel"), -10, 0, -10);
+        addNormalized(new Model("boulder"), -10, 0, -20);
+        addNormalized(new Model("crate"), -80, -4, -30);
+        addNormalized(new Model("pine"), -10, 0, -50);
 
-        models.put("boulder", new TextureModel(Loader.loadObj("boulder")));
-        models.get("boulder").setPosition(-10, 0, -20);
-        models.get("boulder").normalizeHeight();
-
-        models.put("crate", new TextureModel(Loader.loadObj("crate")));
-        models.get("crate").setPosition(-80, -4, -30);
-        models.get("crate").normalizeHeight();
-
-        models.put("pine", new TextureModel(Loader.loadObj("pine")));
-        models.get("pine").setPosition(-10, 0, -50);
-        models.get("pine").normalizeHeight();
-        
-        /*models.put("fir", new TextureModel(Loader.loadObj("fir")));
+        /*models.put("fir", new Model("fir"));
         models.get("fir").setPosition(-10, 0, -40);
         models.get("fir").normalizeHeight();
 
-        models.put("Carrot", new ColorModel(Loader.loadObj("Carrot.obj")));
+        models.put("Carrot", new Model("Carrot"));
         models.get("Carrot").setPosition(-10, 0, -60);
         models.get("Carrot").normalizeHeight();
 
-        models.put("character", new ColorModel(Loader.loadObj("character.obj")));
+        models.put("character", new Model("character"));
         models.get("character").setPosition(-10, 0, -70);
         models.get("character").normalizeHeight();
 
-        models.put("forrest", new ColorModel(Loader.loadObj("forrest.obj")));
+        models.put("forrest", new Model("forrest"));
         models.get("forrest").setPosition(-10, 0, -80);
         models.get("forrest").normalizeHeight();
 
-        models.put("House", new ColorModel(Loader.loadObj("House.obj")));
+        models.put("House", new Model("Floating_House"));
         models.get("House").setPosition(-10, 0, -90);
         models.get("House").normalizeHeight();
 
-        models.put("Lamp", new ColorModel(Loader.loadObj("Lamp.obj")));
+        models.put("Lamp", new Model("Lamp"));
         models.get("Lamp").setPosition(-10, 0, -100);
         models.get("Lamp").normalizeHeight();
 
-        models.put("Low_Poly_Mill", new ColorModel(Loader.loadObj("Low_Poly_Mill.obj")));
+        models.put("Low_Poly_Mill", new Model("Low_Poly_Mill"));
         models.get("Low_Poly_Mill").setPosition(-20, 0, -10);
         models.get("Low_Poly_Mill").normalizeHeight();
 
-        models.put("Medieval_Inn", new ColorModel(Loader.loadObj("Medieval_Inn.obj")));
+        models.put("Medieval_Inn", new Model("Medieval_Inn"));
         models.get("Medieval_Inn").setPosition(-20, 0, -20);
         models.get("Medieval_Inn").normalizeHeight();
 
-        models.put("tree1", new ColorModel(Loader.loadObj("tree1.obj")));
+        models.put("tree1", new Model("tree1"));
         models.get("tree1").setPosition(-20, 0, -30);
         models.get("tree1").normalizeHeight();
 
-        models.put("tree2", new ColorModel(Loader.loadObj("tree2.obj")));
+        models.put("tree2", new Model("tree2"));
         models.get("tree2").setPosition(-20, 0, -40);
         models.get("tree2").normalizeHeight();
 
-        models.put("freelowpolytreespack", new ColorModel(Loader.loadObj("freelowpolytreespack.obj")));
+        models.put("freelowpolytreespack", new Model("freelowpolytreespack"));
         models.get("freelowpolytreespack").setPosition(-20, 0, -50);
         models.get("freelowpolytreespack").normalizeHeight();
 
-        models.put("treeX14", new TextureModel(Loader.loadObj("treeX14")));
+        models.put("treeX14", new Model("treeX14"));
         models.get("treeX14").setPosition(-20, 0, -60);
         models.get("treeX14").normalizeHeight();
 
-        models.put("log1", new TextureModel(Loader.loadObj("log1")));
+        models.put("log1", new Model("log1"));
         models.get("log1").setPosition(-20, 0, -70);
         models.get("log1").normalizeHeight();
 
-        models.put("log2", new TextureModel(Loader.loadObj("log2")));
+        models.put("log2", new Model("log2"));
         models.get("log2").setPosition(-20, 0, -80);
         models.get("log2").normalizeHeight();
 
-        models.put("stump", new TextureModel(Loader.loadObj("stump")));
+        models.put("stump", new Model("stump"));
         models.get("stump").setPosition(-20, 0, -90);
         models.get("stump").normalizeHeight();
 
-        models.put("well", new TextureModel(Loader.loadObj("well")));
+        models.put("well", new Model("well"));
         models.get("well").setPosition(-20, 0, -100);
         models.get("well").normalizeHeight();
 
-        models.put("brick_ruins", new TextureModel(Loader.loadObj("brick_ruins")));
+        models.put("brick_ruins", new Model("brick_ruins"));
         models.get("brick_ruins").setPosition(-30, 0, -10);
         models.get("brick_ruins").normalizeHeight();
 
-        models.put("house", new TextureModel(Loader.loadObj("house")));
+        models.put("house", new Model("house"));
         models.get("house").setPosition(-30, 0, -20);
         models.get("house").normalizeHeight();
 
-        models.put("house2", new TextureModel(Loader.loadObj("house2")));
+        models.put("house2", new Model("house2"));
         models.get("house2").setPosition(-30, 0, -30);
         models.get("house2").normalizeHeight();
 
-        models.put("grass", new TextureModel(Loader.loadObj("grass")));
+        models.put("grass", new Model("grass"));
         models.get("grass").setPosition(-30, 0, -40);
         models.get("grass").normalizeHeight();
         
-        models.put("chair", new TextureModel(Loader.loadObj("chair")));
+        models.put("chair", new Model("chair"));
         models.get("chair").setPosition(-30, 0, -50);
         models.get("chair").normalizeHeight();
         
-        models.put("sewer_bricks", new TextureModel(Loader.loadObj("sewer_bricks")));
+        models.put("sewer_bricks", new Model("sewer_bricks"));
         models.get("sewer_bricks").setPosition(-30, 0, -60);
         models.get("sewer_bricks").normalizeHeight();
         
-        models.put("wellcome_sign", new TextureModel(Loader.loadObj("wellcome_sign")));
+        models.put("wellcome_sign", new Model("wellcome_sign"));
         models.get("wellcome_sign").setPosition(-30, 0, -70);
         models.get("wellcome_sign").normalizeHeight();
 
-        models.put("barn", new TextureModel(Loader.loadObj("barn")));
+        models.put("barn", new Model("barn"));
         models.get("barn").setPosition(-30, 0, -80);
         models.get("barn").normalizeHeight();
         
-        models.put("alpine_cabin", new TextureModel(Loader.loadObj("alpine_cabin")));
+        models.put("alpine_cabin", new Model("alpine_cabin"));
         models.get("alpine_cabin").setPosition(-30, 0, -90);
         models.get("alpine_cabin").normalizeHeight();
-        
-        models.put("potted_plant", new TextureModel(Loader.loadObj("potted_plant")));
+       
+        models.put("potted_plant", new Model("potted_plant"));
         models.get("potted_plant").setPosition(-30, 0, -100);
         models.get("potted_plant").normalizeHeight();
         
-        models.put("bucket", new TextureModel(Loader.loadObj("bucket")));
+        models.put("bucket", new Model("bucket"));
         models.get("bucket").setPosition(-40, 0, -10);
         models.get("bucket").normalizeHeight();
-        
-        models.put("street_plant", new TextureModel(Loader.loadObj("street_plant")));
+        models.put("street_plant", new Model("street_plant"));
         models.get("street_plant").setPosition(-40, 0, -20);
         models.get("street_plant").normalizeHeight();
-        
-        models.put("bamboo", new TextureModel(Loader.loadObj("bamboo")));
-        models.get("bamboo").setPosition(-40, 0, -30);
-        models.get("bamboo").normalizeHeight();
-        
-        models.put("grass2", new TextureModel(Loader.loadObj("grass2")));
-        models.get("grass2").setPosition(-40, 0, -40);
-        models.get("grass2").normalizeHeight();*/
-        
-        models.put("gold_monkey", new ColorModel(Loader.loadObj("gold_monkey")));
-        models.get("gold_monkey").setPosition(0, 10, 20);
-        models.get("gold_monkey").normalizeHeight();
 
-        //models.put("sponza", new TextureModel(Loader.loadObj("sponza")));
+        models.put("bamboo", new Model("bamboo"));
+        models.get("bamboo").setPosition(-40, 0, -30);
+        models.get("bamboo").normalizeHeight();*/
+
+        addNormalized(new Model("gold_monkey"), 0, 10, 20);
+
+        /*addNormalized("street_light", new Model("street_light"), 50, 0, 50);
+        addNormalized("tree_forsell", new Model("tree_forsell"), 60, 0, 50);
+        addNormalized("fence", new Model("fence"), 70, 0, 50);
+        addNormalized("fantasy_house", new Model("fantasy_house"), 80, 0, 50);
+        addNormalized("door", new Model("door"), 90, 0, 50);
+        addNormalized("fence2", new Model("fence2"), 100, 0, 50);
+        add("tire", new Model("tire"), 110, 0, 50);
+        addNormalized("grass2", new Model("grass2"), 120, 0, 50);
+        addNormalized("rockpack", new Model("rockpack"), 50, 0, 20);
+        addNormalized("treepack", new Model("treepack"), 70, 0, 20);
+        addNormalized("forrestpack", new Model("forrestpack"), 90, 0, 20);
+        addNormalized("barrel1", new Model("barrel1"), 20, 0, 60);
+        addNormalized("barrel2", new Model("barrel2"), 25, 0, 60);
+        addNormalized("barrel3", new Model("barrel3"), 30, 0, 60);
+        addNormalized("bonfire", new Model("bonfire"), 40, 0, 60);
+        
+        addNormalized(new Model("Mushroom_01"), 50, 0, 60);
+        addNormalized(new Model("Mushroom_02"), 60, 0, 60);
+        addNormalized(new Model("Mushroom_03"), 70, 0, 60);
+        addNormalized(new Model("FlowerA_01"), 80, 0, 60);
+        addNormalized(new Model("FlowerA_02"), 90, 0, 60);
+        addNormalized(new Model("FlowerA_03"), 100, 0, 60);
+        addNormalized(new Model("FlowerB_01"), 80, 0, 70);
+        addNormalized(new Model("FlowerB_02"), 90, 0, 70);
+        addNormalized(new Model("FlowerB_03"), 100, 0, 70);
+        addNormalized(new Model("FlowerC_01"), 80, 0, 80);
+        addNormalized(new Model("FlowerC_02"), 90, 0, 80);
+        addNormalized(new Model("FlowerC_03"), 100, 0, 80);
+        addNormalized(new Model("Fern_01"), 100, 0, 90);
+        
+        addNormalized("treasure", new Model("treasure"), 100, 0, 20);/*
+
+        //models.put("sponza", new Model(Loader.loadObj("sponza")));
         //models.get("sponza").setPosition(-100, 1, -10);
         //models.get("sponza").setScale(0.02f, 0.02f, 0.02f);
 
@@ -210,30 +227,38 @@ public class ModelHandler
         shader.loadClippingPlane(clippingPlane);
 
         //render
-        for (Model m : models.values())
+        for (Model m : models)
         {
             if (!frustumCulled(m, camera))
             {
-                
+
                 m.render(shader);
             }
         }
         shader.stop();
     }
 
-    public Model get(String name)
+    public void add(Model model)
     {
-        return models.get(name);
+        models.add(model);
     }
 
-    public void set(String name, Model model)
+    public void add(Model model, int x, int y, int z)
     {
-        models.put(name, model);
+        model.setPosition(new Vector3f(x, y, z));
+        models.add(model);
+    }
+
+    public void addNormalized(Model model, int x, int y, int z)
+    {
+        model.setPosition(new Vector3f(x, y, z));
+        model.normalizeHeight();
+        models.add(model);
     }
 
     public void destroy()
     {
-        for (Model m : models.values())
+        for (Model m : models)
         {
             m.destroy();
         }
@@ -261,7 +286,7 @@ public class ModelHandler
         return false;*/
     }
 
-    public Map<String, Model> getModels()
+    public List<Model> getModels()
     {
         return models;
     }

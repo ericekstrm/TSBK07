@@ -13,6 +13,8 @@ import state.GameState;
 import state.MenuState;
 import state.State;
 import static org.lwjgl.system.MemoryUtil.NULL;
+import state.LevelEditorState;
+import state.TransitionInformation;
 
 public class main
 {
@@ -32,7 +34,10 @@ public class main
 
         states.add(new GameState());
         states.add(new MenuState());
-        currentState = states.get(0);
+        states.add(new LevelEditorState());
+        
+        currentState = states.get(1);
+        currentState.activateState(window, new TransitionInformation(""));
 
         for (State state : states)
         {
@@ -64,24 +69,26 @@ public class main
     {
         glfwPollEvents();
         
-        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        {
-            glfwSetWindowShouldClose(window, true);
-        }
-        
         currentState.checkInput(window);
     }
 
     private static void updateState()
     {
         String newState = currentState.updateState();
+        if(newState.equals("quit"))
+        {
+            glfwSetWindowShouldClose(window, true);
+        }
         if (!newState.equals(""))
         {
             for (int i = 0; i < states.size(); i++)
             {
                 if (states.get(i).name().equals(newState))
                 {
+                    System.out.println("Switching to state: " + states.get(i).name());
+                    TransitionInformation t = currentState.deactivateState(window);
                     currentState = states.get(i);
+                    currentState.activateState(window, t);
                     return;
                 }
             }

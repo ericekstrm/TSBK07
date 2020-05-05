@@ -5,7 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import loader.Texture;
-import model.TextureModel;
+import model.Model;
 import org.lwjgl.opengl.GL11;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glBindTexture;
@@ -16,7 +16,7 @@ import org.lwjgl.opengl.GL30;
 import shader.Shader;
 import shader.TerrainShader;
 
-public class Terrain extends TextureModel
+public class Terrain extends Model
 {
     public static final String TERRAIN_TEXTURE_PATH = "terrain/textures/";
     public static final String TERRAIN_BLENDMAP_PATH = "terrain/blendmaps/";

@@ -1,10 +1,9 @@
 package model;
 
 import loader.RawData;
-import shader.Shader;
 import util.Vector3f;
 
-public abstract class RigidBody extends ColorModel
+public abstract class RigidBody extends Model
 {
 
     float mass = 1; //mass of the sphere

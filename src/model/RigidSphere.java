@@ -1,7 +1,6 @@
 package model;
 
 import loader.RawData;
-import shader.Shader;
 import util.Matrix3f;
 import util.Vector3f;
 

@@ -20,8 +20,8 @@ public class FreeCamera extends Camera implements GLFWScrollCallbackI
         super(position, lookAt);
     }
 
-    double prevX = 200;
-    double prevY = 200;
+    double prevX = 500;
+    double prevY = 500;
 
     public void checkInputFlying(long window)
     {
@@ -63,7 +63,7 @@ public class FreeCamera extends Camera implements GLFWScrollCallbackI
         Vector3f dir = direction.cross(upVector);
         direction = Matrix4f.rotate((float) (prevY - y) / 10, dir).multiply(direction);
 
-        if (Math.abs(upVector.dot(direction)) > 0.7f)
+        if (Math.abs(upVector.dot(direction)) > 0.99f)
         {
             direction = Matrix4f.rotate((float) (y - prevY) / 10, dir).multiply(direction);
         }

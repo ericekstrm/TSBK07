@@ -13,7 +13,7 @@ import shader.SkyBoxShader;
 import util.Matrix4f;
 import util.Vector3f;
 
-public class Skybox extends TextureModel
+public class Skybox extends Model
 {
 
     public static final int SIZE = 5;

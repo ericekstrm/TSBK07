@@ -1,13 +1,17 @@
 package loader;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import model.Model;
 import util.Vector2f;
 import util.Vector3f;
 
@@ -213,6 +217,32 @@ public class Loader
 
         RawData data = new RawData(verticesArray, normalsArray, textureArray, indicesArray, material);
         return data;
+    }
+
+    public static List<Model> loadAllObjects()
+    {
+        File file = new File("res/objects/");
+        String[] directories = file.list(new FilenameFilter()
+        {
+            @Override
+            public boolean accept(File current, String name)
+            {
+                return new File(current, name).isDirectory();
+            }
+        });
+        
+        List<Model> models = new ArrayList<>();
+        
+        for (String dir : directories)
+        {
+            if (dir.startsWith("_") || dir.equals("skybox") || dir.equals("sun") || dir.equals("water"))
+            {
+                continue;
+            }
+            Model m = new Model(dir);
+            models.add(m);
+        }
+        return models;
     }
 
     /**

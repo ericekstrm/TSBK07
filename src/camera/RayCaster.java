@@ -2,8 +2,6 @@ package camera;
 
 import java.nio.DoubleBuffer;
 import main.main;
-import model.Model;
-import model.ModelHandler;
 import org.lwjgl.BufferUtils;
 import static org.lwjgl.glfw.GLFW.glfwGetCursorPos;
 import terrain.TerrainHandler;
@@ -17,7 +15,7 @@ public class RayCaster
     private Vector3f ray;
     private Matrix4f projectionMatrixInverse;
 
-    public RayCaster(Camera camera, Matrix4f projectionMatrix)
+    public RayCaster(Matrix4f projectionMatrix)
     {
         projectionMatrixInverse = projectionMatrix.inverse();
         }
@@ -46,14 +44,14 @@ public class RayCaster
         Vector4f ray_world = camera.getWorldtoViewMatrix().inverse().multiply(ray_eye);
         ray = new Vector3f(ray_world.x, ray_world.y, ray_world.z).normalize();
     }
-
+    
     /**
-     * 
-     * @param models
-     * @param terrain 
-     * @param camera 
+     * Gives the point on the terrain where the ray intersects.
+     * @param terrain
+     * @param camera
+     * @return 
      */
-    public void useRay(ModelHandler models, TerrainHandler terrain, Camera camera)
+    protected Vector3f getTerrainPosition(TerrainHandler terrain, Camera camera)
     {
         double minDis = 0;
         double maxDis = 600;
@@ -71,10 +69,6 @@ public class RayCaster
             }
         }
 
-        Vector3f terrainPos = ray.scale((float) (maxDis + minDis) / 2).add(camera.position);
-
-        Model m = models.get("pine");
-        m.setPosition(terrainPos);
-        models.set("pine", m);
+        return ray.scale((float) (maxDis + minDis) / 2).add(camera.position);
     }
 }

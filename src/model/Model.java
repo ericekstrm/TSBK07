@@ -157,4 +157,14 @@ public class Model extends Movable
     public void update(float deltaTime)
     {
     }
+
+    public List<Integer> getActiveVAOs()
+    {
+        return activeVAOs;
+    }
+
+    public List<Integer> getNrOfIndices()
+    {
+        return nrOfIndices;
+    }
 }

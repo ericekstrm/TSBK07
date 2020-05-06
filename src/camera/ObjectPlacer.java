@@ -25,9 +25,8 @@ public class ObjectPlacer extends RayCaster
         shader = new TextureModelShader(projectionMatrix);
         currentModel = 0;
         
-        allModels = Loader.loadAllObjects();
+        //allModels = Loader.loadAllObjects();
     }
-    //allModels = Loader.loadAllObjects();
 
     public void update(long window, Camera camera, TerrainHandler terrain)
     {

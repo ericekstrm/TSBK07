@@ -151,4 +151,9 @@ public class Player
     {
         return thirdPersonCamera;
     }
+    
+    public Model getModel()
+    {
+        return model;
+    }
 }

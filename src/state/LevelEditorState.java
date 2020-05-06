@@ -3,9 +3,11 @@ package state;
 import camera.Camera;
 import camera.FreeCamera;
 import camera.ObjectPlacer;
+import camera.Player;
 import framebuffer.DepthFrameBuffer;
 import gui.GUI;
 import light.LightHandler;
+import light.ShadowHandler;
 import loader.SceneSaver;
 import model.Model;
 import model.ModelHandler;
@@ -39,9 +41,7 @@ public class LevelEditorState extends State implements GLFWMouseButtonCallbackI
     Skybox skybox;
 
     LightHandler lights;
-    DepthFrameBuffer shadowMap;
-    Matrix4f shadowProjectionMatrix = Matrix4f.shadowProjectionMatrix(30, nearPlane, farPlane);
-    Matrix4f lightSpaceMatrix;
+    ShadowHandler shadows;
 
     WaterHandler water;
     WaterFrameBuffer waterFrameBuffer;
@@ -73,15 +73,14 @@ public class LevelEditorState extends State implements GLFWMouseButtonCallbackI
 
         //lights
         lights = new LightHandler(projectionMatrix);
-        shadowMap = new DepthFrameBuffer();
-        lightSpaceMatrix = shadowProjectionMatrix.multiply(lights.getSun().getSunCamera().getWorldtoViewMatrix());
+        shadows = new ShadowHandler(lights);
 
         lights.addPosLight(new Vector3f(-100, 4, -10), new Vector3f(0.0f, 1.0f, 0.0f));
 
         //light for lamp post
         gui = new GUI();
         gui.addText("" + currentFPS, "fps", -1, -0.95f);
-        gui.addImageNormalized(shadowMap.getDepthMap(), 0.5f, -0.5f, 0.5f, -0.5f);
+        gui.addImageNormalized(shadows.getDepthMap(), 0.5f, -0.5f, 0.5f, -0.5f);
 
         placer = new ObjectPlacer(projectionMatrix);
     }
@@ -127,9 +126,10 @@ public class LevelEditorState extends State implements GLFWMouseButtonCallbackI
             waterFrameBuffer.unbindCurrentFrameBuffer();
             GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
         }*/
-        shadowMap.bindFrameBuffer();
-        renderScene(new Vector4f(0, 0, 0, 0), lights.getSun().getSunCamera(), shadowProjectionMatrix);
-        shadowMap.unbindFrameBuffer();
+        //shadowMap.bindFrameBuffer();
+        //renderScene(new Vector4f(0, 0, 0, 0), lights.getSun().getSunCamera(), shadowProjectionMatrix);
+        //shadowMap.unbindFrameBuffer();
+        shadows.render(lights.getSun().getSunCamera(), models, terrain, new Player(new Vector3f(), models, projectionMatrix));
 
         renderScene(new Vector4f(0, 0, 0, 0), currentCamera, projectionMatrix);
 
@@ -155,7 +155,7 @@ public class LevelEditorState extends State implements GLFWMouseButtonCallbackI
         Vector3f fogColor = new Vector3f(0.5f, 0.6f, 0.7f);
         skybox.render(camera, fogColor);
         lights.render(camera);
-        terrain.render(camera, lights, clippingPlane, projectionMatrix, lightSpaceMatrix, shadowMap.getDepthMap());
+        terrain.render(camera, lights, clippingPlane, projectionMatrix, shadows);
         models.render(camera, lights, clippingPlane, projectionMatrix);
         placer.render(camera, lights, clippingPlane, projectionMatrix);
     }

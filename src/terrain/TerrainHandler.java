@@ -4,6 +4,7 @@ import camera.Camera;
 import java.util.HashMap;
 import java.util.Map;
 import light.LightHandler;
+import light.ShadowHandler;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import shader.TerrainShader;
@@ -62,7 +63,7 @@ public class TerrainHandler
         }
     }
 
-    public void render(Camera camera, LightHandler lights, Vector4f clippingPlane, Matrix4f projectionMatrix, Matrix4f lightSpaceMatrix, int shadowMap)
+    public void render(Camera camera, LightHandler lights, Vector4f clippingPlane, Matrix4f projectionMatrix, ShadowHandler shadows)
     {
         terrainShader.start();
         terrainShader.loadProjectionMatrix(projectionMatrix);
@@ -71,9 +72,9 @@ public class TerrainHandler
         terrainShader.loadClippingPlane(clippingPlane);
 
         //shadows
-        terrainShader.loadLightSpaceMatrix(lightSpaceMatrix);
+        terrainShader.loadLightSpaceMatrix(shadows.getLightSpaceMatrix());
         GL13.glActiveTexture(GL13.GL_TEXTURE10);
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, shadowMap);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, shadows.getDepthMap());
 
         for (Map.Entry<Vector2f, Terrain> t : terrainTiles.entrySet())
         {
@@ -179,5 +180,10 @@ public class TerrainHandler
             Vector3f v2 = new Vector3f(x1 - x1, heightData[x1][z2] - heightData[x1][z1], z2 - z1);
             return v2.cross(v1).normalize();
         }
+    }
+
+    public Map<Vector2f, Terrain> getTerrainTiles()
+    {
+        return terrainTiles;
     }
 }

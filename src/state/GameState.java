@@ -7,7 +7,7 @@ import camera.RayCaster;
 import framebuffer.DepthFrameBuffer;
 import gui.GUI;
 import light.LightHandler;
-import loader.SceneSaver;
+import light.ShadowHandler;
 import model.ModelHandler;
 import model.Skybox;
 import static org.lwjgl.glfw.GLFW.*;
@@ -38,9 +38,7 @@ public class GameState extends State
     Skybox skybox;
     
     LightHandler lights;
-    DepthFrameBuffer shadowMap;
-    Matrix4f shadowProjectionMatrix = Matrix4f.shadowProjectionMatrix(30, nearPlane, farPlane);
-    Matrix4f lightSpaceMatrix;
+    ShadowHandler shadows;
 
     WaterHandler water;
     WaterFrameBuffer waterFrameBuffer;
@@ -75,8 +73,7 @@ public class GameState extends State
 
         //lights
         lights = new LightHandler(projectionMatrix);
-        shadowMap = new DepthFrameBuffer();
-        lightSpaceMatrix = shadowProjectionMatrix.multiply(lights.getSun().getSunCamera().getWorldtoViewMatrix());
+        shadows = new ShadowHandler(lights);
 
         lights.addPosLight(new Vector3f(-100, 4, -10), new Vector3f(0.0f, 1.0f, 0.0f));
         //lights.addDirLight(new Vector3f(1.0f, -1.0f, 1.0f), new Vector3f(1f, 1f, 1f));
@@ -87,7 +84,6 @@ public class GameState extends State
 
         gui = new GUI();
         gui.addText("" + currentFPS, "fps", -1, -0.95f);
-        gui.addImageNormalized(shadowMap.getDepthMap(), 0.5f, -0.5f, 0.5f, -0.5f);
     }
 
     int counter = 0;
@@ -133,9 +129,7 @@ public class GameState extends State
             GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
         }*/
         
-        shadowMap.bindFrameBuffer();
-        renderScene(new Vector4f(0, 0, 0, 0), lights.getSun().getSunCamera(), shadowProjectionMatrix);
-        shadowMap.unbindFrameBuffer();
+        shadows.render(lights.getSun().getSunCamera(), models, terrain, player);
         
         renderScene(new Vector4f(0, 0, 0, 0), currentCamera, projectionMatrix);
         
@@ -162,7 +156,7 @@ public class GameState extends State
         Vector3f fogColor = new Vector3f(0.5f,0.6f,0.7f);
         skybox.render(camera, fogColor);
         lights.render(camera);
-        terrain.render(camera, lights, clippingPlane, projectionMatrix, lightSpaceMatrix, shadowMap.getDepthMap());
+        terrain.render(camera, lights, clippingPlane, projectionMatrix, shadows);
         models.render(camera, lights, clippingPlane, projectionMatrix);
         player.render(camera, lights, clippingPlane, projectionMatrix);
     }

@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import light.LightHandler;
+import light.ShadowHandler;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
 import shader.ModelShader;
 import shader.TextureModelShader;
 import terrain.TerrainHandler;
@@ -28,7 +31,7 @@ public class ModelHandler
     public void init(TerrainHandler terrain)
     {
 
-        addNormalized(new Model("barrel"), -10, 0, -10);
+        addNormalized(new Model("barrel"), -3, 0, -3);
         addNormalized(new Model("boulder"), -10, 0, -20);
         addNormalized(new Model("crate"), -80, -4, -30);
         addNormalized(new Model("pine"), -10, 0, -50);
@@ -148,7 +151,7 @@ public class ModelHandler
         models.get("bamboo").setPosition(-40, 0, -30);
         models.get("bamboo").normalizeHeight();*/
 
-        addNormalized(new Model("gold_monkey"), 0, 10, 20);
+        addNormalized(new Model("gold_monkey"), 0, 10, 10);
 
         /*addNormalized("street_light", new Model("street_light"), 50, 0, 50);
         addNormalized("tree_forsell", new Model("tree_forsell"), 60, 0, 50);
@@ -217,7 +220,7 @@ public class ModelHandler
         }*/
     }
 
-    public void render(Camera camera, LightHandler lights, Vector4f clippingPlane, Matrix4f projectionMatrix)
+    public void render(Camera camera, LightHandler lights, Vector4f clippingPlane, Matrix4f projectionMatrix, ShadowHandler shadows)
     {
         //render objects
         shader.start();
@@ -225,6 +228,11 @@ public class ModelHandler
         shader.loadProjectionMatrix(projectionMatrix);
         shader.loadWorldToViewMatrix(camera);
         shader.loadClippingPlane(clippingPlane);
+        
+        //shadows
+        shader.loadLightSpaceMatrix(shadows.getLightSpaceMatrix());
+        GL13.glActiveTexture(GL13.GL_TEXTURE10);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, shadows.getDepthMap());
 
         //render
         for (Model m : models)

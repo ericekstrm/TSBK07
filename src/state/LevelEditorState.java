@@ -156,7 +156,7 @@ public class LevelEditorState extends State implements GLFWMouseButtonCallbackI
         skybox.render(camera, fogColor);
         lights.render(camera);
         terrain.render(camera, lights, clippingPlane, projectionMatrix, shadows);
-        models.render(camera, lights, clippingPlane, projectionMatrix);
+        models.render(camera, lights, clippingPlane, projectionMatrix, shadows);
         placer.render(camera, lights, clippingPlane, projectionMatrix);
     }
 

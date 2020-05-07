@@ -36,11 +36,15 @@ public abstract class ModelShader extends Shader
     protected int location_Ks;
     protected int location_specularExponent;
 
+    //shadows
+    private int location_lightSpaceMatrix;
+    private int location_shadowMap;
+
     //clipping plane for water reflections
     protected int location_clippingPlane;
 
     protected int location_viewPos;
-    
+
     private int location_hasTexture;
 
     public ModelShader(Matrix4f projectionMatrix)
@@ -85,12 +89,20 @@ public abstract class ModelShader extends Shader
             location_pointLightColorArr[i] = super.getUniformLocation("pointLightColorArr[" + i + "]");
             location_dirLightDirArr[i] = super.getUniformLocation("dirLightDirArr[" + i + "]");
             location_dirLightColorArr[i] = super.getUniformLocation("dirLightColorArr[" + i + "]");
-            
+
             location_r[i] = getUniformLocation("r[" + i + "]");
             location_intensity[i] = getUniformLocation("intensity[" + i + "]");
         }
-        
+
         location_hasTexture = getUniformLocation("hasTexture");
+
+        location_lightSpaceMatrix = getUniformLocation("lightSpaceMatrix");
+        location_shadowMap = getUniformLocation("shadowMap");
+    }
+
+    public void connectTextureUnits()
+    {
+        loadInt(location_shadowMap, 10);
     }
 
     @Override
@@ -124,12 +136,12 @@ public abstract class ModelShader extends Shader
         loadVector(location_Ks, mat.Ks);
         loadFloat(location_specularExponent, mat.Ns);
     }
-    
+
     public void loadHasTexture(boolean b)
     {
         loadBoolean(location_hasTexture, b);
     }
-    
+
     public void loadLights(List<PositionalLight> pointLights, List<DirectionalLight> dirLights)
     {
         for (int i = 0; i < MAX_LIGHTS; i++)
@@ -162,5 +174,10 @@ public abstract class ModelShader extends Shader
     public void loadClippingPlane(Vector4f plane)
     {
         loadVector(location_clippingPlane, plane);
+    }
+
+    public void loadLightSpaceMatrix(Matrix4f lightSpaceMatrix)
+    {
+        loadMatrix(location_lightSpaceMatrix, lightSpaceMatrix);
     }
 }

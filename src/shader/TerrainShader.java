@@ -12,9 +12,6 @@ public class TerrainShader extends ModelShader
     private int location_gTexture;
     private int location_bTexture;
     private int location_blendmap;
-    
-    private int location_lightSpaceMatrix;
-    private int location_shadowMap;
 
     public TerrainShader()
     {
@@ -29,23 +26,15 @@ public class TerrainShader extends ModelShader
         location_gTexture = getUniformLocation("gTexture");
         location_bTexture = getUniformLocation("bTexture");
         location_blendmap = getUniformLocation("blendmap");
-        
-        location_lightSpaceMatrix = getUniformLocation("lightSpaceMatrix");
-        location_shadowMap = getUniformLocation("shadowMap");
     }
 
+    @Override
     public void connectTextureUnits()
     {
+        super.connectTextureUnits();
         loadInt(location_rTexture, 0);
         loadInt(location_gTexture, 1);
         loadInt(location_bTexture, 2);
         loadInt(location_blendmap, 3);
-        
-        loadInt(location_shadowMap, 10);
-    }
-    
-    public void loadLightSpaceMatrix(Matrix4f lightSpaceMatrix)
-    {
-        loadMatrix(location_lightSpaceMatrix, lightSpaceMatrix);
     }
 }

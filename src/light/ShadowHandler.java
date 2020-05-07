@@ -44,11 +44,12 @@ public class ShadowHandler
      */
     public void render(Camera camera, ModelHandler models, TerrainHandler terrain, Player player)
     {
-        System.out.println(camera.position.toString());
         //prepare
         shadowMap.bindFrameBuffer();
         shader.start();
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+        GL11.glEnable(GL11.GL_CULL_FACE);
+        GL11.glCullFace(GL11.GL_FRONT);
 
         //terrain
         for (Terrain t : terrain.getTerrainTiles().values())
@@ -69,6 +70,7 @@ public class ShadowHandler
         shader.loadModelToViewMatrix(player.getModel().getModelToWorldMatrix(), camera);
         renderModel(player.getModel());
 
+        GL11.glCullFace(GL11.GL_BACK);
         shader.stop();
         shadowMap.unbindFrameBuffer();
     }

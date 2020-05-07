@@ -3,11 +3,14 @@
 in vec2 texCoord;
 in vec3 inNormal;
 in vec3 fragPos;
+in vec4 lightSpaceFragPos;
 in vec4 viewSpace;
 
 uniform sampler2D texUnit;
 uniform sampler2D normalMap;
 uniform bool hasTexture;
+
+uniform sampler2D shadowMap;
 
 //light properties
 uniform vec3 pointLightPosArr[4];
@@ -29,6 +32,7 @@ out vec4 outColor;
 
 //forward declaration of functions
 vec3 calcLight(vec3 , vec3 , vec3 , vec3 , vec3, vec3 );
+float calcShadow(vec4);
 vec3 applyFog(in vec3,in float);
 
 void main()
@@ -67,8 +71,10 @@ void main()
     {
         vec3 lightDir = -dirLightDirArr[i];
 
-        output += calcLight(matDiffuse, matSpecular, normal, lightDir, dirLightColorArr[i], viewDir);
-        
+        float shadow = calcShadow(lightSpaceFragPos);
+        return;
+
+        output += (1 - shadow) * calcLight(matDiffuse, matSpecular, normal, lightDir, dirLightColorArr[i], viewDir);
     }
 
     //=====================================================
@@ -124,6 +130,43 @@ vec3 calcLight(vec3 matDiffuse, vec3 matSpecular, vec3 normal, vec3 lightDir, ve
     return mix( rgb, fogColor, fogAmount );
 }*/
 
+//==========================| Calculate Shadow |================================
+float calcShadow(vec4 lightSpaceFragPos)
+{
+    float offset = 0.000001;
+
+    // perform perspective divide
+    vec3 projCoords = lightSpaceFragPos.xyz / lightSpaceFragPos.w;
+
+    // transform to [0,1] range
+    projCoords = projCoords * 0.5 + 0.5;
+
+    // get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
+    float closestDepth = texture(shadowMap, projCoords.xy).r; 
+
+    // get depth of current fragment from light's perspective
+    float currentDepth = projCoords.z;
+
+    outColor = vec4(currentDepth,0,0,1); 
+
+    // check whether current frag pos is in shadow
+    float shadow = currentDepth - offset > closestDepth  ? 1.0 : 0.0;
+    /*float shadow = 0.0;
+    vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
+    for(int x = -1; x <= 1; ++x)
+    {
+        for(int y = -1; y <= 1; ++y)
+        {
+            float pcfDepth = texture(shadowMap, projCoords.xy + vec2(x, y) * texelSize).r; 
+            shadow += currentDepth - offset > pcfDepth ? 1.0 : 0.0;        
+        }
+    }
+    shadow /= 9.0;*/
+
+    return shadow;
+}
+
+//===========================| apply fog |======================================
 vec3 applyFog( in vec3  rgb,       // original color of the pixel
                in float dist ) // camera to point distance
 {

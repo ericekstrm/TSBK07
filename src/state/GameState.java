@@ -84,6 +84,7 @@ public class GameState extends State
 
         gui = new GUI();
         gui.addText("" + currentFPS, "fps", -1, -0.95f);
+        gui.addImageNormalized(shadows.getDepthMap(), 0, 0, 1, -1);
     }
 
     int counter = 0;
@@ -157,7 +158,7 @@ public class GameState extends State
         skybox.render(camera, fogColor);
         lights.render(camera);
         terrain.render(camera, lights, clippingPlane, projectionMatrix, shadows);
-        models.render(camera, lights, clippingPlane, projectionMatrix);
+        models.render(camera, lights, clippingPlane, projectionMatrix, shadows);
         player.render(camera, lights, clippingPlane, projectionMatrix);
     }
 
@@ -184,7 +185,12 @@ public class GameState extends State
         {
             //free moving flying camera
             currentCamera = birdCamera;
+        } else if (glfwGetKey(window, GLFW_KEY_KP_4) == GLFW_PRESS)
+        {
+            //free moving flying camera
+            currentCamera = lights.getSun().getSunCamera();
         }
+        
 
         //toggle water render
         if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)

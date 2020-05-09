@@ -1,6 +1,7 @@
 package camera;
 
 import java.nio.DoubleBuffer;
+import model.ModelHandler;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWScrollCallbackI;
 
@@ -23,34 +24,40 @@ public class FreeCamera extends Camera implements GLFWScrollCallbackI
     double prevX = 500;
     double prevY = 500;
 
-    public void checkInputFlying(long window)
+    public void checkInputFlying(long window, ModelHandler models)
     {
+        Vector3f movement = new Vector3f();
         if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
         {
             //forward
-            Vector3f movement = direction.scale(speed);
+            movement = direction.scale(speed);
             position = position.add(movement);
         }
         if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
         {
-            Vector3f movement = direction.scale(-speed);
+            movement = direction.scale(-speed);
             position = position.add(movement);
         }
         if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
         {
             Vector3f direction = this.direction.cross(upVector);
-            Vector3f movement = direction.scale(-speed);
+            movement = direction.scale(-speed);
             position = position.add(movement);
         }
         if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
         {
             Vector3f direction = this.direction.cross(upVector);
-            Vector3f movement = direction.scale(speed);
+            movement = direction.scale(speed);
             position = position.add(movement);
+        }
+
+        if (hasCollided(models))
+        {
+            position = position.subtract(movement);
         }
     }
 
-    public void checkInput(long window)
+    public void checkInput(long window, ModelHandler models)
     {
         //rotation camera
         DoubleBuffer xBuffer = BufferUtils.createDoubleBuffer(1);
@@ -69,7 +76,7 @@ public class FreeCamera extends Camera implements GLFWScrollCallbackI
         }
         glfwSetCursorPos(window, prevX, prevY);
 
-        checkInputFlying(window);
+        checkInputFlying(window, models);
     }
 
     //callback for scroll wheel

@@ -76,9 +76,9 @@ public class TerrainHandler
         GL13.glActiveTexture(GL13.GL_TEXTURE10);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, shadows.getDepthMap());
 
-        for (Map.Entry<Vector2f, Terrain> t : terrainTiles.entrySet())
+        for (Terrain t : terrainTiles.values())
         {
-            t.getValue().render(terrainShader);
+            t.render(terrainShader);
         }
 
         terrainShader.stop();

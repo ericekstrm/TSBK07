@@ -52,6 +52,7 @@ public class Loader
         List<String> loadedMaterialFiles = new ArrayList<>();
 
         float maxHeight = 0;
+        float maxRadius = 0;
 
         List<RawData> rawdatas = new ArrayList<>();
 
@@ -74,15 +75,22 @@ public class Loader
                     }
                 } else if (line.startsWith("v "))
                 {
-                    float height = Float.parseFloat(currentLine[2]);
-                    if (height > maxHeight)
+                    float x = Float.parseFloat(currentLine[1]);
+                    float y = Float.parseFloat(currentLine[2]);
+                    float z = Float.parseFloat(currentLine[3]);
+
+                    if (y > maxRadius)
                     {
-                        maxHeight = height;
+                        maxRadius = y;
                     }
-                    Vector3f vertex = new Vector3f(
-                            Float.parseFloat(currentLine[1]),
-                            height,
-                            Float.parseFloat(currentLine[3]));
+
+                    float radius = (float) Math.sqrt(x * x + y * y + z * z);
+                    if (radius > maxHeight)
+                    {
+                        maxHeight = radius;
+                    }
+
+                    Vector3f vertex = new Vector3f(x, y, z);
                     vertices.add(vertex);
                 } else if (line.startsWith("vt "))
                 {
@@ -139,6 +147,7 @@ public class Loader
             }
             RawData data = packageData(vertices, textures, normals, indices, materials.get(currentMaterialName));
             data.maxHeight = maxHeight;
+            data.maxRadius = maxRadius;
             rawdatas.add(data);
 
             return rawdatas.toArray(new RawData[0]);
@@ -230,9 +239,9 @@ public class Loader
                 return new File(current, name).isDirectory();
             }
         });
-        
+
         List<Model> models = new ArrayList<>();
-        
+
         for (String dir : directories)
         {
             if (dir.startsWith("_") || dir.equals("skybox") || dir.equals("sun") || dir.equals("water"))

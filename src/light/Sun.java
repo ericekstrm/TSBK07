@@ -132,13 +132,14 @@ public class Sun extends Model
     }
 
     /**
-     * Returns a Camera positioned at the sun. Used for shadow depth map
+     * Returns a Camera positioned at the sun.Used for shadow depth map
      * calculations.
      *
+     * @param currentCamera - The camera that is currently in use. The sun camera will look right at the current camera.
      * @return
      */
-    public Camera getSunCamera()
+    public Camera getSunCamera(Camera currentCamera)
     {
-        return new Camera(position, new Vector3f(-20, 0, 0));
+        return new Camera(currentCamera.getPosition().add(position), currentCamera.getPosition());
     }
 }

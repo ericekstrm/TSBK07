@@ -1,7 +1,7 @@
-# Blender MTL File: 'Stones_and_buried_treasure.blend'
+# Blender MTL File: 'None'
 # Material Count: 15
 
-newmtl Bone
+newmtl Bone.001
 Ns 225.000000
 Ka 1.000000 1.000000 1.000000
 Kd 1.000000 0.996078 0.976471
@@ -11,7 +11,7 @@ Ni 1.000000
 d 1.000000
 illum 2
 
-newmtl Emerald
+newmtl Emerald.001
 Ns 225.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.239216 0.725490 0.239216
@@ -21,7 +21,7 @@ Ni 1.000000
 d 1.000000
 illum 2
 
-newmtl Flask_Health
+newmtl Flask_Health.001
 Ns 225.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.964706 0.372549 0.372549
@@ -31,7 +31,7 @@ Ni 1.000000
 d 1.000000
 illum 2
 
-newmtl Flask_Mana
+newmtl Flask_Mana.001
 Ns 225.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.400000 0.796078 0.894118
@@ -41,7 +41,7 @@ Ni 1.000000
 d 1.000000
 illum 2
 
-newmtl Foliage
+newmtl Foliage.001
 Ns 225.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.219608 0.541176 0.231373
@@ -51,7 +51,7 @@ Ni 1.000000
 d 1.000000
 illum 2
 
-newmtl Gold
+newmtl Gold.001
 Ns 225.000000
 Ka 1.000000 1.000000 1.000000
 Kd 1.000000 0.811765 0.250980
@@ -61,7 +61,7 @@ Ni 1.000000
 d 1.000000
 illum 2
 
-newmtl Ground
+newmtl Ground.001
 Ns 225.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.784314 0.784314 0.784314
@@ -71,7 +71,7 @@ Ni 1.000000
 d 1.000000
 illum 2
 
-newmtl Ruby
+newmtl Ruby.001
 Ns 225.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.890196 0.000000 0.000000
@@ -81,7 +81,7 @@ Ni 1.000000
 d 1.000000
 illum 2
 
-newmtl Stell
+newmtl Stell.001
 Ns 225.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.541176 0.541176 0.541176
@@ -91,7 +91,7 @@ Ni 1.000000
 d 1.000000
 illum 2
 
-newmtl Stone
+newmtl Stone.001
 Ns 225.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.698039 0.666667 0.627451
@@ -101,7 +101,7 @@ Ni 1.000000
 d 1.000000
 illum 2
 
-newmtl Tree_Fir_Foliage
+newmtl Tree_Fir_Foliage.001
 Ns 225.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.219608 0.611765 0.133333
@@ -111,7 +111,7 @@ Ni 1.000000
 d 1.000000
 illum 2
 
-newmtl Tree_Fir_Wood
+newmtl Tree_Fir_Wood.001
 Ns 225.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.501961 0.282353 0.000000
@@ -121,7 +121,7 @@ Ni 1.000000
 d 1.000000
 illum 2
 
-newmtl Wood_1
+newmtl Wood_1.001
 Ns 225.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.882353 0.678431 0.482353
@@ -131,7 +131,7 @@ Ni 1.000000
 d 1.000000
 illum 2
 
-newmtl Wood_2
+newmtl Wood_2.001
 Ns 225.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.384314 0.207843 0.109804
@@ -141,7 +141,7 @@ Ni 1.000000
 d 1.000000
 illum 2
 
-newmtl Wood_3
+newmtl Wood_3.001
 Ns 225.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.517647 0.360784 0.000000

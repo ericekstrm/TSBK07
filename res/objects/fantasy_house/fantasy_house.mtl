@@ -1,8 +1,8 @@
-# Blender MTL File: 'fantasy_house_blender.blend'
-# Material Count: 8
+# Blender MTL File: 'None'
+# Material Count: 7
 
 newmtl fence_texture
-Ns 96.078431
+Ns 96.078443
 Ka 1.000000 1.000000 1.000000
 Kd 0.640000 0.640000 0.640000
 Ks 0.500000 0.500000 0.500000
@@ -10,11 +10,11 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
+map_Bump fence_normal.png
 map_Kd fence_diffuse.png
-bump fence_normal.png
 
 newmtl fire
-Ns 96.078431
+Ns 96.078443
 Ka 1.000000 1.000000 1.000000
 Kd 0.640000 0.640000 0.640000
 Ks 0.500000 0.500000 0.500000
@@ -22,11 +22,11 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
+map_Bump fire_normal.png
 map_Kd fire_diffuse.png
-bump fire_normal.png
 
 newmtl gate_texture
-Ns 96.078431
+Ns 96.078443
 Ka 1.000000 1.000000 1.000000
 Kd 0.640000 0.640000 0.640000
 Ks 0.500000 0.500000 0.500000
@@ -34,23 +34,11 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
+map_Bump gate_normal.png
 map_Kd gate_diffuse.png
-bump gate_normal.png
-
-newmtl ground_texture
-Ns 96.078431
-Ka 1.000000 1.000000 1.000000
-Kd 0.640000 0.640000 0.640000
-Ks 0.500000 0.500000 0.500000
-Ke 0.000000 0.000000 0.000000
-Ni 1.000000
-d 1.000000
-illum 2
-map_Kd ground_diffuse.png
-bump ground_normal.png
 
 newmtl house_base
-Ns 96.078431
+Ns 96.078443
 Ka 1.000000 1.000000 1.000000
 Kd 0.640000 0.640000 0.640000
 Ks 0.500000 0.500000 0.500000
@@ -58,11 +46,11 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
+map_Bump house_base_normal.png
 map_Kd house_base_diffuse.png
-bump house_base_normal.png
 
 newmtl house_wood
-Ns 96.078431
+Ns 96.078443
 Ka 1.000000 1.000000 1.000000
 Kd 0.640000 0.640000 0.640000
 Ks 0.500000 0.500000 0.500000
@@ -70,11 +58,11 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
+map_Bump house_wood_normal.png
 map_Kd house_wood_diffuse.png
-bump house_wood_normal.png
 
 newmtl roof_and_windows
-Ns 96.078431
+Ns 96.078443
 Ka 1.000000 1.000000 1.000000
 Kd 0.640000 0.640000 0.640000
 Ks 0.500000 0.500000 0.500000
@@ -82,11 +70,11 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
+map_Bump roof_and_windows_normal.png
 map_Kd roof_and_windows_diffuse.png
-bump roof_and_windows_normal.png
 
 newmtl tree_texture
-Ns 96.078431
+Ns 96.078443
 Ka 1.000000 1.000000 1.000000
 Kd 0.640000 0.640000 0.640000
 Ks 0.500000 0.500000 0.500000
@@ -94,5 +82,5 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
+map_Bump tree_normal.png
 map_Kd tree_diffuse.png
-bump tree_normal.png

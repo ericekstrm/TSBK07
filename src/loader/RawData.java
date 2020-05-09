@@ -11,6 +11,7 @@ public class RawData
     public Material material;
     
     public float maxHeight;
+    public float maxRadius = 0;
     
     public RawData(float[] vertices, float[] normals, float[] textureCoords, int[] indices, Material material)
     {

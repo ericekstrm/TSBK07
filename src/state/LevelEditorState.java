@@ -4,7 +4,6 @@ import camera.Camera;
 import camera.FreeCamera;
 import camera.ObjectPlacer;
 import camera.Player;
-import framebuffer.DepthFrameBuffer;
 import gui.GUI;
 import light.LightHandler;
 import light.ShadowHandler;
@@ -101,7 +100,6 @@ public class LevelEditorState extends State implements GLFWMouseButtonCallbackI
         {
             gui.setTextString("fps", "" + currentFPS);
         }
-
     }
 
     @Override
@@ -129,7 +127,7 @@ public class LevelEditorState extends State implements GLFWMouseButtonCallbackI
         //shadowMap.bindFrameBuffer();
         //renderScene(new Vector4f(0, 0, 0, 0), lights.getSun().getSunCamera(), shadowProjectionMatrix);
         //shadowMap.unbindFrameBuffer();
-        shadows.render(lights.getSun().getSunCamera(), models, terrain, new Player(new Vector3f(), models, projectionMatrix));
+        shadows.render(lights.getSun().getSunCamera(currentCamera), models, terrain, new Player(new Vector3f(), models, projectionMatrix));
 
         renderScene(new Vector4f(0, 0, 0, 0), currentCamera, projectionMatrix);
 
@@ -178,7 +176,7 @@ public class LevelEditorState extends State implements GLFWMouseButtonCallbackI
             renderWater = false;
         }
 
-        birdCamera.checkInput(window);
+        birdCamera.checkInput(window, models);
 
         //save and exit
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)

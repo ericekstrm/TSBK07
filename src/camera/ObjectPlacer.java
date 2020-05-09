@@ -6,7 +6,6 @@ import light.LightHandler;
 import loader.Loader;
 import model.Model;
 import shader.ModelShader;
-import shader.TextureModelShader;
 import terrain.TerrainHandler;
 import util.Matrix4f;
 import util.Vector4f;
@@ -22,7 +21,7 @@ public class ObjectPlacer extends RayCaster
     public ObjectPlacer(Matrix4f projectionMatrix)
     {
         super(projectionMatrix);
-        shader = new TextureModelShader(projectionMatrix);
+        shader = new ModelShader(projectionMatrix);
         currentModel = 0;
         
         //allModels = Loader.loadAllObjects();

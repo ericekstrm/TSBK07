@@ -10,8 +10,8 @@ import org.lwjgl.opengl.GL32;
 public class DepthFrameBuffer
 {
 
-    public static final int WIDTH = 2048;
-    public static final int HEIGHT = 2048;
+    public static final int WIDTH = 4096;
+    public static final int HEIGHT = 4096;
 
     private int frameBuffer;
     private int depthMap;

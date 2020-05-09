@@ -1,0 +1,15 @@
+# Blender MTL File: 'None'
+# Material Count: 1
+
+newmtl Rbarn15
+Ns 10.000002
+Ka 1.000000 1.000000 1.000000
+Kd 0.588200 0.505900 0.505900
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Bump Rbarn15_Normal.png
+map_Kd Rbarn15_Albedo.png
+map_Ks Rbarn15_Reflectivity.png

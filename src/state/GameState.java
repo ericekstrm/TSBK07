@@ -4,7 +4,6 @@ import camera.Camera;
 import camera.FreeCamera;
 import camera.Player;
 import camera.RayCaster;
-import framebuffer.DepthFrameBuffer;
 import gui.GUI;
 import light.LightHandler;
 import light.ShadowHandler;
@@ -84,7 +83,6 @@ public class GameState extends State
 
         gui = new GUI();
         gui.addText("" + currentFPS, "fps", -1, -0.95f);
-        gui.addImageNormalized(shadows.getDepthMap(), 0, 0, 1, -1);
     }
 
     int counter = 0;
@@ -103,8 +101,6 @@ public class GameState extends State
         {
             gui.setTextString("fps", "" + currentFPS);
         }
-        
-        
     }
 
     @Override
@@ -130,7 +126,7 @@ public class GameState extends State
             GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
         }*/
         
-        shadows.render(lights.getSun().getSunCamera(), models, terrain, player);
+        shadows.render(lights.getSun().getSunCamera(currentCamera), models, terrain, player);
         
         renderScene(new Vector4f(0, 0, 0, 0), currentCamera, projectionMatrix);
         
@@ -188,7 +184,7 @@ public class GameState extends State
         } else if (glfwGetKey(window, GLFW_KEY_KP_4) == GLFW_PRESS)
         {
             //free moving flying camera
-            currentCamera = lights.getSun().getSunCamera();
+            currentCamera = lights.getSun().getSunCamera(currentCamera);
         }
         
 
@@ -207,7 +203,7 @@ public class GameState extends State
             player.checkInput(window, terrain);
         } else if (currentCamera == birdCamera)
         {
-            birdCamera.checkInput(window);
+            birdCamera.checkInput(window, models);
         }
 
         //save and exit

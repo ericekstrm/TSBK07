@@ -9,7 +9,7 @@ import util.Matrix4f;
 import util.Vector3f;
 import util.Vector4f;
 
-public abstract class ModelShader extends Shader
+public class ModelShader extends Shader
 {
 
     protected static final int MAX_LIGHTS = 4;
@@ -45,6 +45,9 @@ public abstract class ModelShader extends Shader
 
     protected int location_viewPos;
 
+    //textures
+    private int location_texUnit;
+    private int location_normalMap;
     private int location_hasTexture;
 
     public ModelShader(Matrix4f projectionMatrix)
@@ -55,6 +58,7 @@ public abstract class ModelShader extends Shader
 
         start();
         loadProjectionMatrix(projectionMatrix);
+        connectTextureUnits();
         stop();
     }
 
@@ -94,6 +98,8 @@ public abstract class ModelShader extends Shader
             location_intensity[i] = getUniformLocation("intensity[" + i + "]");
         }
 
+        location_texUnit = getUniformLocation("texUnit");
+        location_normalMap = getUniformLocation("normalMap");
         location_hasTexture = getUniformLocation("hasTexture");
 
         location_lightSpaceMatrix = getUniformLocation("lightSpaceMatrix");
@@ -102,15 +108,9 @@ public abstract class ModelShader extends Shader
 
     public void connectTextureUnits()
     {
+        loadInt(location_texUnit, 0);
+        loadInt(location_normalMap, 1);
         loadInt(location_shadowMap, 10);
-    }
-
-    @Override
-    public void bindAttributes()
-    {
-        bindAttribute(POS_ATTRIB, "in_Position");
-        bindAttribute(TEX_ATTRIB, "in_Texture");
-        bindAttribute(NORMAL_ATTRIB, "in_Normal");
     }
 
     public void loadModelToWorldMatrix(Matrix4f modelToWorldMatrix)
@@ -121,7 +121,7 @@ public abstract class ModelShader extends Shader
     public void loadWorldToViewMatrix(Camera camera)
     {
         loadMatrix(location_worldToView, camera.getWorldtoViewMatrix());
-        loadVector(location_viewPos, camera.position);
+        loadVector(location_viewPos, camera.getPosition());
     }
 
     public void loadProjectionMatrix(Matrix4f projection)

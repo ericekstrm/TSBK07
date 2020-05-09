@@ -1,30 +1,31 @@
 package camera;
 
+import model.Model;
+import model.ModelHandler;
+import util.Collision;
 import util.Matrix4f;
 import util.Vector3f;
 
-public class Camera {
-    
-    public Vector3f position;
-    public Vector3f direction;
-    public Vector3f upVector = new Vector3f(0, 1, 0);
-    
+public class Camera
+{
+
+    protected Vector3f position;
+    protected Vector3f direction;
+    protected Vector3f upVector = new Vector3f(0, 1, 0);
+
+    private float radius = 1f;
+
     public Camera(Vector3f position, Vector3f lookAt)
     {
         this.position = position;
         this.direction = lookAt.subtract(position).normalize();
     }
-    
+
     public void setLookAt(Vector3f lookAt)
     {
         this.direction = lookAt.subtract(position).normalize();
     }
-    
-    public void move(Matrix4f transform)
-    {
-        position = transform.multiply(position);
-    }
-    
+
     /**
      * Calculates the World-to-View matrix according to the steps on page 53 in
      * "Polygons feel no Pain".
@@ -47,5 +48,25 @@ public class Camera {
         Matrix4f translation = Matrix4f.translate(-position.x, -position.y, -position.z);
 
         return rotation.multiply(translation);
+    }
+
+    public Vector3f getPosition()
+    {
+        return position;
+    }
+
+    public boolean hasCollided(ModelHandler models)
+    {
+        for (Model m : models.getModels())
+        {
+            if (Math.abs(position.subtract(m.getPosition()).length()) < m.getMaxRadius() + radius)
+            {
+                if (Collision.check(this, m))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

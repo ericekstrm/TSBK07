@@ -30,7 +30,9 @@ public class Model extends Movable
     protected List<Integer> textureIDs = new ArrayList<>();
     protected List<Integer> bumpmapIDs = new ArrayList<>();
 
-    float maxHeight = 0;
+    //both maxHeight and maxRadius are expressed in the default scale of the model.
+    private float maxHeight = 0;
+    private float maxRadius = 0;
 
     public Model(String objectFileName)
     {
@@ -69,6 +71,12 @@ public class Model extends Movable
             if (d.maxHeight > maxHeight)
             {
                 maxHeight = d.maxHeight;
+            }
+            
+            //find the maximum radius of the model.
+            if (d.maxRadius > maxRadius)
+            {
+                maxRadius = d.maxRadius;
             }
         }
     }
@@ -166,5 +174,16 @@ public class Model extends Movable
     public List<Integer> getNrOfIndices()
     {
         return nrOfIndices;
+    }
+    
+    public float getMaxRadius()
+    {
+        float maxScale = Math.max(scaleX, Math.max(scaleY, scaleZ));
+        return maxRadius * maxScale;
+    }
+
+    public List<Integer> getTextureIDs()
+    {
+        return textureIDs;
     }
 }

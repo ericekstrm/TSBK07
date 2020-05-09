@@ -1,8 +1,5 @@
 package camera;
 
-
-
-import camera.Camera;
 import java.nio.DoubleBuffer;
 import light.LightHandler;
 import loader.Loader;
@@ -11,7 +8,6 @@ import model.Model;
 import org.lwjgl.BufferUtils;
 import static org.lwjgl.glfw.GLFW.*;
 import shader.ModelShader;
-import shader.TextureModelShader;
 import terrain.TerrainHandler;
 import util.Matrix4f;
 import util.Vector2f;
@@ -28,6 +24,7 @@ public class Player
     public Camera firstPersonCamera;
 
     float playerSpeed = 1;
+    float eyeHeight = 1.6f;
 
     Model model;
     ModelShader shader;
@@ -37,12 +34,12 @@ public class Player
         this.position = pos;
         thirdPersonCamera = new Camera(new Vector3f(-30, 30, -30), pos);
         setDirection();
-        firstPersonCamera = new Camera(pos.add(new Vector3f(0,3,0)), pos.add(direction));
+        firstPersonCamera = new Camera(pos, pos.add(direction));
 
         model = new Model(Loader.loadObj("character"));
         model.setPosition(position);
 
-        shader = new TextureModelShader(projectionMatrix);
+        shader = new ModelShader(projectionMatrix);
     }
 
     public void checkInput(long window, TerrainHandler terrain)
@@ -71,11 +68,11 @@ public class Player
             position = position.add(moveDir).scale(playerSpeed);
             thirdPersonCamera.position = thirdPersonCamera.position.add(moveDir).scale(playerSpeed);
         }
-        
+
         float terrainHeight = terrain.getHeight(position.x, position.z);
         float heightDiff = terrainHeight - position.y;
         position.y = terrainHeight;
-        firstPersonCamera.position = position.add(new Vector3f(0,2.5f,0));
+        firstPersonCamera.position = position.add(new Vector3f(0, eyeHeight, 0));
         setDirection();
 
         thirdPersonCamera.position.y += heightDiff;
@@ -134,7 +131,7 @@ public class Player
         shader.loadWorldToViewMatrix(camera);
         shader.loadClippingPlane(clippingPlane);
         shader.loadProjectionMatrix(projectionMatrix);
-        
+
         model.render(shader);
 
         shader.stop();
@@ -151,7 +148,7 @@ public class Player
     {
         return thirdPersonCamera;
     }
-    
+
     public Model getModel()
     {
         return model;

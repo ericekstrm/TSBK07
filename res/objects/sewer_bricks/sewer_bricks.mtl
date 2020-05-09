@@ -1,10 +1,14 @@
-newmtl Sewer_with_bricks_LOW_POLY:Sewer_with_bricks_LOW_POLY
-illum 4
-Kd 0.00 0.00 0.00
-Ka 0.00 0.00 0.00
-Tf 1.00 1.00 1.00
+# Blender MTL File: 'None'
+# Material Count: 1
+
+newmtl Sewer_with_bricks_LOW_POLY:Sewer_with_bricks_LOW_POLY.001
+Ns 18.000005
+Ka 1.000000 1.000000 1.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.170000 0.170000 0.170000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Bump Sewerwithbricks_LOWPOLY_NRM.jpg
 map_Kd Sewerwithbricks_LOWPOLY_COLOR.jpg
-bump Sewerwithbricks_LOWPOLY_NRM.jpg
-Ni 1.00
-Ks 0.17 0.17 0.17
-Ns 18.00

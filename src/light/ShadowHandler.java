@@ -6,6 +6,10 @@ import framebuffer.DepthFrameBuffer;
 import model.Model;
 import model.ModelHandler;
 import org.lwjgl.opengl.GL11;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.glBindTexture;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL13.glActiveTexture;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import shader.Shader;
@@ -19,8 +23,10 @@ import util.Matrix4f;
 public class ShadowHandler
 {
 
+    float shadowBoxSize = 200;
+
     DepthFrameBuffer shadowMap;
-    Matrix4f shadowProjectionMatrix = Matrix4f.shadowProjectionMatrix(30, nearPlane, farPlane);
+    Matrix4f shadowProjectionMatrix = Matrix4f.orthographic(-shadowBoxSize, shadowBoxSize, -shadowBoxSize, shadowBoxSize, nearPlane, farPlane);//Matrix4f.shadowProjectionMatrix(20, nearPlane, farPlane);
     Matrix4f lightSpaceMatrix;
 
     ShadowShader shader;
@@ -28,7 +34,6 @@ public class ShadowHandler
     public ShadowHandler(LightHandler lights)
     {
         shadowMap = new DepthFrameBuffer();
-        lightSpaceMatrix = shadowProjectionMatrix.multiply(lights.getSun().getSunCamera().getWorldtoViewMatrix());
 
         shader = new ShadowShader(shadowProjectionMatrix);
     }
@@ -44,12 +49,13 @@ public class ShadowHandler
      */
     public void render(Camera camera, ModelHandler models, TerrainHandler terrain, Player player)
     {
+        lightSpaceMatrix = shadowProjectionMatrix.multiply(camera.getWorldtoViewMatrix());
+        
         //prepare
         shadowMap.bindFrameBuffer();
         shader.start();
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
         GL11.glEnable(GL11.GL_CULL_FACE);
-        GL11.glCullFace(GL11.GL_FRONT);
 
         //terrain
         for (Terrain t : terrain.getTerrainTiles().values())
@@ -81,7 +87,18 @@ public class ShadowHandler
         {
             GL30.glBindVertexArray(m.getActiveVAOs().get(i));
             GL20.glEnableVertexAttribArray(Shader.POS_ATTRIB);
+            GL20.glEnableVertexAttribArray(Shader.TEX_ATTRIB);
 
+            if (m.getTextureIDs().get(i) != 0)
+            {
+                glActiveTexture(GL_TEXTURE0);
+                glBindTexture(GL_TEXTURE_2D, m.getTextureIDs().get(i));
+                shader.loadHasTexture(true);
+            } else 
+            {
+                shader.loadHasTexture(false);
+            }
+            
             //draw!
             GL11.glDrawElements(GL11.GL_TRIANGLES, m.getNrOfIndices().get(i), GL11.GL_UNSIGNED_INT, 0);
         }

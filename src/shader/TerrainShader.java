@@ -1,7 +1,5 @@
 package shader;
 
-import util.Matrix4f;
-
 public class TerrainShader extends ModelShader
 {
 

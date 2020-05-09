@@ -72,7 +72,6 @@ void main()
         vec3 lightDir = -dirLightDirArr[i];
 
         float shadow = calcShadow(lightSpaceFragPos);
-        return;
 
         output += (1 - shadow) * calcLight(matDiffuse, matSpecular, normal, lightDir, dirLightColorArr[i], viewDir);
     }
@@ -133,7 +132,7 @@ vec3 calcLight(vec3 matDiffuse, vec3 matSpecular, vec3 normal, vec3 lightDir, ve
 //==========================| Calculate Shadow |================================
 float calcShadow(vec4 lightSpaceFragPos)
 {
-    float offset = 0.000001;
+    float offset = 0.001;
 
     // perform perspective divide
     vec3 projCoords = lightSpaceFragPos.xyz / lightSpaceFragPos.w;
@@ -147,11 +146,8 @@ float calcShadow(vec4 lightSpaceFragPos)
     // get depth of current fragment from light's perspective
     float currentDepth = projCoords.z;
 
-    outColor = vec4(currentDepth,0,0,1); 
-
     // check whether current frag pos is in shadow
-    float shadow = currentDepth - offset > closestDepth  ? 1.0 : 0.0;
-    /*float shadow = 0.0;
+    float shadow = 0.0;
     vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
     for(int x = -1; x <= 1; ++x)
     {
@@ -161,7 +157,7 @@ float calcShadow(vec4 lightSpaceFragPos)
             shadow += currentDepth - offset > pcfDepth ? 1.0 : 0.0;        
         }
     }
-    shadow /= 9.0;*/
+    shadow /= 9.0;
 
     return shadow;
 }

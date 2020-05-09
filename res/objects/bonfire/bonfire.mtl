@@ -1,8 +1,8 @@
-# Blender MTL File: 'Bonfire model 1.blend'
+# Blender MTL File: 'None'
 # Material Count: 3
 
 newmtl bonfire_black_terra
-Ns 96.078431
+Ns 96.078443
 Ka 1.000000 1.000000 1.000000
 Kd 0.640000 0.640000 0.640000
 Ks 0.013245 0.013245 0.013245
@@ -10,10 +10,10 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd Texture\Bonfireblackterratxtr.png
+map_Kd Texture\\Bonfireblackterratxtr.png
 
 newmtl bonfire_logs
-Ns 96.078431
+Ns 96.078443
 Ka 1.000000 1.000000 1.000000
 Kd 0.388571 0.388571 0.388571
 Ks 0.014286 0.014286 0.014286
@@ -21,10 +21,10 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd Texture\bonfirelogstxtr.png
+map_Kd Texture\\bonfirelogstxtr.png
 
 newmtl stones
-Ns 78.431373
+Ns 78.431360
 Ka 1.000000 1.000000 1.000000
 Kd 0.412185 0.412185 0.412185
 Ks 0.069536 0.069536 0.069536
@@ -32,4 +32,4 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd Texture\stoneofbonfiretxtr.png
+map_Kd Texture\\stoneofbonfiretxtr.png

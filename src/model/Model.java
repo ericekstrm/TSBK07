@@ -72,7 +72,7 @@ public class Model extends Movable
             {
                 maxHeight = d.maxHeight;
             }
-            
+
             //find the maximum radius of the model.
             if (d.maxRadius > maxRadius)
             {
@@ -156,12 +156,6 @@ public class Model extends Movable
         matProperties.set(index, matProp);
     }
 
-    void normalizeHeight()
-    {
-        float scale = 4 / maxHeight;
-        setScale(scale, scale, scale);
-    }
-
     public void update(float deltaTime)
     {
     }
@@ -175,7 +169,7 @@ public class Model extends Movable
     {
         return nrOfIndices;
     }
-    
+
     public float getMaxRadius()
     {
         float maxScale = Math.max(scaleX, Math.max(scaleY, scaleZ));

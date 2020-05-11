@@ -9,7 +9,6 @@ import loader.RawData;
 import static terrain.Terrain.MAX_HEIGHT;
 import static terrain.Terrain.MAX_PIXEL_COLOR;
 import static terrain.Terrain.SIZE;
-import util.Util;
 import util.Vector3f;
 
 public class TerrainGeneration

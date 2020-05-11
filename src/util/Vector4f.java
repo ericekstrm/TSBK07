@@ -62,6 +62,13 @@ public class Vector4f {
         this.z = z;
         this.w = w;
     }
+    
+    public Vector4f(Vector3f v, float w) {
+        this.x = v.x;
+        this.y = v.y;
+        this.z = v.z;
+        this.w = w;
+    }
 
     /**
      * Calculates the squared length of the vector.
@@ -190,5 +197,10 @@ public class Vector4f {
     public String toString()
     {
         return x + " " + y + " " + z + " " + w; 
+    }
+    
+    public Vector3f toVector3f()
+    {
+        return new Vector3f(x/w,y/w,z/w);
     }
 }

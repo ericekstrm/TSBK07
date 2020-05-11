@@ -3,6 +3,7 @@ package state;
 import camera.Camera;
 import camera.FreeCamera;
 import camera.Player;
+import camera.ProjectionMatrix;
 import camera.RayCaster;
 import gui.GUI;
 import light.LightHandler;
@@ -16,7 +17,6 @@ import terrain.TerrainHandler;
 import util.Matrix4f;
 import util.Vector3f;
 import util.Vector4f;
-import water.WaterFrameBuffer;
 import water.WaterHandler;
 
 public class GameState extends State
@@ -24,13 +24,7 @@ public class GameState extends State
 
     int currentFPS = 0;
 
-    public static final float nearPlane = 1f;
-    public static final float farPlane = 1000.0f;
-    public static final float rightPlane = 0.5f;
-    public static final float leftPlane = -0.5f;
-    public static final float topPlane = 0.5f;
-    public static final float bottomPlane = -0.5f;
-    Matrix4f projectionMatrix = Matrix4f.frustum_new(nearPlane, farPlane, rightPlane, leftPlane, topPlane, bottomPlane);
+    ProjectionMatrix projectionMatrix = new ProjectionMatrix();
 
     ModelHandler models;
     TerrainHandler terrain;
@@ -40,8 +34,6 @@ public class GameState extends State
     ShadowHandler shadows;
 
     WaterHandler water;
-    WaterFrameBuffer waterFrameBuffer;
-    Vector4f clippingPlane = new Vector4f(0, -1, 0, 8);
     boolean renderWater = false;
 
     GUI gui;
@@ -55,31 +47,25 @@ public class GameState extends State
     @Override
     public void init()
     {
-        terrain = new TerrainHandler(projectionMatrix);
+        terrain = new TerrainHandler(projectionMatrix.get());
 
-        models = new ModelHandler(projectionMatrix);
-        models.init(terrain);
+        models = new ModelHandler(projectionMatrix.get());
+        models.init();
 
         birdCamera = new FreeCamera(new Vector3f(-100, 100, -100), new Vector3f(30, 20, 30));
-        player = new Player(new Vector3f(0, 0, 0), models, projectionMatrix);
+        player = new Player(new Vector3f(0, 0, 0), models, projectionMatrix.get());
         currentCamera = player.thirdPersonCamera;
-        rayCaster = new RayCaster(projectionMatrix);
+        rayCaster = new RayCaster(projectionMatrix.get());
 
-        skybox = new Skybox(projectionMatrix);
+        skybox = new Skybox(projectionMatrix.get());
 
-        water = new WaterHandler(projectionMatrix);
-        waterFrameBuffer = new WaterFrameBuffer();
+        water = new WaterHandler(projectionMatrix.get());
 
         //lights
-        lights = new LightHandler(projectionMatrix);
+        lights = new LightHandler(projectionMatrix.get());
         shadows = new ShadowHandler(lights);
 
         lights.addPosLight(new Vector3f(-100, 4, -10), new Vector3f(0.0f, 1.0f, 0.0f));
-        //lights.addDirLight(new Vector3f(1.0f, -1.0f, 1.0f), new Vector3f(1f, 1f, 1f));
-        //lights.addPosLight(new Vector3f(0.0f, 5.0f, 0.0f), new Vector3f(1f, 1f, 1f));
-
-        //light for lamp post
-        //lights.addPosLight(new Vector3f(60.0f, 7.0f, 60.0f), new Vector3f(1.0f, 0.3f, 0.3f));
 
         gui = new GUI();
         gui.addText("" + currentFPS, "fps", -1, -0.95f);
@@ -106,32 +92,33 @@ public class GameState extends State
     @Override
     public void render(long window)
     {
-        GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
-
-        /*if (renderWater)
+        if (renderWater)
         {
-            waterFrameBuffer.bindRefractionFrameBuffer();
-            renderScene(new Vector4f(0, -1, 0, water.getHeight() + 1f), currentCamera);
+            GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
+            
+            water.bindRefractionFrameBuffer();
+            renderScene(new Vector4f(0, -1, 0, water.getHeight() + 1f), currentCamera, projectionMatrix.get());
 
             //move camera under water to create reflection texture
-            float distance = 2 * (currentCamera.position.y - water.getHeight());
-            currentCamera.position.y -= distance;
-            currentCamera.direction.y *= -1;
+            float distance = 2 * (currentCamera.getPosition().y - water.getHeight());
+            currentCamera.getPosition().y -= distance;
+            currentCamera.getDirection().y *= -1;
 
-            waterFrameBuffer.bindReflectionFrameBuffer();
-            renderScene(new Vector4f(0, 1, 0, -water.getHeight() + 0.1f), currentCamera);
-            currentCamera.position.y += distance;
-            currentCamera.direction.y *= -1;
-            waterFrameBuffer.unbindCurrentFrameBuffer();
+            water.bindReflectionFrameBuffer();
+            renderScene(new Vector4f(0, 1, 0, -water.getHeight() + 0.1f), currentCamera, projectionMatrix.get());
+            water.unbindCurrentFrameBuffer();
+            
+            //move camera back
+            currentCamera.getPosition().y += distance;
+            currentCamera.getDirection().y *= -1;
+            
             GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
-        }*/
+        }
         
-        shadows.render(lights.getSun().getSunCamera(currentCamera), models, terrain, player);
-        
-        renderScene(new Vector4f(0, 0, 0, 0), currentCamera, projectionMatrix);
-        
-        //water.render(currentCamera, lights, waterFrameBuffer);
+        shadows.render(lights.getSun().getSunCamera(currentCamera), models, terrain);
+        renderScene(new Vector4f(0, 0, 0, 0), currentCamera, projectionMatrix.get());
 
+        water.render(currentCamera, lights, water.getFrameBuffer());
         gui.render();
 
         glfwSwapBuffers(window);

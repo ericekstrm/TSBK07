@@ -15,10 +15,33 @@ public class Camera
 
     private float radius = 1f;
 
+    //Projection Matrix
+    public static final float nearPlane = 1f;
+    public static final float farPlane = 1000.0f;
+    public static final float rightPlane = 0.5f;
+    public static final float leftPlane = -0.5f;
+    public static final float topPlane = 0.5f;
+    public static final float bottomPlane = -0.5f;
+    private static Matrix4f projectionMatrix = Matrix4f.frustum_new(nearPlane, farPlane, rightPlane, leftPlane, topPlane, bottomPlane);
+    public static Vector3f rightNormal;
+    public static Vector3f leftNormal;
+    public static Vector3f topNormal;
+    public static Vector3f bottomNormal;
+
     public Camera(Vector3f position, Vector3f lookAt)
     {
         this.position = position;
         this.direction = lookAt.subtract(position).normalize();
+        
+        Vector3f bottomRightCorner = new Vector3f(rightPlane, bottomPlane, nearPlane).normalize();
+        Vector3f bottomLeftCorner = new Vector3f(leftPlane, bottomPlane, nearPlane).normalize();
+        Vector3f topRightCorner = new Vector3f(rightPlane, topPlane, nearPlane).normalize();
+        Vector3f topLeftCorner = new Vector3f(leftPlane, topPlane, nearPlane).normalize();
+
+        rightNormal = bottomRightCorner.cross(topRightCorner);
+        leftNormal = topLeftCorner.cross(bottomLeftCorner);
+        topNormal = topRightCorner.cross(topLeftCorner);
+        bottomNormal = bottomLeftCorner.cross(bottomRightCorner);
     }
 
     public void setLookAt(Vector3f lookAt)
@@ -53,6 +76,11 @@ public class Camera
     public Vector3f getPosition()
     {
         return position;
+    }
+
+    public Vector3f getDirection()
+    {
+        return direction;
     }
 
     public boolean hasCollided(ModelHandler models)

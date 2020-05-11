@@ -132,7 +132,7 @@ vec3 calcLight(vec3 matDiffuse, vec3 matSpecular, vec3 normal, vec3 lightDir, ve
 //==========================| Calculate Shadow |================================
 float calcShadow(vec4 lightSpaceFragPos)
 {
-    float offset = 0.001;
+    float offset = 0.0004;
 
     // perform perspective divide
     vec3 projCoords = lightSpaceFragPos.xyz / lightSpaceFragPos.w;

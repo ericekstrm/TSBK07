@@ -1,9 +1,8 @@
 package state;
 
+import camera.BuildCamera;
 import camera.Camera;
-import camera.FreeCamera;
 import camera.ObjectPlacer;
-import camera.Player;
 import gui.GUI;
 import light.LightHandler;
 import light.ShadowHandler;
@@ -49,7 +48,7 @@ public class LevelEditorState extends State implements GLFWMouseButtonCallbackI
 
     GUI gui;
 
-    FreeCamera birdCamera;
+    BuildCamera buildCamera;
     Camera currentCamera;
 
     ObjectPlacer placer;
@@ -60,10 +59,10 @@ public class LevelEditorState extends State implements GLFWMouseButtonCallbackI
         terrain = new TerrainHandler(projectionMatrix);
 
         models = new ModelHandler(projectionMatrix);
-        models.init(terrain);
+        models.init();
 
-        birdCamera = new FreeCamera(new Vector3f(-100, 100, -100), new Vector3f(30, 20, 30));
-        currentCamera = birdCamera;
+        buildCamera = new BuildCamera(new Vector3f());
+        currentCamera = buildCamera;
 
         skybox = new Skybox(projectionMatrix);
 
@@ -79,7 +78,6 @@ public class LevelEditorState extends State implements GLFWMouseButtonCallbackI
         //light for lamp post
         gui = new GUI();
         gui.addText("" + currentFPS, "fps", -1, -0.95f);
-        gui.addImageNormalized(shadows.getDepthMap(), 0.5f, -0.5f, 0.5f, -0.5f);
 
         placer = new ObjectPlacer(projectionMatrix);
     }
@@ -105,33 +103,33 @@ public class LevelEditorState extends State implements GLFWMouseButtonCallbackI
     @Override
     public void render(long window)
     {
-        GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
-
-        /*if (renderWater)
+        if (renderWater)
         {
+            GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
+            
             waterFrameBuffer.bindRefractionFrameBuffer();
-            renderScene(new Vector4f(0, -1, 0, water.getHeight() + 1f), currentCamera);
+            renderScene(new Vector4f(0, -1, 0, water.getHeight() + 1f), currentCamera, projectionMatrix);
 
             //move camera under water to create reflection texture
-            float distance = 2 * (currentCamera.position.y - water.getHeight());
-            currentCamera.position.y -= distance;
-            currentCamera.direction.y *= -1;
+            float distance = 2 * (currentCamera.getPosition().y - water.getHeight());
+            currentCamera.getPosition().y -= distance;
+            currentCamera.getDirection().y *= -1;
 
             waterFrameBuffer.bindReflectionFrameBuffer();
-            renderScene(new Vector4f(0, 1, 0, -water.getHeight() + 0.1f), currentCamera);
-            currentCamera.position.y += distance;
-            currentCamera.direction.y *= -1;
+            renderScene(new Vector4f(0, 1, 0, -water.getHeight() + 0.1f), currentCamera, projectionMatrix);
             waterFrameBuffer.unbindCurrentFrameBuffer();
+            
+            //move camera back
+            currentCamera.getPosition().y += distance;
+            currentCamera.getDirection().y *= -1;
+            
             GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
-        }*/
-        //shadowMap.bindFrameBuffer();
-        //renderScene(new Vector4f(0, 0, 0, 0), lights.getSun().getSunCamera(), shadowProjectionMatrix);
-        //shadowMap.unbindFrameBuffer();
-        shadows.render(lights.getSun().getSunCamera(currentCamera), models, terrain, new Player(new Vector3f(), models, projectionMatrix));
-
+        }
+        
+        shadows.render(lights.getSun().getSunCamera(currentCamera), models, terrain);
         renderScene(new Vector4f(0, 0, 0, 0), currentCamera, projectionMatrix);
 
-        //water.render(currentCamera, lights, waterFrameBuffer);
+        water.render(currentCamera, lights, waterFrameBuffer);
         gui.render();
 
         glfwSwapBuffers(window);
@@ -176,7 +174,7 @@ public class LevelEditorState extends State implements GLFWMouseButtonCallbackI
             renderWater = false;
         }
 
-        birdCamera.checkInput(window, models);
+        buildCamera.checkInput(window, models);
 
         //save and exit
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -195,20 +193,22 @@ public class LevelEditorState extends State implements GLFWMouseButtonCallbackI
     public void activateState(long window, TransitionInformation t)
     {
         glfwSetMouseButtonCallback(window, this);
-        glfwSetScrollCallback(window, new GLFWScrollCallback()
-                      {
-                          @Override
-                          public void invoke(long window, double xoffset, double yoffset)
-                          {
-                              if (yoffset > 0)
-                              {
-                                  placer.nextModel();
-                              } else if (yoffset < 0)
-                              {
-                                  placer.prevModel();
-                              }
-                          }
-                      });
+        glfwSetScrollCallback(window, buildCamera);
+        glfwSetKeyCallback(window, new GLFWKeyCallback()
+                   {
+                       @Override
+                       public void invoke(long window, int key, int scancode, int action, int mods)
+                       {
+                           if (key == GLFW_KEY_KP_4 && action == GLFW_PRESS)
+                           {
+                               placer.prevModel();
+                           }
+                           if (key == GLFW_KEY_KP_6 && action == GLFW_PRESS)
+                           {
+                               placer.nextModel();
+                           }
+                       }
+                   });
     }
 
     @Override
@@ -216,6 +216,7 @@ public class LevelEditorState extends State implements GLFWMouseButtonCallbackI
     {
         glfwSetMouseButtonCallback(window, null);
         glfwSetScrollCallback(window, null);
+        glfwSetKeyCallback(window, null);
         return new TransitionInformation(name());
     }
 

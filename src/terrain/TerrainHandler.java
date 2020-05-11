@@ -27,19 +27,10 @@ public class TerrainHandler
         terrainShader.connectTextureUnits();
         terrainShader.stop();
 
-        for (int i = -2; i < 3; i++)
-        {
-            for (int j = -2; j < 3; j++)
-            {
-                if ((i != 0 || j != 0) && (i != -1 || j != -1))
-                {
-                    addTerrain(i, j, "height_map.png", "grass.jpg", "dirt.jpg", "cobblestone.jpg", "blendmap.jpg");
-                }
-            }
-        }
-        addTerrain(0, 0, "pond.png", "grass.jpg", "dirt.jpg", "cobblestone.jpg", "pond_blendmap.png");
-        //addTerrain(-1, -1, "height_map_lake.png", "grass.jpg", "dirt.jpg", "cobblestone_new.jpg", "blendmap_forrest2.jpg");
-        addTerrainFFT(-1, -1, "grass.jpg", "dirt.jpg", "cobblestone_new.jpg", "blendmap_forrest2.jpg");
+        addTerrain(0, 0, "island2.jpg", "cobblestone.jpg", "grass.jpg", "sand.jpg", "island2_blendmap.jpg");
+        //addTerrain(0, -1, "pond.png", "grass.jpg", "dirt.jpg", "cobblestone.jpg", "pond_blendmap.png");
+        //addTerrain(-1, 0, "height_map_lake.png", "grass.jpg", "dirt.jpg", "cobblestone_new.jpg", "blendmap_forrest2.jpg");
+        //addTerrainFFT(-1, -1, "grass.jpg", "dirt.jpg", "cobblestone_new.jpg", "blendmap_forrest2.jpg");
     }
 
     public void addTerrain(int i, int j, String heightmap, String rTextures, String gTexture, String bTexture, String blendmap)

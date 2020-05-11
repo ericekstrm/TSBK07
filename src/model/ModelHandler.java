@@ -1,15 +1,15 @@
 package model;
 
 import camera.Camera;
+import camera.ProjectionMatrix;
 import java.util.ArrayList;
 import java.util.List;
 import light.LightHandler;
 import light.ShadowHandler;
-import loader.Loader;
+import loader.SceneLoader;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import shader.ModelShader;
-import terrain.TerrainHandler;
 import util.Matrix4f;
 import util.Vector3f;
 import util.Vector4f;
@@ -26,22 +26,12 @@ public class ModelHandler
         shader = new ModelShader(projectionMatrix);
     }
 
-    public void init(TerrainHandler terrain)
+    public void init()
     {
-        models = Loader.loadAllObjects();
-
-        int i = 0;
-        int j = 10;
-        for (Model m : models)
-        {
-            i += 20;
-            if (i > 300)
-            {
-                i = 20;
-                j += 20;
-            }
-            m.setPosition(new Vector3f(-i, 0, -j));
-        }
+        //models = SceneLoader.loadModels("test");
+        add(new Model("barrel"), 0, 1, 0);
+        add(new Model("boulder"), 0, 1, 10);
+        add(new Model("crate"), 10, 1, 10);
     }
 
     public void render(Camera camera, LightHandler lights, Vector4f clippingPlane, Matrix4f projectionMatrix, ShadowHandler shadows)
@@ -61,7 +51,7 @@ public class ModelHandler
         //render
         for (Model m : models)
         {
-            if (!frustumCulled(m, camera))
+            if (ProjectionMatrix.isModelInFrustum(m, camera))
             {
                 m.render(shader);
             }
@@ -80,41 +70,12 @@ public class ModelHandler
         models.add(model);
     }
 
-    public void addNormalized(Model model, int x, int y, int z)
-    {
-        model.setPosition(new Vector3f(x, y, z));
-        model.normalizeHeight();
-        models.add(model);
-    }
-
     public void destroy()
     {
         for (Model m : models)
         {
             m.destroy();
         }
-    }
-
-    /**
-     *
-     * @param m - model to be tested
-     * @param c - the current camera
-     * @return true if the models should be removed
-     */
-    public boolean frustumCulled(Model m, Camera c)
-    {
-        return false;
-        /*Vector3f cameraDir = c.direction.normalize();
-        Vector3f positionDir = m.position.subtract(c.position);
-
-        if (positionDir.normalize().dot(cameraDir) < 0.70)
-        {
-            return true;
-        } else if (positionDir.length() > main_old.farPlane)
-        {
-            return true;
-        }
-        return false;*/
     }
 
     public List<Model> getModels()

@@ -42,7 +42,7 @@ void main()
 {
     //blend the correct texture for the fragment
     vec4 blend = texture(blendmap, texCoord);
-    vec2 tiledTexCoord = texCoord * 50;
+    vec2 tiledTexCoord = texCoord * 150;
     vec4 texColor = texture(rTexture, tiledTexCoord) * blend.r + 
                     texture(gTexture, tiledTexCoord) * blend.g +
                     texture(bTexture, tiledTexCoord) * blend.b;
@@ -111,7 +111,7 @@ vec3 calcLight(vec3 matDiffuse, vec3 matSpecular, vec3 normal, vec3 lightDir, ve
 //==========================| Calculate Shadow |================================
 float calcShadow(vec4 lightSpaceFragPos)
 {
-    float offset = 0.001;
+    float offset = 0.0004;
 
     // perform perspective divide
     vec3 projCoords = lightSpaceFragPos.xyz / lightSpaceFragPos.w;

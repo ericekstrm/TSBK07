@@ -18,6 +18,7 @@ import shader.TerrainShader;
 
 public class Terrain extends Model
 {
+
     public static final String TERRAIN_TEXTURE_PATH = "terrain/textures/";
     public static final String TERRAIN_BLENDMAP_PATH = "terrain/blendmaps/";
 
@@ -48,7 +49,7 @@ public class Terrain extends Model
     {
         super(TerrainGeneration.perlinTerrain(heightMap));
         heightData = new float[64][64]; //heightMap;
-        
+
         this.rTexture = Texture.load(TERRAIN_TEXTURE_PATH + rTexture);
         this.gTexture = Texture.load(TERRAIN_TEXTURE_PATH + gTexture);
         this.bTexture = Texture.load(TERRAIN_TEXTURE_PATH + bTexture);
@@ -66,12 +67,8 @@ public class Terrain extends Model
 
             shader.loadModelToWorldMatrix(getModelToWorldMatrix());
             shader.loadMaterialLightingProperties(matProperties.get(i));
+
             //textures
-            /*for (int j = 0; j < textureIDs.get(i).size(); j++)
-            {
-                glActiveTexture(GL_TEXTURE0 + j);
-                glBindTexture(GL_TEXTURE_2D, textureIDs.get(i).get(j));
-            }*/
             glActiveTexture(GL13.GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, rTexture);
             glActiveTexture(GL13.GL_TEXTURE1);

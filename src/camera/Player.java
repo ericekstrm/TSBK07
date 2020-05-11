@@ -32,7 +32,7 @@ public class Player
     public Player(Vector3f pos, ModelHandler models, Matrix4f projectionMatrix)
     {
         this.position = pos;
-        thirdPersonCamera = new Camera(new Vector3f(-30, 30, -30), pos);
+        thirdPersonCamera = new Camera(new Vector3f(-20, 20, -20), pos);
         setDirection();
         firstPersonCamera = new Camera(pos, pos.add(direction));
 

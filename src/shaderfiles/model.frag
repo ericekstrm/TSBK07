@@ -5,10 +5,12 @@ in vec3 inNormal;
 in vec3 fragPos;
 in vec4 lightSpaceFragPos;
 in vec4 viewSpace;
+in vec3 inTangent;
 
 uniform sampler2D texUnit;
 uniform sampler2D normalMap;
 uniform bool hasTexture;
+uniform bool hasNormalMap;
 
 uniform sampler2D shadowMap;
 
@@ -37,7 +39,19 @@ vec3 applyFog(in vec3,in float);
 
 void main()
 {
-    vec3 normal = normalize(inNormal);
+    vec3 normal = inNormal;
+    if (hasNormalMap)
+    {
+        vec3 bitangent = cross(normal, inTangent);
+        mat3 toTangentSpace = mat3(
+            inTangent.x, bitangent.x, normal.x,
+            inTangent.y, bitangent.y, normal.y,
+            inTangent.z, bitangent.z, normal.z);
+        
+        normal = inverse(toTangentSpace) * texture(normalMap, texCoord).xyz;//normalize(inNormal);
+        normal = normalize(normal);
+    }
+
     vec3 viewDir = normalize(viewPos - fragPos);
 
     vec3 matAmbient = Ka;

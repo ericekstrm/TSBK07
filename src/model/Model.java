@@ -8,6 +8,7 @@ import loader.RawData;
 import org.lwjgl.opengl.GL11;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glBindTexture;
+import org.lwjgl.opengl.GL13;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 import org.lwjgl.opengl.GL20;
@@ -49,10 +50,13 @@ public class Model extends Movable
             GL30.glBindVertexArray(vaoID);
             activeVAOs.add(vaoID);
 
-            //add data that is the same for all vaos (this is where there is a lot of memory waste.)
             activeVBOs.add(ModelLoader.loadVertexVBO(d.vertices));
             activeVBOs.add(ModelLoader.loadTextureVBO(d.textureCoords));
             activeVBOs.add(ModelLoader.loadNormalsVBO(d.normals));
+            if (d.tangents != null)
+            {
+                activeVBOs.add(ModelLoader.loadTangentsVBO(d.tangents));
+            }
 
             //add data that is specific to that vao
             activeVBOs.add(ModelLoader.loadIndicesVBO(d.indices));
@@ -106,6 +110,7 @@ public class Model extends Movable
             GL20.glEnableVertexAttribArray(Shader.POS_ATTRIB);
             GL20.glEnableVertexAttribArray(Shader.TEX_ATTRIB);
             GL20.glEnableVertexAttribArray(Shader.NORMAL_ATTRIB);
+            GL20.glEnableVertexAttribArray(Shader.TANGENT_ATTRIB);
 
             shader.loadModelToWorldMatrix(getModelToWorldMatrix());
             shader.loadMaterialLightingProperties(matProperties.get(i));
@@ -120,6 +125,19 @@ public class Model extends Movable
             {
                 shader.loadHasTexture(false);
             }
+
+            if (bumpmapIDs.get(i) != 0)
+            {
+                glActiveTexture(GL13.GL_TEXTURE1);
+                glBindTexture(GL_TEXTURE_2D, bumpmapIDs.get(i));
+                shader.loadHasNormalMap(true);
+            } else
+            {
+                shader.loadHasNormalMap(false);
+            }
+
+            glActiveTexture(GL13.GL_TEXTURE1);
+            glBindTexture(GL_TEXTURE_2D, bumpmapIDs.get(i));
 
             //draw!
             GL11.glDrawElements(GL11.GL_TRIANGLES, nrOfIndices.get(i), GL11.GL_UNSIGNED_INT, 0);

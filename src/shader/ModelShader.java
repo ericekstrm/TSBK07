@@ -49,6 +49,7 @@ public class ModelShader extends Shader
     private int location_texUnit;
     private int location_normalMap;
     private int location_hasTexture;
+    private int location_hasNormalMap;
 
     public ModelShader(Matrix4f projectionMatrix)
     {
@@ -101,6 +102,7 @@ public class ModelShader extends Shader
         location_texUnit = getUniformLocation("texUnit");
         location_normalMap = getUniformLocation("normalMap");
         location_hasTexture = getUniformLocation("hasTexture");
+        location_hasNormalMap = getUniformLocation("hasNormalMap");
 
         location_lightSpaceMatrix = getUniformLocation("lightSpaceMatrix");
         location_shadowMap = getUniformLocation("shadowMap");
@@ -141,6 +143,12 @@ public class ModelShader extends Shader
     {
         loadBoolean(location_hasTexture, b);
     }
+    
+    public void loadHasNormalMap(boolean b)
+    {
+        loadBoolean(location_hasNormalMap, b);
+    }
+    
 
     public void loadLights(List<PositionalLight> pointLights, List<DirectionalLight> dirLights)
     {

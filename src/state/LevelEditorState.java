@@ -78,6 +78,8 @@ public class LevelEditorState extends State implements GLFWMouseButtonCallbackI
         //light for lamp post
         gui = new GUI();
         gui.addText("" + currentFPS, "fps", -1, -0.95f);
+        gui.addText("Controls on numpad:", "controls1", -1, 0.90f);
+        gui.addText("4/6 to change model. * to rotate. +/- to scale.", "controls2", -1, 0.97f);
 
         placer = new ObjectPlacer(projectionMatrix);
     }

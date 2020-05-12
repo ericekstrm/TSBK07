@@ -72,7 +72,7 @@ public class TerrainGeneration
             }
         }
 
-        RawData data = new RawData(verticesArray, normalsArray, textureArray, indicesArray, new Material());
+        RawData data = new RawData(verticesArray, normalsArray, null, textureArray, indicesArray, new Material());
         return data;
     }
 
@@ -147,7 +147,7 @@ public class TerrainGeneration
             }
         }
 
-        RawData data = new RawData(verticesArray, normalsArray, textureArray, indicesArray, new Material());
+        RawData data = new RawData(verticesArray, normalsArray, null, textureArray, indicesArray, new Material());
         return data;
     }
 

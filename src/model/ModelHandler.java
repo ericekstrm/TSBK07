@@ -29,9 +29,11 @@ public class ModelHandler
     public void init()
     {
         //models = SceneLoader.loadModels("test");
+        add(new Model("alpine_cabin"));
         add(new Model("barrel"), 0, 1, 0);
         add(new Model("boulder"), 0, 1, 10);
         add(new Model("crate"), 10, 1, 10);
+        models.get(0).setScale(10, 10, 10);
     }
 
     public void render(Camera camera, LightHandler lights, Vector4f clippingPlane, Matrix4f projectionMatrix, ShadowHandler shadows)

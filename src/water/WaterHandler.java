@@ -42,7 +42,7 @@ public class WaterHandler
 
         //add tiles
         WaterTile tile = new WaterTile();
-        tile.setPosition(200, height, 200);
+        tile.setPosition(0, height, 0);
         tile.setScale(10, 10, 10);
         waterTiles.add(tile);
 

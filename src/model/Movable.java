@@ -7,7 +7,7 @@ import util.Vector3f;
 public class Movable
 {
 
-    protected Vector3f position = new Vector3f(0, 0, 0); //should be moved to rigidBody class
+    protected Vector3f position = new Vector3f(0, 0, 0);
     protected Matrix3f orientation = new Matrix3f();
     protected float scaleX = 1f, scaleY = 1f, scaleZ = 1f;
 
@@ -17,7 +17,7 @@ public class Movable
         this.position.y = y;
         this.position.z = z;
     }
-    
+
     public void setPosition(Vector3f pos)
     {
         this.position.x = pos.x;
@@ -36,10 +36,27 @@ public class Movable
     {
         orientation = Matrix3f.rotate(rotX, rotY, rotZ);
     }
-    
+
     public void setRotation(Matrix3f rotationMatrix)
     {
         orientation = rotationMatrix;
+    }
+
+    /**
+     * Gives the rotation around each axis in the range of 0-360 degrees.
+     * @return 
+     */
+    public Vector3f getRotation()
+    {
+        float x = (float) Math.atan2(orientation.m21, orientation.m22);
+        float y = (float) Math.atan2(-orientation.m20, Math.sqrt(orientation.m21 * orientation.m21 + orientation.m22 * orientation.m22));
+        float z = (float) Math.atan2(orientation.m10, orientation.m00);
+
+        x = (x / ((float) Math.PI * 2)) * 360;
+        y = (y / ((float) Math.PI * 2)) * 360;
+        z = (z / ((float) Math.PI * 2)) * 360;
+
+        return new Vector3f(x, y, z);
     }
 
     public void translate(Vector3f translation)

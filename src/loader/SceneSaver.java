@@ -73,6 +73,7 @@ public class SceneSaver
             wr.write("m " + model.objectFileName + " " 
                     + model.getPosition().toString() + " "
                     + model.getScale().toString() + " "
+                    + model.getRotation().toString() + " "
                     + "\n");
         }
     }

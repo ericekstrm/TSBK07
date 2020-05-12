@@ -24,9 +24,9 @@ public class SceneLoader
         } catch (FileNotFoundException ex)
         {
             System.out.println("file not found: " + filename);
-            return null;
+            return new ArrayList<Model>();
         }
-        
+
         List<Model> models = new ArrayList<>();
 
         try
@@ -47,8 +47,13 @@ public class SceneLoader
                         Vector3f scale = new Vector3f(Float.parseFloat(currentLine[5]),
                                                       Float.parseFloat(currentLine[6]),
                                                       Float.parseFloat(currentLine[7]));
+                        Vector3f rotation = new Vector3f(Float.parseFloat(currentLine[8]),
+                                                      Float.parseFloat(currentLine[9]),
+                                                      Float.parseFloat(currentLine[10]));
+                        System.out.println(rotation.toString());
                         m.setPosition(position);
                         m.setScale(scale.x, scale.y, scale.z);
+                        m.setRotation(rotation.x, rotation.y, rotation.z);
                         models.add(m);
                         break;
                     default:
@@ -59,7 +64,7 @@ public class SceneLoader
         } catch (IOException ex)
         {
         }
-        
+
         return models;
     }
 }

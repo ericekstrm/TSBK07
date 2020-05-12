@@ -11,9 +11,9 @@ import static util.Matrix4f.rotate;
 public class Matrix3f
 {
 
-    private float m00, m01, m02;
-    private float m10, m11, m12;
-    private float m20, m21, m22;
+    public float m00, m01, m02;
+    public float m10, m11, m12;
+    public float m20, m21, m22;
 
     /**
      * Creates a 4x4 identity matrix.

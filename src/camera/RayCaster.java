@@ -41,7 +41,7 @@ public class RayCaster
         //ray_clip = ray_clip.normalize();
 
         Vector4f ray_eye = projectionMatrixInverse.multiply(ray_clip);
-        Vector4f ray_world = camera.getWorldtoViewMatrix().inverse().multiply(ray_eye);
+        Vector4f ray_world = Matrix4f.translate(camera.position.x, camera.position.y, camera.position.z).inverse().multiply(camera.getWorldtoViewMatrix().inverse().multiply(ray_eye));
         ray = new Vector3f(ray_world.x, ray_world.y, ray_world.z).normalize();
     }
     

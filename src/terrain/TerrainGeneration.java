@@ -82,7 +82,17 @@ public class TerrainGeneration
         {
             return 0;
         }
-        float height = image.getRGB(x, z);
+
+        float height;
+        try
+        {
+            height = image.getRGB(x, z) + image.getRGB(x + 1, z) + image.getRGB(x, z + 1) + image.getRGB(x - 1, z) + image.getRGB(x, z - 1);
+            height = height / 5;
+        } catch (Exception e)
+        {
+            height = image.getRGB(x, z);
+        }
+
         height += MAX_PIXEL_COLOR / 2f; //shift to zero
         height /= MAX_PIXEL_COLOR / 2f; //normalize
         height *= MAX_HEIGHT;         //scale to desired level

@@ -21,7 +21,7 @@ uniform vec4 clippingPlane;
 
 void main()
 {
-    inNormal = in_Normal;//mat3(transpose(inverse(modelToWorld))) * in_Normal;
+    inNormal = mat3(transpose(inverse(modelToWorld))) * in_Normal;
     inTangent =  in_Tangent;
     fragPos = vec3(modelToWorld * vec4(in_Position, 1));
     lightSpaceFragPos = lightSpaceMatrix * vec4(fragPos, 1);

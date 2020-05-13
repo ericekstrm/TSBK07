@@ -1,39 +1,45 @@
-package light;
+package model;
 
 import camera.Camera;
+import java.nio.FloatBuffer;
+import java.util.ArrayList;
+import java.util.List;
 import loader.Loader;
 import loader.RawData;
 import loader.Texture;
-import model.ModelLoader;
-import model.Model;
+import static model.ModelLoader.createFloatBuffer;
 import org.lwjgl.opengl.GL11;
+import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glBindTexture;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
+import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL31;
+import org.lwjgl.opengl.GL33;
 import shader.ParticleShader;
 import shader.Shader;
 import util.Matrix4f;
+import util.Util;
 import util.Vector3f;
 
-public class Sun extends Model
+public class Particle extends Model
 {
 
-    private float sunHeight = 200;
+    private static final float SIZE = 5f;
 
     int texID;
 
     ParticleShader shader;
 
-    Vector3f rotationAxis;
-    Vector3f color = new Vector3f(1, 0.8f, 0.8f);
+    List<Vector3f> offsets = new ArrayList<>();
 
-    public Sun(Matrix4f projectionMatrix)
+    public Particle(Matrix4f projectionMatrix)
     {
-        this.position = new Vector3f(0, sunHeight, sunHeight);
-        RawData d = Loader.loadQuad(-sunHeight/10, -sunHeight/10, sunHeight/5, sunHeight/5);
+        this.position = new Vector3f(0, 0, 0);
+        RawData d = Loader.loadQuad(-SIZE / 10, -SIZE / 10, SIZE / 5, SIZE / 5);
         //add new vao to list
         int vaoID = GL30.glGenVertexArrays();
         GL30.glBindVertexArray(vaoID);
@@ -47,69 +53,66 @@ public class Sun extends Model
         activeVBOs.add(ModelLoader.loadIndicesVBO(d.indices));
         nrOfIndices.add(d.indices.length);
 
-        texID = Texture.load("objects/sun/flare-sun-lens.png");
+        texID = Texture.load("objects/sun/smoke_particle.png");
+
+        shader = new ParticleShader(projectionMatrix);
+
+        for (int i = 0; i < 10; i++)
+        {
+            offsets.add(new Vector3f(Util.randu(10), Util.randu(10), Util.randu(10)));
+        }
+
+        //Instancing
+        int instanceVBO = GL15.glGenBuffers();
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, instanceVBO);
+        float[] instanceOffsets = new float[3 * offsets.size()];
+        for (int i = 0; i < offsets.size(); i++)
+        {
+            instanceOffsets[i * 3] = offsets.get(i).x;
+            instanceOffsets[i * 3 + 1] = offsets.get(i).y;
+            instanceOffsets[i * 3 + 2] = offsets.get(i).z;
+        }
+        FloatBuffer instanceBuffer = createFloatBuffer(instanceOffsets);
+        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, instanceBuffer, GL15.GL_STATIC_DRAW);
+        GL20.glVertexAttribPointer(11, 3, GL_FLOAT, false, 0, 0);
+        GL33.glVertexAttribDivisor(11, 1);
 
         GL30.glBindVertexArray(0);
 
-        setPosition(position);
-        rotationAxis = position.normalize();
-        rotationAxis.x = 0;
-        rotationAxis.y *= -1;
-        rotationAxis = rotationAxis.normalize();
-
-        shader = new ParticleShader(projectionMatrix);
     }
 
     public void render(Camera camera)
     {
-        GL11.glDisable(GL11.GL_DEPTH_TEST);
         GL11.glDisable(GL11.GL_CULL_FACE);
         shader.start();
 
         shader.loadModelToViewMatrix(getModelToWorldFixed(camera.getWorldtoViewMatrix()),
-                                     Matrix4f.remove_translation(camera.getWorldtoViewMatrix()));
+                                     camera.getWorldtoViewMatrix());
+        shader.loadOffsets(offsets);
 
         GL30.glBindVertexArray(activeVAOs.get(0));
         GL20.glEnableVertexAttribArray(Shader.POS_ATTRIB);
         GL20.glEnableVertexAttribArray(Shader.TEX_ATTRIB);
+        GL20.glEnableVertexAttribArray(11);
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texID);
 
         //draw!
-        GL11.glDrawElements(GL11.GL_TRIANGLES, nrOfIndices.get(0), GL11.GL_UNSIGNED_INT, 0);
+        GL31.glDrawElementsInstanced(GL11.GL_TRIANGLES, nrOfIndices.get(0), GL11.GL_UNSIGNED_INT, 0, 10);
         deactivate();
         shader.stop();
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glEnable(GL11.GL_CULL_FACE);
-    }
-
-    DirectionalLight getDirLight()
-    {
-        return new DirectionalLight(position.normalize().scale(-1), color);
     }
 
     @Override
     public void update(float deltaTime)
     {
-        //rotation around world
-        //setPosition(Matrix4f.rotate(deltaTime, rotationAxis).multiply(position));
-
-        //update light color based on time of day (height of sun)
-        float sunFactor = position.y / sunHeight;
-        if (sunFactor < 0)
-        {
-            color = new Vector3f();
-        } else
-        {
-            float c = 1 - (1 / (float) Math.exp(10 * sunFactor));
-            color = new Vector3f(c, c * 0.8f, c * 0.8f);
-        }
     }
 
     /**
-     * calculates the model to world matrix but without the rotation.
-     * The result is a quad that is always pointing towards the camera.
+     * calculates the model to world matrix but without the rotation. The result
+     * is a quad that is always pointing towards the camera.
      *
      * @param worldToView
      * @return
@@ -129,17 +132,5 @@ public class Sun extends Model
         Matrix4f scale = Matrix4f.scale(scaleX, scaleY, scaleZ);
 
         return translate.multiply(orientation.toMatrix4f()).multiply(scale);
-    }
-
-    /**
-     * Returns a Camera positioned at the sun.Used for shadow depth map
-     * calculations.
-     *
-     * @param currentCamera - The camera that is currently in use. The sun camera will look right at the current camera.
-     * @return
-     */
-    public Camera getSunCamera(Camera currentCamera)
-    {
-        return new Camera(currentCamera.getPosition().add(position), currentCamera.getPosition());
     }
 }

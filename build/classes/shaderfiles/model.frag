@@ -39,7 +39,7 @@ vec3 applyFog(in vec3,in float);
 
 void main()
 {
-    vec3 normal = inNormal;
+    vec3 normal = normalize(inNormal);
     if (hasNormalMap)
     {
         vec3 bitangent = cross(normal, inTangent);

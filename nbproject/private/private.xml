@@ -6,11 +6,8 @@
             <file>file:/C:/Users/Eric/Documents/NetBeansProjects/ComputerGraphics-3Dgame/src/state/LevelEditorState.java</file>
             <file>file:/C:/Users/Eric/Documents/NetBeansProjects/ComputerGraphics-3Dgame/src/state/GameState.java</file>
             <file>file:/C:/Users/Eric/Documents/NetBeansProjects/ComputerGraphics-3Dgame/src/model/ModelHandler.java</file>
-            <file>file:/C:/Users/Eric/Documents/NetBeansProjects/ComputerGraphics-3Dgame/src/loader/Material.java</file>
-            <file>file:/C:/Users/Eric/Documents/NetBeansProjects/ComputerGraphics-3Dgame/src/model/Model.java</file>
-            <file>file:/C:/Users/Eric/Documents/NetBeansProjects/ComputerGraphics-3Dgame/src/loader/Loader.java</file>
-            <file>file:/C:/Users/Eric/Documents/NetBeansProjects/ComputerGraphics-3Dgame/src/model/ModelLoader.java</file>
-            <file>file:/C:/Users/Eric/Documents/NetBeansProjects/ComputerGraphics-3Dgame/src/camera/ObjectPlacer.java</file>
+            <file>file:/C:/Users/Eric/Documents/NetBeansProjects/ComputerGraphics-3Dgame/src/light/Sun.java</file>
+            <file>file:/C:/Users/Eric/Documents/NetBeansProjects/ComputerGraphics-3Dgame/src/model/Particle.java</file>
         </group>
     </open-files>
 </project-private>

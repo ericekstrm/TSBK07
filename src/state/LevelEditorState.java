@@ -9,6 +9,7 @@ import light.ShadowHandler;
 import loader.SceneSaver;
 import model.Model;
 import model.ModelHandler;
+import model.Particle;
 import model.Skybox;
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.glfw.*;
@@ -18,7 +19,6 @@ import terrain.TerrainHandler;
 import util.Matrix4f;
 import util.Vector3f;
 import util.Vector4f;
-import water.WaterFrameBuffer;
 import water.WaterHandler;
 
 public class LevelEditorState extends State implements GLFWMouseButtonCallbackI
@@ -37,13 +37,12 @@ public class LevelEditorState extends State implements GLFWMouseButtonCallbackI
     ModelHandler models;
     TerrainHandler terrain;
     Skybox skybox;
+    Particle particle;
 
     LightHandler lights;
     ShadowHandler shadows;
 
     WaterHandler water;
-    WaterFrameBuffer waterFrameBuffer;
-    Vector4f clippingPlane = new Vector4f(0, -1, 0, 8);
     boolean renderWater = false;
 
     GUI gui;
@@ -65,9 +64,10 @@ public class LevelEditorState extends State implements GLFWMouseButtonCallbackI
         currentCamera = buildCamera;
 
         skybox = new Skybox(projectionMatrix);
-
+        
+        particle = new Particle(projectionMatrix);
+        
         water = new WaterHandler(projectionMatrix);
-        waterFrameBuffer = new WaterFrameBuffer();
 
         //lights
         lights = new LightHandler(projectionMatrix);
@@ -109,7 +109,7 @@ public class LevelEditorState extends State implements GLFWMouseButtonCallbackI
         {
             GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
             
-            waterFrameBuffer.bindRefractionFrameBuffer();
+            water.bindRefractionFrameBuffer();
             renderScene(new Vector4f(0, -1, 0, water.getHeight() + 1f), currentCamera, projectionMatrix);
 
             //move camera under water to create reflection texture
@@ -117,9 +117,9 @@ public class LevelEditorState extends State implements GLFWMouseButtonCallbackI
             currentCamera.getPosition().y -= distance;
             currentCamera.getDirection().y *= -1;
 
-            waterFrameBuffer.bindReflectionFrameBuffer();
+            water.bindReflectionFrameBuffer();
             renderScene(new Vector4f(0, 1, 0, -water.getHeight() + 0.1f), currentCamera, projectionMatrix);
-            waterFrameBuffer.unbindCurrentFrameBuffer();
+            water.unbindCurrentFrameBuffer();
             
             //move camera back
             currentCamera.getPosition().y += distance;
@@ -131,7 +131,7 @@ public class LevelEditorState extends State implements GLFWMouseButtonCallbackI
         shadows.render(lights.getSun().getSunCamera(currentCamera), models, terrain);
         renderScene(new Vector4f(0, 0, 0, 0), currentCamera, projectionMatrix);
 
-        water.render(currentCamera, lights, waterFrameBuffer);
+        water.render(currentCamera, lights, water.getFrameBuffer());
         gui.render();
 
         glfwSwapBuffers(window);
@@ -152,6 +152,7 @@ public class LevelEditorState extends State implements GLFWMouseButtonCallbackI
 
         Vector3f fogColor = new Vector3f(0.5f, 0.6f, 0.7f);
         skybox.render(camera, fogColor);
+        particle.render(camera);
         lights.render(camera);
         terrain.render(camera, lights, clippingPlane, projectionMatrix, shadows);
         models.render(camera, lights, clippingPlane, projectionMatrix, shadows);

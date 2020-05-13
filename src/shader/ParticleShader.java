@@ -1,7 +1,9 @@
 package shader;
 
+import java.util.List;
 import static shader.Shader.POS_ATTRIB;
 import util.Matrix4f;
+import util.Vector3f;
 
 public class ParticleShader extends Shader{
 
@@ -11,6 +13,8 @@ public class ParticleShader extends Shader{
     private int location_modelToView;
     private int location_projection;
     private int location_texUnit;
+    
+    private int location_offsets[];
     
     public ParticleShader(Matrix4f projectionMatrix)
     {
@@ -30,6 +34,12 @@ public class ParticleShader extends Shader{
         location_modelToView = getUniformLocation("modelToView");
         location_projection = getUniformLocation("projection");
         location_texUnit = getUniformLocation("texUnit");
+        
+        location_offsets = new int[10];
+        for (int i = 0; i < 10; i++)
+        {
+            location_offsets[i] = getUniformLocation("offsets[" + i + "]");
+        }
     }
     
     @Override
@@ -40,7 +50,6 @@ public class ParticleShader extends Shader{
 
     public void loadModelToViewMatrix(Matrix4f modelToWorldMatrix, Matrix4f worldToViewMatrix)
     {
-        //loadMatrix(location_modelToView, worldToViewMatrix.multiply(modelToWorldMatrix));
         loadMatrix(location_modelToView, worldToViewMatrix.multiply(modelToWorldMatrix));
     }
     
@@ -52,5 +61,13 @@ public class ParticleShader extends Shader{
     public void connectTextureUnits()
     {
         loadInt(location_texUnit, 0);
+    }
+    
+    public void loadOffsets(List<Vector3f> offsets)
+    {
+        for (int i = 0; i < 10; i++)
+        {
+            loadVector(location_offsets[i], offsets.get(i));
+        }
     }
 }

@@ -20,6 +20,9 @@ public class LightHandler
     {
         lightShader = new LightShader(projectionMatrix);
         sun = new Sun(projectionMatrix);
+
+        addPosLight(new Vector3f(-114.410576f, -1.0080415f, -267.67914f), new Vector3f(226f / 255, 88f / 255, 34f / 255));
+        addPosLight(new Vector3f(-35.859524f, 3f, -336.1039f), new Vector3f(255f / 255, 214f / 255, 170f / 255));
     }
 
     public void addPosLight(Vector3f pos, Vector3f color)
@@ -67,7 +70,7 @@ public class LightHandler
         lights.add(sun.getDirLight());
         return lights;
     }
-    
+
     public Sun getSun()
     {
         return sun;

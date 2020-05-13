@@ -9,12 +9,13 @@ import light.ShadowHandler;
 import loader.SceneSaver;
 import model.Model;
 import model.ModelHandler;
-import model.Particle;
+import particle_system.Particle;
 import model.Skybox;
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
+import particle_system.Smoke;
 import terrain.TerrainHandler;
 import util.Matrix4f;
 import util.Vector3f;
@@ -37,7 +38,7 @@ public class LevelEditorState extends State implements GLFWMouseButtonCallbackI
     ModelHandler models;
     TerrainHandler terrain;
     Skybox skybox;
-    Particle particle;
+    Smoke smokeParticles;
 
     LightHandler lights;
     ShadowHandler shadows;
@@ -65,7 +66,7 @@ public class LevelEditorState extends State implements GLFWMouseButtonCallbackI
 
         skybox = new Skybox(projectionMatrix);
         
-        particle = new Particle(projectionMatrix);
+        smokeParticles = new Smoke(projectionMatrix, new Vector3f(-114.314f,-0.157f,-267.456f));
         
         water = new WaterHandler(projectionMatrix);
 
@@ -100,6 +101,7 @@ public class LevelEditorState extends State implements GLFWMouseButtonCallbackI
         {
             gui.setTextString("fps", "" + currentFPS);
         }
+        smokeParticles.update(deltaTime, projectionMatrix);
     }
 
     @Override
@@ -152,11 +154,11 @@ public class LevelEditorState extends State implements GLFWMouseButtonCallbackI
 
         Vector3f fogColor = new Vector3f(0.5f, 0.6f, 0.7f);
         skybox.render(camera, fogColor);
-        particle.render(camera);
         lights.render(camera);
         terrain.render(camera, lights, clippingPlane, projectionMatrix, shadows);
         models.render(camera, lights, clippingPlane, projectionMatrix, shadows);
         placer.render(camera, lights, clippingPlane, projectionMatrix);
+        smokeParticles.render(camera);
     }
 
     @Override

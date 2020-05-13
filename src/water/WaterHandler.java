@@ -60,7 +60,7 @@ public class WaterHandler
         shader.start();
         shader.loadWorldToViewMatrix(camera);
         shader.loadMoveFactor(moveFactor);
-        shader.loadLight(lights.getPointLights().get(0));
+        shader.loadLight(lights.getSun());
         for (WaterTile tile : waterTiles)
         {
             tile.render(shader, waterFrameBuffer, dudvMap, normalMap);

@@ -22,7 +22,7 @@ public class PositionalLight extends Movable
 
     private Vector3f color;
     private float intensity = 1;
-    private float radius = 100;
+    private float radius = 10;
     
     public PositionalLight(Vector3f position, Vector3f color)
     {

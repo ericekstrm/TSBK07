@@ -23,7 +23,7 @@ public class Skybox extends Model
 
     public Skybox(Matrix4f projectionMatrix)
     {
-        this.skyboxShader = new SkyBoxShader(projectionMatrix); //change to its own shader.
+        this.skyboxShader = new SkyBoxShader(projectionMatrix);
 
         //add new vao to list
         int vaoID = GL30.glGenVertexArrays();
@@ -44,7 +44,7 @@ public class Skybox extends Model
 
 
         //texture binding
-        texID = Texture.loadCubeMap(grimmnight);
+        texID = Texture.loadCubeMap(miramar);
 
         GL30.glBindVertexArray(0);
     }

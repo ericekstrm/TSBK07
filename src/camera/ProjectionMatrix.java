@@ -61,15 +61,16 @@ public class ProjectionMatrix
 
     public static boolean isModelInFrustum(Model m, Camera c)
     {
-        //OBJ: måste konverteras till samma kordinatsystem!!!!
+        //Convert to same coord system
         Vector3f pos = c.getWorldtoViewMatrix().multiply(m.getPosition().subtract(c.getPosition()));
+        
         Vector3f topPos = pos.subtract(topNormal.scale(m.getMaxRadius()));
         if (topPos.dot(topNormal.scale(-1)) < 0)
         {
             return false;
         }
         Vector3f bottomPos = pos.subtract(bottomNormal.scale(m.getMaxRadius()));
-        if (bottomPos.dot(topNormal.scale(-1)) < 0)
+        if (bottomPos.dot(bottomNormal.scale(-1)) < 0)
         {
             return false;
         }

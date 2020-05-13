@@ -50,7 +50,6 @@ public class SceneLoader
                         Vector3f rotation = new Vector3f(Float.parseFloat(currentLine[8]),
                                                       Float.parseFloat(currentLine[9]),
                                                       Float.parseFloat(currentLine[10]));
-                        System.out.println(rotation.toString());
                         m.setPosition(position);
                         m.setScale(scale.x, scale.y, scale.z);
                         m.setRotation(rotation.x, rotation.y, rotation.z);

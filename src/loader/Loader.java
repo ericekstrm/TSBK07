@@ -214,10 +214,12 @@ public class Loader
                 String[] vertex2 = indices.get(i + 1).split("/");
                 String[] vertex3 = indices.get(i + 2).split("/");
 
+                //get the texture coordinates of the triangle.
                 Vector2f t1 = t;
                 Vector2f t2 = getTextureCoord(vertex2[1], textures);
                 Vector2f t3 = getTextureCoord(vertex3[1], textures);
 
+                //compute difference of texture coordinates.
                 float deltaU1 = t2.x - t1.x;
                 float deltaU2 = t3.x - t2.x;
                 float deltaV1 = t2.y - t1.y;
@@ -225,40 +227,43 @@ public class Loader
 
                 float a = 1 / (deltaU1 * deltaV2 - deltaU2 * deltaV1);
 
+                //get vertex coordinates of the triangle.
                 Vector3f v1 = v;
                 Vector3f v2 = getCoord(vertex2[0], vertices);
                 Vector3f v3 = getCoord(vertex3[0], vertices);
 
+                //get difference of vertex coordinates.
                 Vector3f E1 = v2.subtract(v1);
                 Vector3f E2 = v3.subtract(v2);
 
+                //Compute tangent.
                 float Tx = a * deltaV2 * E1.x - deltaV2 * E2.x;
                 float Ty = a * deltaV2 * E1.y - deltaV2 * E2.y;
                 float Tz = a * deltaV2 * E1.z - deltaV2 * E2.z;
                 Vector3f T = new Vector3f(Tx, Ty, Tz);
 
-                if (tangents.containsKey(vertex[0]))
+                if (tangents.containsKey(indices.get(i)))
                 {
-                    tangents.put(vertex[0], tangents.get(vertex[0]).add(T));
+                    tangents.put(indices.get(i), tangents.get(indices.get(i)).add(T));
                 } else
                 {
-                    tangents.put(vertex[0], T);
+                    tangents.put(indices.get(i), T);
                 }
 
-                if (tangents.containsKey(vertex2[0]))
+                if (tangents.containsKey(indices.get(i + 1)))
                 {
-                    tangents.put(vertex2[0], tangents.get(vertex2[0]).add(T));
+                    tangents.put(indices.get(i + 1), tangents.get(indices.get(i + 1)).add(T));
                 } else
                 {
-                    tangents.put(vertex2[0], T);
+                    tangents.put(indices.get(i + 1), T);
                 }
 
-                if (tangents.containsKey(vertex3[0]))
+                if (tangents.containsKey(indices.get(i + 2)))
                 {
-                    tangents.put(vertex3[0], tangents.get(vertex3[0]).add(T));
+                    tangents.put(indices.get(i + 2), tangents.get(indices.get(i + 2)).add(T));
                 } else
                 {
-                    tangents.put(vertex3[0], T);
+                    tangents.put(indices.get(i + 2), T);
                 }
             }
 
@@ -268,16 +273,9 @@ public class Loader
 
         for (int ix = 0; ix < indices.size(); ix++)
         {
-            String[] vertex = indices.get(ix).split("/");
+            String vertex = indices.get(ix);
 
-            int index = Integer.parseInt(vertex[0]);
-            //for the negative syntax sometimes used.
-            if (index < 0)
-            {
-                index = tangents.size() + index;
-            }
-            
-            Vector3f T = tangents.get("" + index).normalize();
+            Vector3f T = tangents.get(vertex).normalize();
             tangentsArray[ix * 2] = T.x;
             tangentsArray[ix * 2 + 1] = T.y;
             tangentsArray[ix * 2 + 2] = T.z;

@@ -1,8 +1,7 @@
 package shader;
 
 import camera.Camera;
-import light.PositionalLight;
-import camera.FreeCamera;
+import light.Sun;
 import util.Matrix4f;
 
 public class WaterShader extends Shader
@@ -88,9 +87,9 @@ public class WaterShader extends Shader
         loadFloat(location_moveFactor, factor);
     }
     
-    public void loadLight(PositionalLight light)
+    public void loadLight(Sun sun)
     {
-        loadVector(location_lightColor, light.getColor());
-        loadVector(location_lightPosition, light.getPosition());
+        loadVector(location_lightColor, sun.getColor());
+        loadVector(location_lightPosition, sun.getPosition());
     }
 }

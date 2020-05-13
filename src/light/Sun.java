@@ -28,12 +28,14 @@ public class Sun extends Model
     ParticleShader shader;
 
     Vector3f rotationAxis;
-    Vector3f color = new Vector3f(1, 0.8f, 0.8f);
+    Vector3f defaultColor = new Vector3f(253f / 255, 184f / 255, 19f / 255);
+    Vector3f color = defaultColor;
+    
 
     public Sun(Matrix4f projectionMatrix)
     {
         this.position = new Vector3f(0, sunHeight, sunHeight);
-        RawData d = Loader.loadQuad(-sunHeight/10, -sunHeight/10, sunHeight/5, sunHeight/5);
+        RawData d = Loader.loadQuad(-sunHeight / 10, -sunHeight / 10, sunHeight / 5, sunHeight / 5);
         //add new vao to list
         int vaoID = GL30.glGenVertexArrays();
         GL30.glBindVertexArray(vaoID);
@@ -97,19 +99,18 @@ public class Sun extends Model
 
         //update light color based on time of day (height of sun)
         float sunFactor = position.y / sunHeight;
-        if (sunFactor < 0)
+        float c = 0;
+        if (sunFactor > 0)
         {
-            color = new Vector3f();
-        } else
-        {
-            float c = 1 - (1 / (float) Math.exp(10 * sunFactor));
-            color = new Vector3f(c, c * 0.8f, c * 0.8f);
+            c = 1 - (1 / (float) Math.exp(10 * sunFactor));
+            
         }
+        color = defaultColor.scale(c);
     }
 
     /**
-     * calculates the model to world matrix but without the rotation.
-     * The result is a quad that is always pointing towards the camera.
+     * calculates the model to world matrix but without the rotation. The result
+     * is a quad that is always pointing towards the camera.
      *
      * @param worldToView
      * @return
@@ -135,11 +136,17 @@ public class Sun extends Model
      * Returns a Camera positioned at the sun.Used for shadow depth map
      * calculations.
      *
-     * @param currentCamera - The camera that is currently in use. The sun camera will look right at the current camera.
+     * @param currentCamera - The camera that is currently in use. The sun
+     * camera will look right at the current camera.
      * @return
      */
     public Camera getSunCamera(Camera currentCamera)
     {
         return new Camera(currentCamera.getPosition().add(position), currentCamera.getPosition());
+    }
+
+    public Vector3f getColor()
+    {
+        return color;
     }
 }

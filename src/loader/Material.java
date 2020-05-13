@@ -102,7 +102,7 @@ public class Material
                 } else if (line.startsWith("map_d"))
                 {
                     currentMaterial.d_map = Texture.load(folder + currentLine[1]);
-                } else if (line.startsWith("map_bump") || line.startsWith("bump"))
+                } else if (line.startsWith("map_bump") || line.startsWith("bump") || line.startsWith("map_Bump"))
                 {
                     currentMaterial.bump_map = Texture.load(folder + currentLine[1]);
                 }

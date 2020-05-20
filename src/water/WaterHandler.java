@@ -43,7 +43,7 @@ public class WaterHandler
         //add tiles
         WaterTile tile = new WaterTile();
         tile.setPosition(0, height, 0);
-        tile.setScale(10, 10, 10);
+        tile.setScale(20, 20, 20);
         waterTiles.add(tile);
 
         waterFrameBuffer = new WaterFrameBuffer();
@@ -60,7 +60,7 @@ public class WaterHandler
         shader.start();
         shader.loadWorldToViewMatrix(camera);
         shader.loadMoveFactor(moveFactor);
-        shader.loadLight(lights.getSun());
+        shader.loadLight(lights.getSun().getPosition().scale(100).add(camera.getPosition()), lights.getSun().getColor());
         for (WaterTile tile : waterTiles)
         {
             tile.render(shader, waterFrameBuffer, dudvMap, normalMap);

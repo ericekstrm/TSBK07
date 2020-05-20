@@ -4,6 +4,7 @@ in vec4 clipSpace;
 in vec2 texCoords;
 in vec3 toCameraVector;
 in vec3 fromLightVector;
+in vec4 viewSpace;
 
 uniform sampler2D reflectionTexture;
 uniform sampler2D refractionTexture;
@@ -15,10 +16,13 @@ uniform vec3 lightColor;
 out vec4 outColor;
 
 uniform float moveFactor;
-float tilingFactor = 6;
+float tilingFactor = 30;
 float waveStrength = 0.02;
 float specularExponent = 20;
 float reflectivity = 0.6;
+
+//forward declaration of functions
+vec3 applyFog(in vec3,in float);
 
 void main()
 {
@@ -63,4 +67,30 @@ void main()
     outColor = mix(reflection, refraction, refractiveFactor);
     outColor = mix(outColor, vec4(0.0, 0.2, 0.5, 0.1), 0.2) + vec4(specularLight, 0);
     outColor.a = clamp(waterDepth/5, 0, 1);
+
+    //fog
+    float dist = abs(viewSpace.z);
+    outColor.xyz = applyFog(outColor.xyz, dist);
+}
+
+//===========================| apply fog |======================================
+vec3 applyFog( in vec3  rgb,       // original color of the pixel
+               in float dist ) // camera to point distance
+{
+    //float b = 0.002;
+    //float fogAmount = 1.0 - exp( -dist*b );
+    //vec3  fogColor  = vec3(0.5,0.6,0.7);
+    //return mix( rgb, fogColor, fogAmount );
+
+    //linear fog
+    // 20 - fog starts; 80 - fog ends
+    float fogStart = 100;
+    float fogEnd = 800;
+    float fogFactor = (fogEnd - dist)/(fogEnd - fogStart);
+    fogFactor = clamp( fogFactor, 0.0, 1.0 );
+    vec3 fogColor = vec3(0.5,0.6,0.7);
+ 
+    //if you inverse color in glsl mix function you have to
+    //put 1.0 - fogFactor
+    return mix(fogColor, rgb, fogFactor);
 }

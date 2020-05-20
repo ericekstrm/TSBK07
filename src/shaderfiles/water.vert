@@ -13,6 +13,7 @@ out vec4 clipSpace;
 out vec2 texCoords;
 out vec3 toCameraVector;
 out vec3 fromLightVector;
+out vec4 viewSpace;
 
 void main()
 {
@@ -22,4 +23,6 @@ void main()
     clipSpace = gl_Position;
     toCameraVector = cameraPos - worldPos.xyz;
     fromLightVector = worldPos.xyz - lightPosition;
+
+    viewSpace = worldToView * modelToWorld * vec4(in_Position,1);
 }

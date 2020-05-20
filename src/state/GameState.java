@@ -53,7 +53,7 @@ public class GameState extends State
         models.init();
 
         birdCamera = new FreeCamera(new Vector3f(-100, 100, -100), new Vector3f(30, 20, 30));
-        player = new Player(new Vector3f(0, 0, 0), models, projectionMatrix.get());
+        player = new Player(new Vector3f(-110f, 0, -270f), models, projectionMatrix.get());
         currentCamera = player.thirdPersonCamera;
         rayCaster = new RayCaster(projectionMatrix.get());
 
